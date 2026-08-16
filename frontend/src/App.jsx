@@ -2,7 +2,7 @@ import { useState } from "react";
 import "./App.css";
 import AdminAnalytics from "./AdminAnalytics";
 
-const API_URL = "http://127.0.0.1:8000";
+const API_URL = "https://smart-regtech.onrender.com";
 
 const DEMO_IDENTITY = "999988887777";
 
