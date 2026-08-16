@@ -324,6 +324,18 @@ function App() {
   const [processingPayment, setProcessingPayment] =
     useState(false);
 
+  const [paymentMethod, setPaymentMethod] =
+    useState("upi");
+
+  const [upiId, setUpiId] =
+    useState("");
+
+  const [paymentStatus, setPaymentStatus] =
+    useState("idle");
+
+  const [paymentId, setPaymentId] =
+    useState("");
+
   const [identityPhase, setIdentityPhase] =
     useState("aadhaar");
 
@@ -489,120 +501,102 @@ function App() {
   const completePayment = async () => {
     if (processingPayment) return;
 
+    if (paymentMethod === "upi") {
+      if (!upiId.trim()) {
+        alert("Please enter a demo UPI ID, for example demo@upi.");
+        return;
+      }
+
+      if (!upiId.includes("@")) {
+        alert("Please enter a valid demo UPI ID, for example demo@upi.");
+        return;
+      }
+    }
+
     setProcessingPayment(true);
+    setPaymentStatus("processing");
 
     try {
-      let currentRegistrationId =
-        registrationId;
-
+      let currentRegistrationId = registrationId;
 
       if (!currentRegistrationId) {
         const registerResponse =
-          await fetch(
-            `${API_URL}/api/register`,
-            {
-              method: "POST",
-
-              headers: {
-                "Content-Type":
-                  "application/json",
-              },
-
-              body: JSON.stringify({
-                name: verifiedProfile?.name || "Rohan Verma",
-                email: formData.email,
-                phone: formData.mobile,
-                program:
-                  getShortProgramName(
-                    formData.program
-                  ),
-              }),
-            }
-          );
-
+          await fetch(`${API_URL}/api/register`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              name: verifiedProfile?.name || "Rohan Verma",
+              email: formData.email,
+              phone: formData.mobile,
+              program: getShortProgramName(formData.program),
+            }),
+          });
 
         if (!registerResponse.ok) {
-          throw new Error(
-            "Registration request failed."
-          );
+          throw new Error("Registration request failed.");
         }
 
-
-        const registerData =
-          await registerResponse.json();
-
+        const registerData = await registerResponse.json();
 
         if (!registerData.success) {
           throw new Error(
-            registerData.message ||
-            "Registration failed."
+            registerData.message || "Registration failed."
           );
         }
 
-
-        currentRegistrationId =
-          registerData.registration_id;
-
-
-        setRegistrationId(
-          currentRegistrationId
-        );
+        currentRegistrationId = registerData.registration_id;
+        setRegistrationId(currentRegistrationId);
       }
 
+      // Simulated gateway delay for the sandbox demonstration.
+      await new Promise((resolve) => setTimeout(resolve, 1800));
 
       const paymentResponse =
-        await fetch(
-          `${API_URL}/api/payment/${currentRegistrationId}`,
-          {
-            method: "POST",
-
-            headers: {
-              "Content-Type":
-                "application/json",
-            },
-
-            body: JSON.stringify({
-              amount: currentFee,
-              program: getShortProgramName(formData.program),
-            }),
-          }
-        );
-
+        await fetch(`${API_URL}/api/payment/${currentRegistrationId}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            amount: currentFee,
+            program: getShortProgramName(formData.program),
+          }),
+        });
 
       if (!paymentResponse.ok) {
-        throw new Error(
-          "Payment request failed."
-        );
+        throw new Error("Payment request failed.");
       }
 
-
-      const paymentData =
-        await paymentResponse.json();
-
+      const paymentData = await paymentResponse.json();
 
       if (!paymentData.success) {
         throw new Error(
-          paymentData.message ||
-          "Payment failed."
+          paymentData.message || "Payment failed."
         );
       }
 
+      const generatedPaymentId =
+        paymentData.payment_id ||
+        `PAY-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
 
+      setPaymentId(generatedPaymentId);
+      setPaymentStatus("success");
+
+      await new Promise((resolve) => setTimeout(resolve, 700));
       setStep("success");
-
     } catch (error) {
-
       console.error(error);
+      setPaymentStatus("failed");
 
       alert(
-        "Something went wrong while connecting to the backend.\n\n" +
-        "Please make sure the FastAPI server is running on port 8000."
+        "Payment could not be completed.\n\n" +
+          error.message +
+          "\n\nPlease make sure the FastAPI backend is reachable."
       );
-
     } finally {
-
       setProcessingPayment(false);
-
     }
   };
 
@@ -2012,199 +2006,227 @@ body {
   ============================================================ */
 
   if (step === "payment") {
-
     return (
-
-      <Page
-        currentStep="payment"
-        onHome={goHome}
-      >
-
+      <Page currentStep="payment" onHome={goHome}>
         <div className="payment-page">
+          <div className="step-label">STEP 04 / PAYMENT</div>
 
-          <div className="step-label">
-            STEP 04 / PAYMENT
-          </div>
-
-          <h1>
-            Complete your payment.
-          </h1>
+          <h1>Complete your payment.</h1>
 
           <p className="description">
-            This is a simulated payment environment
-            for the SmartRegTech prototype.
+            Choose a payment method and complete the sandbox transaction.
           </p>
 
-
-          <div className="payment-layout">
-
-            <div className="payment-card">
-
+          <div
+            className="payment-layout"
+            style={{
+              display: "grid",
+              gridTemplateColumns: "minmax(0, 1.5fr) minmax(280px, .7fr)",
+              gap: "24px",
+              alignItems: "start",
+            }}
+          >
+            <div className="payment-card" style={{ padding: "28px" }}>
               <div className="payment-card-top">
-
                 <div>
-
-                  <span>
-                    REGISTRATION FEE
-                  </span>
-
-                  <h2>
-                    ₹{currentFee.toLocaleString("en-IN")}
-                  </h2>
-
+                  <span>REGISTRATION FEE</span>
+                  <h2>₹{currentFee.toLocaleString("en-IN")}</h2>
                 </div>
-
-                <div className="sandbox-pill">
-                  SANDBOX
-                </div>
-
+                <div className="sandbox-pill">SANDBOX</div>
               </div>
 
-
-              <div className="payment-divider"></div>
-
+              <div className="payment-divider" />
 
               <div className="payment-detail">
-
-                <span>
-                  Applicant
-                </span>
-
+                <span>Applicant</span>
                 <strong>
                   {verifiedProfile?.name || "Verified Applicant"}
                 </strong>
-
               </div>
-
 
               <div className="payment-detail">
-
-                <span>
-                  Program
-                </span>
-
-                <strong>
-                  {getShortProgramName(
-                    formData.program
-                  )}
-                </strong>
-
+                <span>Program</span>
+                <strong>{getShortProgramName(formData.program)}</strong>
               </div>
-
 
               <div className="payment-detail">
-
-                <span>
-                  Identity
-                </span>
-
-                <strong className="green-text">
-                  ✓ Verified
-                </strong>
-
+                <span>Identity</span>
+                <strong className="green-text">✓ DigiLocker Verified</strong>
               </div>
 
+              <div style={{ marginTop: "24px" }}>
+                <h3 style={{ marginBottom: "12px" }}>Select payment method</h3>
 
-              <div className="payment-total">
-
-                <span>
-                  Total payable
-                </span>
-
-                <strong>
-                  ₹{currentFee.toLocaleString("en-IN")}
-                </strong>
-
+                <div style={{ display: "grid", gap: "10px" }}>
+                  {[
+                    ["upi", "UPI", "Google Pay / PhonePe / BHIM", "U"],
+                    ["card", "Card", "Credit / Debit Card", "💳"],
+                    ["netbanking", "Net Banking", "All major banks", "🏦"],
+                  ].map(([id, title, subtitle, icon]) => (
+                    <button
+                      key={id}
+                      type="button"
+                      onClick={() => setPaymentMethod(id)}
+                      disabled={processingPayment}
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns: "42px 1fr auto",
+                        alignItems: "center",
+                        gap: "12px",
+                        width: "100%",
+                        padding: "14px",
+                        borderRadius: "12px",
+                        border: paymentMethod === id
+                          ? "1px solid #7556ff"
+                          : "1px solid #293c5c",
+                        background: paymentMethod === id
+                          ? "#151f3c"
+                          : "#101c30",
+                        color: "#fff",
+                        textAlign: "left",
+                        cursor: processingPayment ? "not-allowed" : "pointer",
+                      }}
+                    >
+                      <span
+                        style={{
+                          width: "42px",
+                          height: "42px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          borderRadius: "11px",
+                          background: "#211d49",
+                          color: "#b99cff",
+                          fontWeight: 800,
+                        }}
+                      >
+                        {icon}
+                      </span>
+                      <span>
+                        <strong style={{ display: "block" }}>{title}</strong>
+                        <small style={{ color: "#7890b2" }}>{subtitle}</small>
+                      </span>
+                      <span style={{ color: "#a47bff", fontSize: "18px" }}>
+                        {paymentMethod === id ? "●" : "○"}
+                      </span>
+                    </button>
+                  ))}
+                </div>
               </div>
 
-            </div>
-
-
-            <div className="payment-info">
-
-              <div className="payment-info-icon">
-                ⚡
-              </div>
-
-              <h3>
-                Fast & simple
-              </h3>
-
-              <p>
-                Complete the sandbox transaction to
-                submit your registration.
-              </p>
-
-              <div className="sandbox-warning">
-                <strong>
-                  Selected Program
-                </strong>
-
-                <span>
-                  {getShortProgramName(formData.program)}
-                </span>
-              </div>
-
-              <div className="sandbox-warning">
-                <strong>
-                  Registration Fee
-                </strong>
-
-                <span>
-                  ₹{currentFee.toLocaleString("en-IN")}
-                </span>
-              </div>
-
-
-              <div className="sandbox-warning">
-
-                <strong>
-                  Demo Environment
-                </strong>
-
-                <span>
-                  No real money will be charged.
-                </span>
-
-              </div>
-
-            </div>
-
-          </div>
-
-
-          <div className="payment-actions">
-
-            <button
-              className="back-button"
-              onClick={() =>
-                setStep("review")
-              }
-              disabled={processingPayment}
-            >
-              ← Back
-            </button>
-
-
-            <button
-              className="primary-button"
-              onClick={completePayment}
-              disabled={processingPayment}
-            >
-              {processingPayment
-                ? "Processing..."
-                : `Pay ₹${currentFee.toLocaleString("en-IN")} (Sandbox)`}
-
-              {!processingPayment && (
-                <span>→</span>
+              {paymentMethod === "upi" && (
+                <div style={{ marginTop: "18px" }}>
+                  <label style={{ display: "block", marginBottom: "8px", fontWeight: 700 }}>
+                    UPI ID
+                  </label>
+                  <input
+                    value={upiId}
+                    onChange={(e) => setUpiId(e.target.value)}
+                    placeholder="demo@upi"
+                    disabled={processingPayment}
+                    style={{
+                      width: "100%",
+                      boxSizing: "border-box",
+                      padding: "14px",
+                      borderRadius: "11px",
+                      border: "1px solid #33496d",
+                      background: "#081222",
+                      color: "#fff",
+                    }}
+                  />
+                  <small style={{ display: "block", marginTop: "7px", color: "#7288aa" }}>
+                    🔒 Demo UPI only — no real money will be charged.
+                  </small>
+                </div>
               )}
 
-            </button>
+              {paymentMethod !== "upi" && (
+                <div
+                  style={{
+                    marginTop: "18px",
+                    padding: "16px",
+                    borderRadius: "12px",
+                    border: "1px dashed #40577c",
+                    background: "#0a1527",
+                    color: "#9aadd0",
+                    fontSize: "13px",
+                  }}
+                >
+                  🧪 This prototype simulates {paymentMethod === "card" ? "card" : "net banking"} payment.
+                  No real financial credentials are required.
+                </div>
+              )}
 
+              <div className="payment-total" style={{ marginTop: "24px" }}>
+                <span>Total payable</span>
+                <strong>₹{currentFee.toLocaleString("en-IN")}</strong>
+              </div>
+
+              {paymentStatus === "processing" && (
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "12px",
+                    marginTop: "18px",
+                    padding: "14px",
+                    borderRadius: "12px",
+                    background: "#151d38",
+                    border: "1px solid #4a3b7f",
+                  }}
+                >
+                  <span style={{ fontSize: "28px", color: "#a981ff" }}>◌</span>
+                  <span>
+                    <strong style={{ display: "block" }}>Processing payment...</strong>
+                    <small style={{ color: "#8298ba" }}>Verifying transaction securely</small>
+                  </span>
+                </div>
+              )}
+
+              <div className="payment-actions">
+                <button
+                  className="back-button"
+                  onClick={() => setStep("review")}
+                  disabled={processingPayment}
+                >
+                  ← Back
+                </button>
+
+                <button
+                  className="primary-button"
+                  onClick={completePayment}
+                  disabled={processingPayment}
+                >
+                  {processingPayment
+                    ? "Processing..."
+                    : `Pay ₹${currentFee.toLocaleString("en-IN")}`}
+                  {!processingPayment && <span>→</span>}
+                </button>
+              </div>
+            </div>
+
+            <div className="payment-info">
+              <div className="payment-info-icon">⚡</div>
+              <h3>Fast & simple</h3>
+              <p>Complete your registration payment in seconds.</p>
+
+              <div className="sandbox-warning">
+                <strong>Registration Fee</strong>
+                <span>₹{currentFee.toLocaleString("en-IN")}</span>
+              </div>
+
+              <div className="sandbox-warning">
+                <strong>Identity</strong>
+                <span className="green-text">✓ DigiLocker Verified</span>
+              </div>
+
+              <div className="sandbox-warning">
+                <strong>Demo Environment</strong>
+                <span>No real money will be charged.</span>
+              </div>
+            </div>
           </div>
-
         </div>
-
       </Page>
     );
   }
@@ -2282,6 +2304,11 @@ body {
               <strong className="green-text">
                 ✓ Paid — ₹{currentFee.toLocaleString("en-IN")}
               </strong>
+            </div>
+
+            <div>
+              <span>Payment ID</span>
+              <strong>{paymentId || "Sandbox transaction"}</strong>
             </div>
 
             <div>
