@@ -5,6 +5,29 @@ import AdminAnalytics from "./AdminAnalytics";
 const API_URL = "https://smart-regtech.onrender.com";
 
 const DEMO_IDENTITY = "999988887777";
+const DEMO_OTP = "123456";
+
+// Simulated DigiLocker response. In production this data would come from
+// an approved DigiLocker/API Setu integration after user consent.
+const MOCK_DIGILOCKER_PROFILE = {
+  source: "DigiLocker Sandbox / Mock Connector",
+  document: "Aadhaar Profile",
+  verifiedAt: "2026-08-16T10:30:00Z",
+  name: "Rohan Verma",
+  dob: "15/06/2004",
+  gender: "Male",
+  address: "Chennai, Tamil Nadu",
+  photo: "RV",
+  board: "CBSE",
+  qualification: "Class XII",
+  documentStatus: "Digitally verified",
+};
+
+const fetchMockDigiLockerProfile = async () => {
+  // Simulates the network round-trip to a DigiLocker connector.
+  await new Promise((resolve) => setTimeout(resolve, 1800));
+  return { ...MOCK_DIGILOCKER_PROFILE };
+};
 
 const programs = [
   "B.A. LL.B (Honours) – Law Admissions (SLAT 2026)",
@@ -57,7 +80,7 @@ function getCopilotAnswer(question) {
     q.includes("digilocker") ||
     q.includes("verification")
   ) {
-    return "Identity verification is performed through the DigiLocker mock service in this prototype. Use the demo identity number shown on the verification page. After successful verification, the system retrieves the demo name, date of birth, gender and address.";
+    return "The prototype now follows a realistic DigiLocker-style flow: enter the demo 12-digit identity number, verify a demo OTP, provide consent, and then simulate a secure connector response that retrieves profile and education details. No real Aadhaar or DigiLocker account is used.";
   }
 
   if (q.includes("document")) {
@@ -301,6 +324,20 @@ function App() {
   const [processingPayment, setProcessingPayment] =
     useState(false);
 
+  const [identityPhase, setIdentityPhase] =
+    useState("aadhaar");
+
+  const [otp, setOtp] = useState("");
+
+  const [consentGiven, setConsentGiven] =
+    useState(false);
+
+  const [fetchStatus, setFetchStatus] =
+    useState("idle");
+
+  const [verifiedProfile, setVerifiedProfile] =
+    useState(null);
+
   const [formData, setFormData] = useState({
     identity: "",
     mobile: "",
@@ -325,6 +362,11 @@ function App() {
 
 
   const startRegistration = () => {
+    setIdentityPhase("aadhaar");
+    setOtp("");
+    setConsentGiven(false);
+    setFetchStatus("idle");
+    setVerifiedProfile(null);
     setStep("identity");
   };
 
@@ -344,15 +386,61 @@ function App() {
   ============================================================ */
 
   const verifyIdentity = () => {
-    if (formData.identity !== DEMO_IDENTITY) {
-      alert(
-        `Please use the demo identity number shown on the page:\n${DEMO_IDENTITY}`
-      );
-
+    if (!/^\d{12}$/.test(formData.identity)) {
+      alert("Please enter a valid 12-digit demo Aadhaar/identity number.");
       return;
     }
 
-    setStep("verified");
+    if (formData.identity !== DEMO_IDENTITY) {
+      alert(
+        `For this prototype, use the demo identity number:\n${DEMO_IDENTITY}`
+      );
+      return;
+    }
+
+    setOtp("");
+    setIdentityPhase("otp");
+  };
+
+
+  const verifyOtp = () => {
+    if (otp !== DEMO_OTP) {
+      alert(`Invalid demo OTP. Use ${DEMO_OTP} for this prototype.`);
+      return;
+    }
+
+    setIdentityPhase("consent");
+  };
+
+
+  const approveDigiLockerConsent = async () => {
+    if (!consentGiven) {
+      alert("Please provide consent to continue.");
+      return;
+    }
+
+    setIdentityPhase("fetching");
+    setFetchStatus("connecting");
+
+    try {
+      const profile = await fetchMockDigiLockerProfile();
+      setFetchStatus("success");
+      setVerifiedProfile(profile);
+
+      // Only the additional fields remain editable by the applicant.
+      setFormData((previous) => ({
+        ...previous,
+        mobile: previous.mobile,
+        email: previous.email,
+      }));
+
+      setTimeout(() => setStep("verified"), 700);
+    } catch (error) {
+      console.error(error);
+      setFetchStatus("error");
+      setIdentityPhase("consent");
+      alert("The DigiLocker mock connector could not retrieve the profile.");
+    }
   };
 
 
@@ -421,7 +509,7 @@ function App() {
               },
 
               body: JSON.stringify({
-                name: "Rohan Verma",
+                name: verifiedProfile?.name || "Rohan Verma",
                 email: formData.email,
                 phone: formData.mobile,
                 program:
@@ -657,7 +745,7 @@ body {
     </span>
 
     <span class="value">
-      Rohan Verma
+      ${verifiedProfile?.name || "Verified Applicant"}
     </span>
 
   </div>
@@ -670,7 +758,7 @@ body {
     </span>
 
     <span class="value">
-      DigiLocker Verified (Mock)
+      DigiLocker Sandbox — Consent + Mock JSON
     </span>
 
   </div>
@@ -1218,7 +1306,7 @@ body {
 
 
   /* ============================================================
-     IDENTITY
+     IDENTITY / DIGILOCKER-STYLE VERIFICATION
   ============================================================ */
 
   if (step === "identity") {
@@ -1228,9 +1316,7 @@ body {
       <Page
         currentStep="identity"
         onHome={goHome}
-        onCopilot={() =>
-          setShowCopilot(true)
-        }
+        onCopilot={() => setShowCopilot(true)}
       >
 
         <div className="form-layout">
@@ -1242,157 +1328,202 @@ body {
             </div>
 
             <h1>
-              Let's verify your identity.
+              Verify once.
+              <br />
+              Reuse your details.
             </h1>
 
             <p className="description">
-              Enter the demo identity number to
-              retrieve your verified profile details.
+              A realistic DigiLocker-style verification flow
+              for this prototype. Your identity is checked first,
+              then a consented mock connector fetches verified details.
             </p>
 
-
             <div className="security-points">
-
-              <div>
-                <span>✓</span>
-                Secure verification workflow
-              </div>
-
-              <div>
-                <span>✓</span>
-                Automatic profile retrieval
-              </div>
-
-              <div>
-                <span>✓</span>
-                Reduced repetitive data entry
-              </div>
-
+              <div><span>✓</span> 12-digit identity validation</div>
+              <div><span>✓</span> One-time OTP verification</div>
+              <div><span>✓</span> Explicit DigiLocker consent</div>
+              <div><span>✓</span> Automatic profile retrieval</div>
             </div>
 
           </div>
 
 
-          <div className="form-panel">
+          <div className="form-panel digilocker-flow-panel">
 
-            <div className="panel-heading">
-
-              <div className="panel-icon">
-                ◈
-              </div>
-
+            <div className="dl-brand-row">
+              <div className="dl-logo-mark">▣</div>
               <div>
+                <strong>DigiLocker-style verification</strong>
+                <span>SmartRegTech sandbox connector</span>
+              </div>
+              <span className="sandbox-pill">DEMO</span>
+            </div>
 
-                <h2>
-                  Identity Verification
-                </h2>
+            <div className="dl-flow-steps">
+              <span className={identityPhase === "aadhaar" ? "active" : "done"}>1 Identity</span>
+              <span className={identityPhase === "otp" ? "active" : identityPhase === "consent" || identityPhase === "fetching" ? "done" : ""}>2 OTP</span>
+              <span className={identityPhase === "consent" ? "active" : identityPhase === "fetching" ? "done" : ""}>3 Consent</span>
+              <span className={identityPhase === "fetching" ? "active" : ""}>4 Fetch</span>
+            </div>
 
+            {identityPhase === "aadhaar" && (
+              <>
+                <div className="panel-heading">
+                  <div className="panel-icon">◈</div>
+                  <div>
+                    <h2>Identity verification</h2>
+                    <p>Start with your 12-digit identity number</p>
+                  </div>
+                </div>
+
+                <div className="warning">
+                  <span>!</span>
+                  <div>
+                    <strong>Prototype / sandbox</strong>
+                    <p>Do not enter a real Aadhaar number. Use the demo identity shown below.</p>
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label>AADHAAR / IDENTITY NUMBER</label>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    autoComplete="off"
+                    placeholder="XXXX XXXX XXXX"
+                    maxLength="12"
+                    value={formData.identity}
+                    onChange={(event) =>
+                      updateField("identity", event.target.value.replace(/\D/g, ""))
+                    }
+                  />
+                </div>
+
+                <div className="demo-number">
+                  <span>Demo identity</span>
+                  <strong>{DEMO_IDENTITY}</strong>
+                  <button
+                    type="button"
+                    onClick={() => updateField("identity", DEMO_IDENTITY)}
+                  >
+                    Use demo
+                  </button>
+                </div>
+
+                <button className="primary-button full" onClick={verifyIdentity}>
+                  Continue to OTP <span>→</span>
+                </button>
+              </>
+            )}
+
+            {identityPhase === "otp" && (
+              <div className="dl-stage-card">
+                <div className="dl-stage-icon">✉</div>
+                <div className="success-badge">OTP SENT</div>
+                <h2>Confirm the one-time code</h2>
                 <p>
-                  DigiLocker / UIDAI mock service
+                  A demo OTP has been sent to the verified contact channel.
+                  Enter the 6-digit code to continue.
                 </p>
 
+                <div className="otp-destination">
+                  +91 ••••••5312 <span>Demo channel</span>
+                </div>
+
+                <div className="otp-input-row">
+                  <input
+                    className="otp-input"
+                    inputMode="numeric"
+                    maxLength="6"
+                    placeholder="123456"
+                    value={otp}
+                    onChange={(event) => setOtp(event.target.value.replace(/\D/g, ""))}
+                  />
+                </div>
+
+                <div className="demo-otp">Demo OTP: <strong>{DEMO_OTP}</strong></div>
+
+                <button className="primary-button full" onClick={verifyOtp}>
+                  Verify OTP <span>→</span>
+                </button>
               </div>
+            )}
 
-            </div>
-
-
-            <div className="warning">
-
-              <span>!</span>
-
-              <div>
-
-                <strong>
-                  Prototype Demo
-                </strong>
-
+            {identityPhase === "consent" && (
+              <div className="dl-stage-card consent-card">
+                <div className="dl-stage-icon">🔐</div>
+                <div className="success-badge">CONSENT REQUIRED</div>
+                <h2>Allow SmartRegTech to fetch your details</h2>
                 <p>
-                  Do not enter real Aadhaar details.
-                  Use the demo identity number below.
+                  This screen simulates the consent step you would see before
+                  an approved DigiLocker connector shares information.
                 </p>
 
+                <div className="consent-provider">
+                  <div className="consent-provider-icon">SR</div>
+                  <div>
+                    <strong>SmartRegTech</strong>
+                    <span>Registration &amp; Compliance Portal</span>
+                  </div>
+                  <span className="secure-label">SECURE</span>
+                </div>
+
+                <div className="consent-data-list">
+                  <strong>Information requested</strong>
+                  <span>✓ Full name</span>
+                  <span>✓ Date of birth</span>
+                  <span>✓ Gender &amp; address</span>
+                  <span>✓ Education / board details</span>
+                </div>
+
+                <label className="consent-checkbox">
+                  <input
+                    type="checkbox"
+                    checked={consentGiven}
+                    onChange={(event) => setConsentGiven(event.target.checked)}
+                  />
+                  <span>I consent to share these details for registration.</span>
+                </label>
+
+                <button className="primary-button full" onClick={approveDigiLockerConsent}>
+                  Continue &amp; Fetch Details <span>→</span>
+                </button>
               </div>
+            )}
 
-            </div>
+            {identityPhase === "fetching" && (
+              <div className="dl-stage-card fetching-card">
+                <div className="fetch-spinner"></div>
+                <div className="success-badge">{fetchStatus === "success" ? "FETCH COMPLETE" : "CONNECTING"}</div>
+                <h2>{fetchStatus === "success" ? "Verified profile received" : "Connecting to DigiLocker"}</h2>
+                <p>
+                  {fetchStatus === "success"
+                    ? "The simulated JSON payload has been received and validated."
+                    : "Establishing a secure sandbox connection and requesting the consented profile payload..."}
+                </p>
 
+                <div className="fetch-log">
+                  <div><span className="fetch-dot done"></span> Identity verified</div>
+                  <div><span className="fetch-dot done"></span> Consent recorded</div>
+                  <div><span className="fetch-dot"></span> Fetching profile JSON</div>
+                  <div><span className="fetch-dot"></span> Mapping fields to registration form</div>
+                </div>
+              </div>
+            )}
 
-            <div className="form-group">
-
-              <label>
-                AADHAAR / IDENTITY NUMBER
-              </label>
-
-              <input
-                type="text"
-                placeholder="XXXX XXXX XXXX"
-                maxLength="12"
-                value={formData.identity}
-                onChange={(event) =>
-                  updateField(
-                    "identity",
-                    event.target.value.replace(
-                      /\D/g,
-                      ""
-                    )
-                  )
-                }
-              />
-
-            </div>
-
-
-            <div className="demo-number">
-
-              <span>
-                Demo identity
-              </span>
-
-              <strong>
-                {DEMO_IDENTITY}
-              </strong>
-
-              <button
-                type="button"
-                onClick={() =>
-                  updateField(
-                    "identity",
-                    DEMO_IDENTITY
-                  )
-                }
-              >
-                Use demo
+            {identityPhase !== "fetching" && (
+              <button className="back-button" onClick={goHome}>
+                ← Back to Home
               </button>
-
-            </div>
-
-
-            <button
-              className="primary-button full"
-              onClick={verifyIdentity}
-            >
-              Verify Identity
-              <span>→</span>
-            </button>
-
-
-            <button
-              className="back-button"
-              onClick={goHome}
-            >
-              ← Back to Home
-            </button>
+            )}
 
           </div>
 
         </div>
 
-
         {showCopilot && (
-          <AICopilot
-            onClose={() =>
-              setShowCopilot(false)
-            }
-          />
+          <AICopilot onClose={() => setShowCopilot(false)} />
         )}
 
       </Page>
@@ -1431,18 +1562,8 @@ body {
 
 
           <p className="description center-text">
-
-            Retrieved securely through
-
-            <strong>
-              {" "}DigiLocker Verified
-              {" "}
-            </strong>
-
-            <span className="mock-label">
-              UIDAI MOCK
-            </span>
-
+            Retrieved from a simulated DigiLocker JSON payload
+            <span className="mock-label">SANDBOX CONNECTOR</span>
           </p>
 
 
@@ -1469,28 +1590,32 @@ body {
             </div>
 
 
+            <div className="verified-profile-top">
+              <div className="profile-photo">
+                {verifiedProfile?.photo || "RV"}
+              </div>
+              <div>
+                <span>DOCUMENT SOURCE</span>
+                <strong>{verifiedProfile?.source || "DigiLocker Sandbox"}</strong>
+                <small>Document: {verifiedProfile?.document || "Aadhaar Profile"}</small>
+              </div>
+            </div>
+
+            <div className="json-payload-preview">
+              <div>
+                <span>MOCK API RESPONSE</span>
+                <strong>200 OK • application/json</strong>
+              </div>
+              <code>{JSON.stringify(verifiedProfile || MOCK_DIGILOCKER_PROFILE, null, 2)}</code>
+            </div>
+
             <div className="verified-grid">
-
-              <VerifiedField
-                label="Full Name"
-                value="Rohan Verma"
-              />
-
-              <VerifiedField
-                label="Date of Birth"
-                value="15/06/2004"
-              />
-
-              <VerifiedField
-                label="Gender"
-                value="Male"
-              />
-
-              <VerifiedField
-                label="Address"
-                value="Chennai, Tamil Nadu"
-              />
-
+              <VerifiedField label="Full Name" value={verifiedProfile?.name || "—"} />
+              <VerifiedField label="Date of Birth" value={verifiedProfile?.dob || "—"} />
+              <VerifiedField label="Gender" value={verifiedProfile?.gender || "—"} />
+              <VerifiedField label="Address" value={verifiedProfile?.address || "—"} />
+              <VerifiedField label="Board" value={verifiedProfile?.board || "—"} />
+              <VerifiedField label="Qualification" value={verifiedProfile?.qualification || "—"} />
             </div>
 
           </div>
@@ -1572,7 +1697,7 @@ body {
               <div>
 
                 <strong>
-                  Rohan Verma
+                  {verifiedProfile?.name || "Verified Applicant"}
                 </strong>
 
                 <span>
@@ -1770,7 +1895,7 @@ body {
 
               <ReviewRow
                 label="Applicant Name"
-                value="Rohan Verma"
+                value={verifiedProfile?.name || "Verified Applicant"}
                 verified
               />
 
@@ -1782,7 +1907,7 @@ body {
 
               <ReviewRow
                 label="Date of Birth"
-                value="15/06/2004"
+                value={verifiedProfile?.dob || "—"}
                 verified
               />
 
@@ -1946,7 +2071,7 @@ body {
                 </span>
 
                 <strong>
-                  Rohan Verma
+                  {verifiedProfile?.name || "Verified Applicant"}
                 </strong>
 
               </div>
@@ -2142,7 +2267,7 @@ body {
 
             <div>
               <span>Applicant</span>
-              <strong>Rohan Verma</strong>
+              <strong>{verifiedProfile?.name || "Verified Applicant"}</strong>
             </div>
 
             <div>
