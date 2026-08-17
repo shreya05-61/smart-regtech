@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>DigiLocker Sandbox</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f5f7fb;
+      color: #172033;
+    }
+
+    /* =========================
+       TOP BAR
+       ========================= */
+
+    .topbar {
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 45px;
+      background: #ffffff;
+      border-bottom: 1px solid #e4e7ee;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo {
+      width: 42px;
+      height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      background: #673de6;
+      color: white;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .brand-text strong {
+      display: block;
+      color: #40209b;
+      font-size: 20px;
+    }
+
+    .brand-text span {
+      display: block;
+      margin-top: 2px;
+      color: #7b8494;
+      font-size: 10px;
+    }
+
+    .sandbox {
+      padding: 7px 13px;
+      border-radius: 20px;
+      background: #fff4dc;
+      color: #9a6500;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1px;
+    }
+
+    /* =========================
+       MAIN
+       ========================= */
+
+    .page {
+      width: min(680px, calc(100% - 30px));
+      margin: 45px auto;
+    }
+
+    .security {
+      text-align: center;
+      margin-bottom: 22px;
+    }
+
+    .lock {
+      width: 60px;
+      height: 60px;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: #eee8ff;
+      font-size: 27px;
+    }
+
+    .security h1 {
+      margin: 17px 0 7px;
+      font-size: 27px;
+      color: #172033;
+    }
+
+    .security p {
+      margin: 0;
+      color: #6c7587;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    /* =========================
+       CARD
+       ========================= */
+
+    .card {
+      padding: 30px;
+      background: #ffffff;
+      border: 1px solid #e1e4eb;
+      border-radius: 18px;
+      box-shadow: 0 20px 50px rgba(40, 30, 80, 0.10);
+    }
+
+    .request-label {
+      margin-bottom: 14px;
+      color: #6740d5;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1px;
+    }
+
+    .application {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 17px;
+      border: 1px solid #e3e5ec;
+      border-radius: 13px;
+      background: #faf9ff;
+    }
+
+    .application-logo {
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      background: #7044df;
+      color: white;
+      font-weight: 800;
+    }
+
+    .application-info strong {
+      display: block;
+      color: #1c2940;
+      font-size: 16px;
+    }
+
+    .application-info span {
+      display: block;
+      margin-top: 4px;
+      color: #7b8494;
+      font-size: 11px;
+    }
+
+    .secure {
+      margin-left: auto;
+      color: #16804c;
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    /* =========================
+       REQUEST MESSAGE
+       ========================= */
+
+    .request {
+      margin-top: 25px;
+    }
+
+    .request h2 {
+      margin: 0;
+      font-size: 19px;
+      color: #1b2940;
+    }
+
+    .request p {
+      margin: 9px 0 0;
+      color: #707b8d;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    /* =========================
+       INFORMATION
+       ========================= */
+
+    .information {
+      margin-top: 23px;
+      padding: 19px;
+      border-radius: 13px;
+      background: #f7f5ff;
+    }
+
+    .information-title {
+      margin-bottom: 15px;
+      color: #5932c9;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .information-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 13px;
+    }
+
+    .information-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #4e596c;
+      font-size: 12px;
+    }
+
+    .check {
+      color: #16804c;
+      font-weight: 900;
+    }
+
+    /* =========================
+       CONSENT
+       ========================= */
+
+    .consent {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-top: 23px;
+      color: #4d586c;
+      font-size: 12px;
+      line-height: 1.6;
+      cursor: pointer;
+    }
+
+    .consent input {
+      width: 17px;
+      height: 17px;
+      margin-top: 1px;
+      cursor: pointer;
+      accent-color: #673de6;
+    }
+
+    /* =========================
+       BUTTONS
+       ========================= */
+
+    .allow-button {
+      width: 100%;
+      margin-top: 23px;
+      padding: 14px;
+      border: none;
+      border-radius: 9px;
+      background: #673de6;
+      color: white;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .allow-button:hover {
+      background: #5630c9;
+    }
+
+    .allow-button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .cancel-button {
+      width: 100%;
+      margin-top: 10px;
+      padding: 12px;
+      border: 1px solid #d9dce4;
+      border-radius: 9px;
+      background: white;
+      color: #657084;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* =========================
+       FOOTER
+       ========================= */
+
+    .footer {
+      margin-top: 20px;
+      text-align: center;
+      color: #8a92a1;
+      font-size: 10px;
+      line-height: 1.7;
+    }
+
+    /* =========================
+       LOADING
+       ========================= */
+
+    .loading {
+      padding: 30px 0;
+      text-align: center;
+    }
+
+    .spinner {
+      width: 42px;
+      height: 42px;
+      margin: 0 auto 17px;
+      border: 4px solid #e7e0ff;
+      border-top-color: #673de6;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* =========================
+       SUCCESS
+       ========================= */
+
+    .success {
+      padding: 25px 0;
+      text-align: center;
+    }
+
+    .success-icon {
+      width: 60px;
+      height: 60px;
+      margin: 0 auto 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: #e6f8ee;
+      color: #16804c;
+      font-size: 28px;
+    }
+
+    .success h2 {
+      margin: 0;
+      color: #172033;
+      font-size: 21px;
+    }
+
+    .success p {
+      margin-top: 9px;
+      color: #6c7587;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    /* =========================
+       MOBILE
+       ========================= */
+
+    @media (max-width: 600px) {
+
+      .topbar {
+        padding: 0 18px;
+      }
+
+      .page {
+        margin: 25px auto;
+      }
+
+      .card {
+        padding: 20px;
+      }
+
+      .information-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .sandbox {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- TOP BAR -->
+
+  <header class="topbar">
+
+    <div class="brand">
+
+      <div class="logo">
+        DL
+      </div>
+
+      <div class="brand-text">
+        <strong>DigiLocker</strong>
+        <span>
+          Document Wallet to Empower Citizens
+        </span>
+      </div>
+
+    </div>
+
+    <div class="sandbox">
+      SANDBOX
+    </div>
+
+  </header>
+
+
+  <!-- MAIN -->
+
+  <main class="page">
+
+    <div class="security">
+
+      <div class="lock">
+        🔐
+      </div>
+
+      <h1>
+        Secure Authorization
+      </h1>
+
+      <p>
+        Review the information requested by the application
+        before continuing.
+      </p>
+
+    </div>
+
+
+    <div class="card" id="card">
+
+      <div class="request-label">
+        APPLICATION REQUESTING ACCESS
+      </div>
+
+
+      <!-- APPLICATION -->
+
+      <div class="application">
+
+        <div class="application-logo">
+          SR
+        </div>
+
+        <div class="application-info">
+
+          <strong>
+            SmartRegTech
+          </strong>
+
+          <span>
+            Digital Registration & Compliance Portal
+          </span>
+
+        </div>
+
+        <div class="secure">
+          ✓ SECURE
+        </div>
+
+      </div>
+
+
+      <!-- REQUEST -->
+
+      <div class="request">
+
+        <h2>
+          Allow SmartRegTech to access your information?
+        </h2>
+
+        <p>
+          SmartRegTech is requesting permission to retrieve
+          verified information for completing your registration.
+        </p>
+
+      </div>
+
+
+      <!-- INFORMATION -->
+
+      <div class="information">
+
+        <div class="information-title">
+          INFORMATION REQUESTED
+        </div>
+
+        <div class="information-grid">
+
+          <div class="information-item">
+            <span class="check">✓</span>
+            Full Name
+          </div>
+
+          <div class="information-item">
+            <span class="check">✓</span>
+            Date of Birth
+          </div>
+
+          <div class="information-item">
+            <span class="check">✓</span>
+            Gender
+          </div>
+
+          <div class="information-item">
+            <span class="check">✓</span>
+            Address
+          </div>
+
+          <div class="information-item">
+            <span class="check">✓</span>
+            Education Details
+          </div>
+
+          <div class="information-item">
+            <span class="check">✓</span>
+            Board / Qualification
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- CONSENT -->
+
+      <label class="consent">
+
+        <input
+          type="checkbox"
+          id="consent"
+        >
+
+        <span>
+          I authorize SmartRegTech to access the
+          requested information for registration purposes.
+        </span>
+
+      </label>
+
+
+      <!-- BUTTON -->
+
+      <button
+        class="allow-button"
+        id="allowButton"
+        disabled
+      >
+        Allow & Continue →
+      </button>
+
+
+      <button
+        class="cancel-button"
+        onclick="window.close()"
+      >
+        Cancel
+      </button>
+
+
+      <div class="footer">
+        🔒 Secure sandbox environment<br>
+        Prototype only — no real DigiLocker account
+        or government documents are accessed.
+      </div>
+
+    </div>
+
+  </main>
+
+
+  <script>
+
+    const consent =
+      document.getElementById("consent");
+
+    const allowButton =
+      document.getElementById("allowButton");
+
+    const card =
+      document.getElementById("card");
+
+
+    /*
+      ENABLE BUTTON AFTER CONSENT
+    */
+
+    consent.addEventListener(
+      "change",
+      function () {
+
+        allowButton.disabled =
+          !consent.checked;
+
+      }
+    );
+
+
+    /*
+      ALLOW & CONTINUE
+    */
+
+    allowButton.addEventListener(
+      "click",
+      function () {
+
+        allowButton.disabled = true;
+
+
+        card.innerHTML = `
+
+          <div class="loading">
+
+            <div class="spinner"></div>
+
+            <h2>
+              Authorizing...
+            </h2>
+
+            <p>
+              Securely processing your consent
+              and retrieving your verified information.
+            </p>
+
+          </div>
+
+        `;
+
+
+        /*
+          SIMULATE DIGILOCKER RESPONSE
+        */
+
+        setTimeout(
+          function () {
+
+            card.innerHTML = `
+
+              <div class="success">
+
+                <div class="success-icon">
+                  ✓
+                </div>
+
+                <h2>
+                  Authorization Successful
+                </h2>
+
+                <p>
+                  Your consent has been recorded
+                  successfully.
+                </p>
+
+                <p>
+                  Returning to SmartRegTech...
+                </p>
+
+              </div>
+
+            `;
+
+
+            /*
+              SEND SUCCESS BACK TO
+              THE ORIGINAL SMARTREGTECH WINDOW
+            */
+
+            if (
+              window.opener &&
+              !window.opener.closed
+            ) {
+
+              window.opener.postMessage(
+                {
+                  type: "DIGILOCKER_APPROVED"
+                },
+                window.location.origin
+              );
+
+            }
+
+
+            /*
+              CLOSE THIS TAB
+            */
+
+            setTimeout(
+              function () {
+
+                window.close();
+
+              },
+              1200
+            );
+
+          },
+          1800
+        );
+
+      }
+    );
+
+  </script>
+
+</body>
+</html>

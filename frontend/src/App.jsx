@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./App.css";
 import AdminAnalytics from "./AdminAnalytics";
+import "./SmartRegTech_OTP_Popup.css";
+import "./new_digilocker.css";
 
 const API_URL = "https://smart-regtech.onrender.com";
 
@@ -341,6 +343,19 @@ function App() {
 
   const [otp, setOtp] = useState("");
 
+  const otpInputRefs = useRef([]);
+  const [otpSeconds, setOtpSeconds] = useState(30);
+
+  useEffect(() => {
+    if (identityPhase !== "otp" || otpSeconds <= 0) return;
+
+    const timer = setInterval(() => {
+      setOtpSeconds((seconds) => Math.max(0, seconds - 1));
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [identityPhase, otpSeconds]);
+
   const [consentGiven, setConsentGiven] =
     useState(false);
 
@@ -349,6 +364,32 @@ function App() {
 
   const [verifiedProfile, setVerifiedProfile] =
     useState(null);
+
+  // Receive the approval message from the separate DigiLocker sandbox window.
+  useEffect(() => {
+    const handleDigiLockerMessage = async (event) => {
+      if (event.origin !== window.location.origin) return;
+      if (event.data?.type !== "DIGILOCKER_APPROVED") return;
+
+      setIdentityPhase("fetching");
+      setFetchStatus("connecting");
+
+      try {
+        const profile = await fetchMockDigiLockerProfile();
+        setFetchStatus("success");
+        setVerifiedProfile(profile);
+        setTimeout(() => setStep("verified"), 700);
+      } catch (error) {
+        console.error(error);
+        setFetchStatus("error");
+        setIdentityPhase("otp");
+        alert("The DigiLocker sandbox could not retrieve the profile.");
+      }
+    };
+
+    window.addEventListener("message", handleDigiLockerMessage);
+    return () => window.removeEventListener("message", handleDigiLockerMessage);
+  }, []);
 
   const [formData, setFormData] = useState({
     identity: "",
@@ -411,7 +452,12 @@ function App() {
     }
 
     setOtp("");
+    setOtpSeconds(30);
     setIdentityPhase("otp");
+
+    setTimeout(() => {
+      otpInputRefs.current[0]?.focus();
+    }, 100);
   };
 
 
@@ -421,7 +467,108 @@ function App() {
       return;
     }
 
-    setIdentityPhase("consent");
+    // Open the DigiLocker sandbox directly from the user click so the
+    // browser treats it as an allowed popup. The sandbox is rendered
+    // inside this new window, so it does not depend on Vite public-file
+    // routing or a separate React route.
+    const digiLockerWindow = window.open(
+      "",
+      "_blank",
+      "width=560,height=820,resizable=yes,scrollbars=yes"
+    );
+
+    if (!digiLockerWindow) {
+      alert(
+        "The DigiLocker Sandbox window was blocked. Please allow pop-ups for this website and try again."
+      );
+      return;
+    }
+
+    const digiLockerHTML = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>DigiLocker Sandbox</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;background:#f5f7fb;color:#172033;font-family:Arial,Helvetica,sans-serif}
+  .top{height:70px;background:#fff;border-bottom:1px solid #e2e6ee;display:flex;align-items:center;justify-content:space-between;padding:0 24px}
+  .brand{display:flex;align-items:center;gap:11px}
+  .logo{width:42px;height:42px;border-radius:10px;background:#673de6;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800}
+  .brand strong{display:block;color:#42229e;font-size:19px}
+  .brand span{display:block;color:#7a8494;font-size:9px;margin-top:2px}
+  .badge{padding:7px 11px;border-radius:20px;background:#fff3dc;color:#986300;font-size:9px;font-weight:800;letter-spacing:1px}
+  .page{width:calc(100% - 30px);max-width:620px;margin:30px auto}
+  .hero{text-align:center;margin-bottom:20px}
+  .lock{width:58px;height:58px;margin:auto;border-radius:50%;background:#eee8ff;display:flex;align-items:center;justify-content:center;font-size:26px}
+  .hero h1{margin:14px 0 6px;font-size:24px}
+  .hero p{margin:0;color:#6e7889;font-size:12px;line-height:1.6}
+  .card{background:#fff;border:1px solid #e0e4eb;border-radius:17px;padding:25px;box-shadow:0 15px 45px rgba(50,35,100,.10)}
+  .label{color:#6740d5;font-size:10px;font-weight:800;letter-spacing:1px;margin-bottom:12px}
+  .app{display:flex;align-items:center;gap:12px;padding:15px;border:1px solid #e2e5ec;border-radius:12px;background:#faf9ff}
+  .appLogo{width:44px;height:44px;border-radius:11px;background:#7044df;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800}
+  .app strong{display:block;font-size:15px}
+  .app small{display:block;margin-top:3px;color:#7c8492;font-size:10px}
+  .secure{margin-left:auto;color:#16804c;font-size:9px;font-weight:800}
+  .request{margin-top:22px}
+  .request h2{margin:0;font-size:18px}
+  .request p{margin:8px 0 0;color:#6f7889;font-size:12px;line-height:1.6}
+  .info{margin-top:20px;padding:17px;border-radius:12px;background:#f7f5ff}
+  .infoTitle{color:#5932c9;font-size:11px;font-weight:800;margin-bottom:13px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+  .item{font-size:11px;color:#4f596b}.item::before{content:'✓';color:#16804c;font-weight:900;margin-right:7px}
+  .consent{display:flex;gap:9px;align-items:flex-start;margin-top:21px;color:#4d586b;font-size:11px;line-height:1.6;cursor:pointer}.consent input{width:16px;height:16px;accent-color:#673de6}
+  .allow,.cancel{width:100%;padding:13px;border-radius:9px;font-weight:800;font-size:12px;cursor:pointer}
+  .allow{margin-top:21px;border:0;background:#673de6;color:#fff}.allow:disabled{opacity:.45;cursor:not-allowed}
+  .cancel{margin-top:9px;border:1px solid #d9dce4;background:#fff;color:#667084}
+  .footer{text-align:center;margin-top:18px;color:#89919f;font-size:9px;line-height:1.7}
+  .loading,.success{text-align:center;padding:35px 0}.spinner{width:40px;height:40px;margin:0 auto 15px;border:4px solid #e8e1ff;border-top-color:#673de6;border-radius:50%;animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+  .successIcon{width:58px;height:58px;margin:0 auto 14px;border-radius:50%;background:#e6f8ee;color:#16804c;display:flex;align-items:center;justify-content:center;font-size:27px}.success h2{margin:0;font-size:20px}.success p{color:#6c7587;font-size:12px;line-height:1.6}
+  @media(max-width:600px){.top{padding:0 15px}.badge{display:none}.card{padding:20px}.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand"><div class="logo">DL</div><div><strong>DigiLocker</strong><span>Document Wallet to Empower Citizens</span></div></div>
+  <div class="badge">SANDBOX</div>
+</header>
+<main class="page">
+  <div class="hero"><div class="lock">🔐</div><h1>Secure Authorization</h1><p>Review the information requested by SmartRegTech before continuing.</p></div>
+  <div class="card" id="card">
+    <div class="label">APPLICATION REQUESTING ACCESS</div>
+    <div class="app"><div class="appLogo">SR</div><div><strong>SmartRegTech</strong><small>Digital Registration &amp; Compliance Portal</small></div><div class="secure">✓ SECURE</div></div>
+    <div class="request"><h2>Allow SmartRegTech to access your information?</h2><p>SmartRegTech is requesting permission to retrieve verified information for completing your registration.</p></div>
+    <div class="info"><div class="infoTitle">INFORMATION REQUESTED</div><div class="grid"><div class="item">Full Name</div><div class="item">Date of Birth</div><div class="item">Gender</div><div class="item">Address</div><div class="item">Education Details</div><div class="item">Board / Qualification</div></div></div>
+    <label class="consent"><input type="checkbox" id="consent" /><span>I authorize SmartRegTech to access the requested information for registration purposes.</span></label>
+    <button class="allow" id="allow" disabled>Allow &amp; Continue →</button>
+    <button class="cancel" onclick="window.close()">Cancel</button>
+    <div class="footer">🔒 Secure sandbox environment<br/>Prototype only — no real DigiLocker account or government documents are accessed.</div>
+  </div>
+</main>
+<script>
+const consent=document.getElementById('consent');
+const allow=document.getElementById('allow');
+const card=document.getElementById('card');
+consent.addEventListener('change',()=>{allow.disabled=!consent.checked});
+allow.addEventListener('click',()=>{
+  allow.disabled=true;
+  card.innerHTML='<div class="loading"><div class="spinner"></div><h2>Authorizing...</h2><p>Securely processing your consent and retrieving your verified information.</p></div>';
+  setTimeout(()=>{
+    card.innerHTML='<div class="success"><div class="successIcon">✓</div><h2>Authorization Successful</h2><p>Your consent has been recorded successfully.</p><p>Returning to SmartRegTech...</p></div>';
+    if(window.opener&&!window.opener.closed){window.opener.postMessage({type:'DIGILOCKER_APPROVED'},window.location.origin);}
+    setTimeout(()=>window.close(),1200);
+  },1800);
+});
+</script>
+</body>
+</html>`;
+
+    digiLockerWindow.document.open();
+    digiLockerWindow.document.write(digiLockerHTML);
+    digiLockerWindow.document.close();
+    digiLockerWindow.focus();
   };
 
 
@@ -1412,35 +1559,197 @@ body {
             )}
 
             {identityPhase === "otp" && (
-              <div className="dl-stage-card">
-                <div className="dl-stage-icon">✉</div>
-                <div className="success-badge">OTP SENT</div>
-                <h2>Confirm the one-time code</h2>
-                <p>
-                  A demo OTP has been sent to the verified contact channel.
-                  Enter the 6-digit code to continue.
+              <>
+                <div className="otp-background-card">
+                  <div className="panel-heading">
+                    <div className="panel-icon">✉</div>
+                    <div>
+                      <h2>Verification required</h2>
+                      <p>Enter the one-time code to continue.</p>
+                    </div>
+                  </div>
+
+                  <div className="otp-window-hint">
+                    A secure OTP verification window has been opened.
+                  </div>
+                </div>
+
+                <div className="otp-modal-overlay">
+                  <div className="otp-modal" role="dialog" aria-modal="true" aria-labelledby="otp-modal-title">
+                    <button
+                      type="button"
+                      className="otp-modal-close"
+                      aria-label="Cancel OTP verification"
+                      onClick={() => {
+                        setOtp("");
+                        setIdentityPhase("aadhaar");
+                      }}
+                    >
+                      ×
+                    </button>
+
+                    <div className="otp-modal-brand">
+                      <div className="otp-modal-logo">SR</div>
+                      <div>
+                        <strong>SmartRegTech</strong>
+                        <span>Secure identity verification</span>
+                      </div>
+                    </div>
+
+                    <div className="otp-modal-icon">✉</div>
+
+                    <div className="success-badge">OTP SENT</div>
+
+                    <h2 id="otp-modal-title">Verify your identity</h2>
+
+                    <p className="otp-modal-description">
+                      Enter the 6-digit verification code sent to your
+                      registered mobile number.
+                    </p>
+
+                    <div className="otp-destination-modal">
+                      <span>OTP sent to</span>
+                      <strong>+91 ••••••5312</strong>
+                      <small>Demo verification channel</small>
+                    </div>
+
+                    <div className="otp-boxes" onClick={() => otpInputRefs.current[0]?.focus()}>
+                      {Array.from({ length: 6 }).map((_, index) => (
+                        <input
+                          key={index}
+                          ref={(element) => {
+                            otpInputRefs.current[index] = element;
+                          }}
+                          className="otp-box"
+                          inputMode="numeric"
+                          maxLength={1}
+                          value={otp[index] || ""}
+                          aria-label={`OTP digit ${index + 1}`}
+                          onChange={(event) => {
+                            const digit = event.target.value.replace(/\D/g, "").slice(-1);
+
+                            const digits = otp.split("");
+                            digits[index] = digit;
+                            const nextOtp = digits.join("").slice(0, 6);
+
+                            setOtp(nextOtp);
+
+                            if (digit && index < 5) {
+                              otpInputRefs.current[index + 1]?.focus();
+                            }
+                          }}
+                          onKeyDown={(event) => {
+                            if (
+                              event.key === "Backspace" &&
+                              !otp[index] &&
+                              index > 0
+                            ) {
+                              otpInputRefs.current[index - 1]?.focus();
+                            }
+
+                            if (event.key === "ArrowLeft" && index > 0) {
+                              otpInputRefs.current[index - 1]?.focus();
+                            }
+
+                            if (event.key === "ArrowRight" && index < 5) {
+                              otpInputRefs.current[index + 1]?.focus();
+                            }
+                          }}
+                        />
+                      ))}
+                    </div>
+
+                    <div className="demo-otp-modal">
+                      Demo OTP: <strong>{DEMO_OTP}</strong>
+                    </div>
+
+                    <div className="otp-resend-row">
+                      {otpSeconds > 0 ? (
+                        <span>Resend code in {otpSeconds}s</span>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setOtp("");
+                            setOtpSeconds(30);
+                            otpInputRefs.current[0]?.focus();
+                          }}
+                        >
+                          Resend OTP
+                        </button>
+                      )}
+                    </div>
+
+                    <button
+                      className="primary-button full otp-verify-button"
+                      onClick={verifyOtp}
+                    >
+                      Verify OTP <span>→</span>
+                    </button>
+
+                    <div className="otp-security-note">
+                      🔒 Demo sandbox · No real OTP is sent
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {identityPhase === "redirect" && (
+              <div className="digilocker-redirect-card">
+                <div className="redirect-connection-line">
+                  <div className="redirect-node smartregtech-node">
+                    SR
+                  </div>
+                  <div className="redirect-line">
+                    <span />
+                  </div>
+                  <div className="redirect-node digilocker-node">
+                    DL
+                  </div>
+                </div>
+
+                <div className="redirect-badge">
+                  IDENTITY VERIFIED
+                </div>
+
+                <div className="redirect-icon">↗</div>
+
+                <h2>Continue to DigiLocker</h2>
+
+                <p className="redirect-description">
+                  Your identity has been verified. You will now be
+                  redirected to the DigiLocker sandbox to give consent
+                  for retrieving your verified registration details.
                 </p>
 
-                <div className="otp-destination">
-                  +91 ••••••5312 <span>Demo channel</span>
+                <div className="redirect-flow">
+                  <div>
+                    <span className="redirect-check">✓</span>
+                    <span>Identity verified</span>
+                  </div>
+                  <div>
+                    <span className="redirect-check">✓</span>
+                    <span>Secure connection ready</span>
+                  </div>
+                  <div>
+                    <span className="redirect-next">3</span>
+                    <span>DigiLocker consent</span>
+                  </div>
                 </div>
 
-                <div className="otp-input-row">
-                  <input
-                    className="otp-input"
-                    inputMode="numeric"
-                    maxLength="6"
-                    placeholder="123456"
-                    value={otp}
-                    onChange={(event) => setOtp(event.target.value.replace(/\D/g, ""))}
-                  />
+                <div className="redirect-loading">
+                  <span className="redirect-spinner"></span>
+                  <span>Connecting securely to DigiLocker Sandbox...</span>
                 </div>
 
-                <div className="demo-otp">Demo OTP: <strong>{DEMO_OTP}</strong></div>
-
-                <button className="primary-button full" onClick={verifyOtp}>
-                  Verify OTP <span>→</span>
-                </button>
+                <div className="redirect-sandbox-note">
+                  🧪 DigiLocker Sandbox / Demo
+                  <small>
+                    This prototype does not redirect to the real
+                    DigiLocker service or access real Aadhaar data.
+                  </small>
+                </div>
               </div>
             )}
 

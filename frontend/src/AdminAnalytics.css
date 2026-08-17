@@ -819,3 +819,292 @@ tbody tr:hover {
   }
 
 }
+
+/* =========================================================
+   SPACING FIXES - KPI / LEGEND / PROGRESS ANALYTICS
+   ========================================================= */
+
+/* KPI card content */
+.kpi-content {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.kpi-content > span {
+  display: block;
+  margin-bottom: 6px;
+  color: #8190af;
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+.kpi-content > strong {
+  display: inline-block;
+  margin: 0 8px 0 0;
+  color: #ffffff;
+  font-size: 27px;
+  line-height: 1.1;
+  vertical-align: baseline;
+}
+
+.kpi-content > small {
+  display: inline-block;
+  margin: 0;
+  color: #9aa7c2;
+  font-size: 12px;
+  line-height: 1.3;
+  vertical-align: baseline;
+}
+
+/* Application Status legend */
+.status-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.legend-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.legend-row > div {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  column-gap: 7px;
+  row-gap: 2px;
+}
+
+.legend-row strong {
+  margin: 0;
+  color: #ffffff;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.legend-row small {
+  margin: 0;
+  color: #9aa7c2;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+/* Verification & Payment rows */
+.progress-list {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  margin-top: 22px;
+}
+
+.progress-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+}
+
+.progress-icon {
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: rgba(103, 80, 190, 0.16);
+  font-size: 16px;
+}
+
+.progress-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.progress-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 9px;
+  line-height: 1.4;
+}
+
+.progress-heading strong {
+  margin: 0;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.progress-heading span {
+  flex-shrink: 0;
+  margin-left: 8px;
+  color: #aeb9cf;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+/* Keep progress bars separated from their labels */
+.progress-main .progress-track {
+  margin-top: 0;
+}
+
+/* Program rows */
+.program-row {
+  display: grid;
+  grid-template-columns: minmax(150px, 1fr) minmax(160px, 2fr) 35px;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.program-row > strong {
+  text-align: right;
+  color: #ffffff;
+}
+
+/* Mobile spacing */
+@media (max-width: 520px) {
+  .kpi-content > strong {
+    margin-right: 6px;
+  }
+
+  .progress-heading {
+    flex-wrap: wrap;
+    gap: 4px 10px;
+  }
+
+  .progress-heading span {
+    margin-left: 0;
+  }
+
+  .program-row {
+    grid-template-columns: 1fr 80px 25px;
+    gap: 8px;
+  }
+}
+/* =========================================================
+   APPLICATION STATUS DONUT
+   ========================================================= */
+
+.status-content {
+  display: flex;
+  align-items: center;
+  gap: 45px;
+  min-height: 230px;
+  margin-top: 25px;
+}
+
+.status-donut {
+  position: relative;
+  width: 170px;
+  height: 170px;
+  min-width: 170px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Creates the hole in the middle of the donut */
+.status-donut::after {
+  content: "";
+  position: absolute;
+  width: 112px;
+  height: 112px;
+  border-radius: 50%;
+  background: #101a2b;
+}
+
+.donut-center {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.donut-center strong {
+  color: #ffffff;
+  font-size: 30px;
+  line-height: 1.1;
+}
+
+.donut-center span {
+  margin-top: 5px;
+  color: #7f8eac;
+  font-size: 12px;
+}
+
+/* Legend */
+.status-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  flex: 1;
+}
+
+.legend-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.legend-row > div {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.legend-row strong {
+  color: #ffffff;
+  font-size: 14px;
+}
+
+.legend-row small {
+  color: #9aa7c2;
+  font-size: 12px;
+}
+
+.legend-color {
+  width: 10px;
+  height: 10px;
+  min-width: 10px;
+  border-radius: 50%;
+}
+
+.legend-color.purple {
+  background: #8b5cf6;
+}
+
+.legend-color.orange {
+  background: #f59e0b;
+}
+
+
+/* Mobile */
+@media (max-width: 650px) {
+  .status-content {
+    flex-direction: column;
+    gap: 25px;
+    justify-content: center;
+  }
+
+  .status-donut {
+    width: 150px;
+    height: 150px;
+    min-width: 150px;
+  }
+
+  .status-donut::after {
+    width: 98px;
+    height: 98px;
+  }
+}
