@@ -3,6 +3,7 @@ import "./App.css";
 import AdminAnalytics from "./AdminAnalytics";
 import "./SmartRegTech_OTP_Popup.css";
 import "./new_digilocker.css";
+import "./SmartRegTech_mobile_responsive.css";
 
 const API_URL = "https://smart-regtech.onrender.com";
 
