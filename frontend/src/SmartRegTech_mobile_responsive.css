@@ -1,0 +1,870 @@
+
+/* ============================================================
+   SMARTREGTECH — MOBILE RESPONSIVE OVERRIDES
+   Add/import this AFTER your normal App.css/AdminAnalytics.css.
+   It only changes layout at tablet/mobile widths.
+   ============================================================ */
+
+html,
+body,
+#root {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
+}
+
+/* ---------- TABLET ---------- */
+
+@media (max-width: 900px) {
+  .navbar {
+    padding-left: 22px !important;
+    padding-right: 22px !important;
+  }
+
+  .hero-section,
+  .form-layout,
+  .payment-layout,
+  .analytics-grid,
+  .charts-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .hero-section {
+    gap: 35px !important;
+  }
+
+  .hero-visual {
+    min-height: 360px !important;
+  }
+
+  .feature-grid,
+  .workflow-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .stats-grid,
+  .kpi-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .admin-header,
+  .admin-heading,
+  .applications-header,
+  .admin-heading-actions {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+
+  .admin-heading-actions,
+  .export-button,
+  .refresh-button {
+    width: 100% !important;
+  }
+
+  .admin-heading-actions button {
+    width: 100% !important;
+  }
+
+  .payment-layout {
+    gap: 16px !important;
+  }
+}
+
+/* ---------- MOBILE ---------- */
+
+@media (max-width: 600px) {
+
+  /* Global mobile safety */
+  html,
+  body,
+  #root {
+    width: 100%;
+    min-width: 0;
+    overflow-x: hidden !important;
+  }
+
+  body {
+    font-size: 14px;
+  }
+
+  /* ==========================================================
+     NAVBAR
+     ========================================================== */
+
+  .navbar {
+    min-height: 70px !important;
+    height: auto !important;
+    padding: 12px 15px !important;
+    gap: 10px !important;
+  }
+
+  .navbar > div:first-child,
+  .brand {
+    min-width: 0 !important;
+  }
+
+  .navbar h2,
+  .brand h2 {
+    font-size: 17px !important;
+    white-space: nowrap;
+  }
+
+  .navbar p,
+  .brand p,
+  .secure-nav {
+    display: none !important;
+  }
+
+  .nav-buttons {
+    gap: 6px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .nav-buttons button,
+  .nav-button {
+    padding: 8px 9px !important;
+    min-height: 36px !important;
+    border-radius: 9px !important;
+    font-size: 10px !important;
+    white-space: nowrap !important;
+  }
+
+  /* Keep the buttons usable without overflowing */
+  .nav-buttons button span,
+  .nav-button span {
+    display: none;
+  }
+
+  /* ==========================================================
+     HOME
+     ========================================================== */
+
+  .home-main {
+    width: 100% !important;
+    padding: 28px 14px 55px !important;
+  }
+
+  .hero-section {
+    min-height: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 30px !important;
+    align-items: stretch !important;
+  }
+
+  .hero-content {
+    width: 100% !important;
+  }
+
+  .hero-badge,
+  .badge {
+    max-width: 100% !important;
+    padding: 7px 11px !important;
+    font-size: 10px !important;
+    line-height: 1.4 !important;
+  }
+
+  .hero-content h1 {
+    margin-top: 18px !important;
+    font-size: clamp(40px, 12vw, 56px) !important;
+    line-height: 1 !important;
+    letter-spacing: -2.5px !important;
+    overflow-wrap: anywhere;
+  }
+
+  .hero h1 {
+    font-size: clamp(38px, 11vw, 52px) !important;
+    line-height: 1.02 !important;
+    letter-spacing: -2px !important;
+  }
+
+  .hero-description,
+  .hero-text {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-top: 18px !important;
+    font-size: 14px !important;
+    line-height: 1.65 !important;
+  }
+
+  .hero-actions {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    width: 100% !important;
+    gap: 10px !important;
+  }
+
+  .hero-actions > *,
+  .primary-button,
+  .outline-button {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .primary-button {
+    min-width: 0 !important;
+    min-height: 48px !important;
+    padding: 13px 16px !important;
+    font-size: 13px !important;
+  }
+
+  .trust-row {
+    flex-wrap: wrap !important;
+    gap: 10px 14px !important;
+    font-size: 10px !important;
+  }
+
+  .hero-visual {
+    min-height: auto !important;
+    width: 100% !important;
+  }
+
+  .registration-preview {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 18px !important;
+    border-radius: 16px !important;
+  }
+
+  .preview-top,
+  .preview-lines > div {
+    gap: 10px !important;
+  }
+
+  .preview-lines > div {
+    align-items: flex-start !important;
+  }
+
+  .preview-lines strong {
+    max-width: 58% !important;
+    text-align: right;
+    overflow-wrap: anywhere;
+  }
+
+  .feature-section,
+  .how-section {
+    margin-top: 55px !important;
+  }
+
+  .feature-grid,
+  .workflow-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+    margin-top: 22px !important;
+  }
+
+  .feature-card,
+  .workflow-step {
+    min-height: auto !important;
+    padding: 18px !important;
+  }
+
+  .section-heading h2 {
+    font-size: 25px !important;
+  }
+
+  .home-footer {
+    flex-direction: column !important;
+    gap: 8px !important;
+    padding: 18px 15px !important;
+    text-align: center !important;
+  }
+
+  /* ==========================================================
+     PROGRESS / STEPS
+     ========================================================== */
+
+  .progress-container {
+    width: 100% !important;
+    padding: 18px 10px 8px !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .progress-steps {
+    min-width: 470px !important;
+  }
+
+  .progress-step {
+    font-size: 9px !important;
+  }
+
+  .progress-circle {
+    width: 32px !important;
+    height: 32px !important;
+  }
+
+  /* ==========================================================
+     INNER PAGES
+     ========================================================== */
+
+  .page-container {
+    width: 100% !important;
+    min-height: auto !important;
+    padding: 22px 12px 45px !important;
+  }
+
+  .content-card {
+    width: 100% !important;
+    min-height: 0 !important;
+    padding: 22px 16px !important;
+    border-radius: 18px !important;
+  }
+
+  .content-card h1,
+  .form-intro h1,
+  .review-page h1,
+  .payment-page h1,
+  .success-page h1 {
+    font-size: clamp(30px, 9vw, 40px) !important;
+    line-height: 1.08 !important;
+    letter-spacing: -1.2px !important;
+    overflow-wrap: anywhere;
+  }
+
+  .description {
+    margin-top: 12px !important;
+    margin-bottom: 20px !important;
+    font-size: 13px !important;
+    line-height: 1.6 !important;
+  }
+
+  /* ==========================================================
+     FORM
+     ========================================================== */
+
+  .form-layout {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 22px !important;
+    align-items: stretch !important;
+  }
+
+  .form-panel {
+    width: 100% !important;
+    padding: 18px !important;
+    border-radius: 14px !important;
+  }
+
+  .form-group {
+    width: 100% !important;
+    margin-bottom: 15px !important;
+  }
+
+  .form-group input,
+  .form-group select,
+  input,
+  select {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    height: 48px !important;
+    font-size: 14px !important;
+  }
+
+  .security-points {
+    margin-top: 20px !important;
+    gap: 11px !important;
+  }
+
+  .security-points div {
+    font-size: 11px !important;
+  }
+
+  .demo-number {
+    flex-wrap: wrap !important;
+    gap: 7px !important;
+  }
+
+  .demo-number button {
+    margin-left: 0 !important;
+  }
+
+  /* ==========================================================
+     VERIFIED DETAILS
+     ========================================================== */
+
+  .verification-result {
+    width: 100% !important;
+  }
+
+  .verification-result h1 {
+    font-size: clamp(30px, 9vw, 40px) !important;
+  }
+
+  .verified-card {
+    width: 100% !important;
+    padding: 16px !important;
+    border-radius: 14px !important;
+  }
+
+  .verified-card-header {
+    align-items: flex-start !important;
+    gap: 10px !important;
+  }
+
+  .verified-pill {
+    flex-shrink: 0 !important;
+  }
+
+  .verified-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .verified-field {
+    padding: 13px 6px !important;
+    border-bottom: 1px solid rgba(49, 64, 90, 0.55) !important;
+  }
+
+  .verified-field:last-child {
+    border-bottom: 0 !important;
+  }
+
+  .verified-field strong {
+    overflow-wrap: anywhere;
+  }
+
+  .info-box {
+    align-items: flex-start !important;
+    padding: 13px !important;
+    font-size: 11px !important;
+  }
+
+  /* ==========================================================
+     REVIEW
+     ========================================================== */
+
+  .review-page {
+    width: 100% !important;
+  }
+
+  .review-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+    margin-top: 20px !important;
+  }
+
+  .review-card {
+    width: 100% !important;
+    padding: 17px !important;
+    margin: 0 !important;
+  }
+
+  .review-row {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 6px !important;
+    padding: 12px 0 !important;
+  }
+
+  .review-row > strong {
+    max-width: 100% !important;
+    text-align: left !important;
+    overflow-wrap: anywhere;
+  }
+
+  .ready-banner {
+    align-items: flex-start !important;
+  }
+
+  .review-actions,
+  .payment-actions,
+  .success-actions {
+    flex-direction: column-reverse !important;
+    align-items: stretch !important;
+    width: 100% !important;
+    gap: 10px !important;
+  }
+
+  .review-actions > *,
+  .payment-actions > *,
+  .success-actions > * {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* ==========================================================
+     PAYMENT
+     ========================================================== */
+
+  .payment-page {
+    width: 100% !important;
+  }
+
+  .payment-layout {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    gap: 12px !important;
+    margin-top: 20px !important;
+  }
+
+  .payment-card {
+    width: 100% !important;
+    padding: 17px !important;
+    margin: 0 !important;
+    border-radius: 15px !important;
+  }
+
+  .payment-card-top {
+    gap: 10px !important;
+  }
+
+  .payment-card-top h2 {
+    font-size: 32px !important;
+  }
+
+  .payment-detail {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 4px !important;
+    padding: 11px 0 !important;
+  }
+
+  .payment-method-grid,
+  .payment-methods {
+    grid-template-columns: 1fr !important;
+  }
+
+  .payment-card button {
+    max-width: 100% !important;
+  }
+
+  .sandbox-pill {
+    flex-shrink: 0 !important;
+  }
+
+  /* ==========================================================
+     SUCCESS / RECEIPT
+     ========================================================== */
+
+  .success-page {
+    width: 100% !important;
+  }
+
+  .success-summary {
+    grid-template-columns: 1fr !important;
+  }
+
+  .registration-id {
+    width: 100% !important;
+    margin: 20px 0 !important;
+    padding: 20px 14px !important;
+    overflow: hidden !important;
+  }
+
+  .registration-id strong {
+    font-size: clamp(20px, 7vw, 30px) !important;
+    overflow-wrap: anywhere !important;
+    word-break: break-word !important;
+  }
+
+  /* ==========================================================
+     AI COPILOT
+     ========================================================== */
+
+  .copilot-overlay {
+    padding: 8px !important;
+    align-items: flex-end !important;
+  }
+
+  .copilot-panel {
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: calc(100dvh - 16px) !important;
+    border-radius: 16px !important;
+  }
+
+  .copilot-header {
+    padding: 14px !important;
+  }
+
+  .copilot-messages {
+    min-height: 220px !important;
+    max-height: 48dvh !important;
+    padding: 13px !important;
+  }
+
+  .copilot-message {
+    max-width: 92% !important;
+    font-size: 11px !important;
+  }
+
+  .copilot-suggestions {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 7px !important;
+    padding: 10px !important;
+  }
+
+  .copilot-suggestions button {
+    min-width: 0 !important;
+    padding: 9px 6px !important;
+    font-size: 10px !important;
+  }
+
+  .copilot-input-row {
+    display: flex !important;
+    gap: 7px !important;
+    padding: 10px !important;
+  }
+
+  .copilot-input-row input {
+    min-width: 0 !important;
+    height: 42px !important;
+  }
+
+  .copilot-input-row button {
+    flex-shrink: 0 !important;
+    padding: 0 12px !important;
+  }
+
+  /* ==========================================================
+     ADMIN — MAIN DASHBOARD
+     ========================================================== */
+
+  .admin-page,
+  .admin-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+
+  .admin-page {
+    padding-top: 25px !important;
+    padding-bottom: 45px !important;
+  }
+
+  .admin-header,
+  .admin-heading {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 15px !important;
+    margin-bottom: 24px !important;
+  }
+
+  .admin-header h1,
+  .admin-heading h1 {
+    font-size: 32px !important;
+    line-height: 1.08 !important;
+    letter-spacing: -1px !important;
+    overflow-wrap: anywhere;
+  }
+
+  .admin-header p,
+  .admin-heading p {
+    font-size: 13px !important;
+  }
+
+  .admin-heading-actions,
+  .export-button,
+  .refresh-button {
+    width: 100% !important;
+  }
+
+  .export-button,
+  .refresh-button {
+    text-align: center !important;
+  }
+
+  /* KPI / statistics */
+  .kpi-grid,
+  .stats-grid {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  .kpi-card,
+  .stat-card {
+    min-height: 88px !important;
+    padding: 15px !important;
+  }
+
+  .kpi-card strong,
+  .stat-card strong {
+    font-size: 25px !important;
+  }
+
+  /* Analytics */
+  .analytics-grid,
+  .charts-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  .analytics-card,
+  .applications-card,
+  .applications-panel {
+    width: 100% !important;
+    padding: 16px !important;
+    border-radius: 15px !important;
+  }
+
+  .analytics-card-header {
+    align-items: flex-start !important;
+    gap: 10px !important;
+  }
+
+  .analytics-card-header span {
+    flex-shrink: 0 !important;
+  }
+
+  .progress-heading {
+    flex-wrap: wrap !important;
+    gap: 4px 8px !important;
+  }
+
+  .progress-heading span {
+    margin-left: 0 !important;
+  }
+
+  .progress-item {
+    gap: 9px !important;
+  }
+
+  .progress-main {
+    min-width: 0 !important;
+  }
+
+  /* Admin charts */
+  .chart-card,
+  .chart-container,
+  .program-chart {
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+
+  .chart-container,
+  .program-chart {
+    height: 240px !important;
+  }
+
+  .donut-area {
+    height: 230px !important;
+  }
+
+  .donut-stats {
+    position: static !important;
+    transform: none !important;
+    margin-top: 10px !important;
+  }
+
+  /* Filters */
+  .filters {
+    grid-template-columns: 1fr !important;
+    gap: 9px !important;
+  }
+
+  .filters input,
+  .filters select {
+    width: 100% !important;
+  }
+
+  /* Table stays readable by scrolling INSIDE its card */
+  .table-wrapper {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  table {
+    min-width: 760px !important;
+  }
+
+  /* Program rows */
+  .program-row {
+    grid-template-columns: 1fr !important;
+    gap: 7px !important;
+    margin-bottom: 17px !important;
+  }
+
+  .program-row > strong {
+    text-align: left !important;
+  }
+
+  /* ==========================================================
+     OLD ADMIN CLASS NAMES
+     ========================================================== */
+
+  .admin-return {
+    padding: 15px !important;
+  }
+
+  /* ==========================================================
+     ACCESSIBILITY / TOUCH
+     ========================================================== */
+
+  button,
+  input,
+  select {
+    touch-action: manipulation;
+  }
+
+  button {
+    min-height: 42px;
+  }
+}
+
+/* ---------- VERY SMALL PHONES ---------- */
+
+@media (max-width: 380px) {
+
+  .navbar {
+    padding-left: 11px !important;
+    padding-right: 11px !important;
+  }
+
+  .navbar h2,
+  .brand h2 {
+    font-size: 15px !important;
+  }
+
+  .nav-buttons {
+    gap: 4px !important;
+  }
+
+  .nav-buttons button,
+  .nav-button {
+    padding: 7px !important;
+    font-size: 9px !important;
+  }
+
+  .hero {
+    width: 96% !important;
+    padding: 34px 15px !important;
+    border-radius: 20px !important;
+  }
+
+  .hero-content h1,
+  .hero h1 {
+    font-size: 38px !important;
+  }
+
+  .content-card {
+    padding: 18px 13px !important;
+  }
+
+  .form-panel,
+  .payment-card,
+  .review-card {
+    padding: 14px !important;
+  }
+
+  .copilot-suggestions {
+    grid-template-columns: 1fr !important;
+  }
+}

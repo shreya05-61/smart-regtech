@@ -1,0 +1,301 @@
+/* SMARTREGTECH OTP POPUP - paste into frontend/src/SmartRegTech_OTP_Popup.css */
+
+.otp-modal-overlay {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 99999 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  padding: 20px !important;
+  box-sizing: border-box !important;
+  background: rgba(3, 8, 18, .78) !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.otp-modal {
+  position: relative !important;
+  width: 440px !important;
+  max-width: calc(100vw - 40px) !important;
+  max-height: calc(100vh - 40px) !important;
+  overflow-y: auto !important;
+  padding: 30px !important;
+  box-sizing: border-box !important;
+  border: 1px solid #344a70 !important;
+  border-radius: 24px !important;
+  background: linear-gradient(180deg, #101d33 0%, #0b1527 100%) !important;
+  color: #fff !important;
+  box-shadow: 0 30px 90px rgba(0,0,0,.55) !important;
+  text-align: center !important;
+  animation: smartregOtpIn .22s ease-out;
+}
+
+@keyframes smartregOtpIn {
+  from { opacity: 0; transform: translateY(12px) scale(.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.otp-modal-close {
+  position: absolute !important;
+  top: 14px !important;
+  right: 16px !important;
+  width: 34px !important;
+  height: 34px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 50% !important;
+  background: #17243a !important;
+  color: #9eb2d0 !important;
+  font-family: inherit !important;
+  font-size: 20px !important;
+  line-height: 1 !important;
+  cursor: pointer !important;
+}
+
+.otp-modal-close:hover {
+  background: #293b5b !important;
+  color: #fff !important;
+}
+
+.otp-modal-brand {
+  display: flex !important;
+  align-items: center !important;
+  gap: 11px !important;
+  width: 100% !important;
+  margin: 0 0 22px !important;
+  padding: 0 !important;
+  text-align: left !important;
+}
+
+.otp-modal-logo {
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 12px !important;
+  background: #211d49 !important;
+  color: #b99cff !important;
+  font-size: 13px !important;
+  font-weight: 900 !important;
+}
+
+.otp-modal-brand strong {
+  display: block !important;
+  margin: 0 !important;
+  color: #fff !important;
+  font-size: 14px !important;
+  line-height: 1.3 !important;
+}
+
+.otp-modal-brand span {
+  display: block !important;
+  margin: 3px 0 0 !important;
+  color: #7188aa !important;
+  font-size: 11px !important;
+  line-height: 1.3 !important;
+}
+
+.otp-modal-icon {
+  width: 58px !important;
+  height: 58px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 auto 14px !important;
+  border-radius: 18px !important;
+  background: #211d49 !important;
+  color: #b99cff !important;
+  font-size: 25px !important;
+}
+
+.otp-modal .success-badge {
+  display: inline-flex !important;
+  margin: 0 0 12px !important;
+}
+
+.otp-modal h2 {
+  margin: 0 !important;
+  padding: 0 !important;
+  color: #fff !important;
+  font-size: 25px !important;
+  line-height: 1.2 !important;
+}
+
+.otp-modal-description {
+  width: 100% !important;
+  max-width: 340px !important;
+  margin: 10px auto 18px !important;
+  color: #8398b8 !important;
+  font-size: 13px !important;
+  line-height: 1.55 !important;
+}
+
+.otp-destination-modal {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  margin: 0 auto 22px !important;
+  padding: 13px 16px !important;
+  border: 1px solid #293c5c !important;
+  border-radius: 13px !important;
+  background: #0a1424 !important;
+  text-align: left !important;
+}
+
+.otp-destination-modal span {
+  color: #7188aa !important;
+  font-size: 11px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+}
+
+.otp-destination-modal strong {
+  color: #fff !important;
+  font-size: 14px !important;
+}
+
+.otp-destination-modal small {
+  color: #627a9c !important;
+  font-size: 11px !important;
+}
+
+/* SIX OTP BOXES IN ONE ROW */
+.otp-boxes {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 8px 0 14px !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+}
+
+.otp-boxes .otp-box {
+  display: block !important;
+  width: 45px !important;
+  min-width: 45px !important;
+  max-width: 45px !important;
+  height: 52px !important;
+  min-height: 52px !important;
+  max-height: 52px !important;
+  flex: 0 0 45px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+  border: 1px solid #344a70 !important;
+  border-radius: 12px !important;
+  background: #081222 !important;
+  color: #fff !important;
+  outline: none !important;
+  font-family: inherit !important;
+  font-size: 21px !important;
+  font-weight: 800 !important;
+  line-height: 52px !important;
+  text-align: center !important;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+}
+
+.otp-boxes .otp-box:focus {
+  border-color: #8061ff !important;
+  box-shadow: 0 0 0 3px rgba(128,97,255,.15) !important;
+}
+
+.demo-otp-modal {
+  margin: 4px 0 12px !important;
+  color: #7087a9 !important;
+  font-size: 11px !important;
+}
+
+.demo-otp-modal strong {
+  color: #c4b3ff !important;
+}
+
+.otp-resend-row {
+  min-height: 24px !important;
+  margin: 0 0 14px !important;
+  color: #7288aa !important;
+  font-size: 12px !important;
+}
+
+.otp-resend-row button {
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  color: #a98cff !important;
+  font-family: inherit !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+}
+
+.otp-verify-button {
+  width: 100% !important;
+  margin: 2px 0 0 !important;
+}
+
+.otp-security-note {
+  margin: 14px 0 0 !important;
+  color: #637b9e !important;
+  font-size: 10px !important;
+  line-height: 1.5 !important;
+}
+
+.otp-background-card {
+  position: relative !important;
+  min-height: 330px !important;
+  opacity: .72 !important;
+  filter: blur(.2px);
+}
+
+.otp-window-hint {
+  margin-top: 24px !important;
+  padding: 18px !important;
+  border: 1px dashed #40577c !important;
+  border-radius: 14px !important;
+  background: #0a1527 !important;
+  color: #8398b8 !important;
+  font-size: 13px !important;
+}
+
+@media (max-width: 520px) {
+  .otp-modal-overlay {
+    padding: 10px !important;
+  }
+
+  .otp-modal {
+    width: calc(100vw - 20px) !important;
+    max-width: calc(100vw - 20px) !important;
+    padding: 24px 16px !important;
+    border-radius: 20px !important;
+  }
+
+  .otp-boxes {
+    gap: 5px !important;
+  }
+
+  .otp-boxes .otp-box {
+    width: 40px !important;
+    min-width: 40px !important;
+    max-width: 40px !important;
+    height: 48px !important;
+    flex: 0 0 40px !important;
+    font-size: 19px !important;
+    line-height: 48px !important;
+  }
+}

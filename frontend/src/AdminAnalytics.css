@@ -1,0 +1,1110 @@
+/* =========================================================
+   SMARTREGTECH - CLEAN ADMIN DASHBOARD
+   ========================================================= */
+
+.admin-page {
+  min-height: 100vh;
+  width: 100%;
+  box-sizing: border-box;
+
+  padding: 42px 6% 70px;
+
+  background:
+    radial-gradient(
+      circle at 90% 0%,
+      rgba(113, 76, 220, 0.18),
+      transparent 30%
+    ),
+    linear-gradient(
+      135deg,
+      #080b18 0%,
+      #0d1221 55%,
+      #130d24 100%
+    );
+
+  color: #f5f7ff;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.admin-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+
+  gap: 30px;
+
+  margin-bottom: 38px;
+}
+
+.admin-label {
+  margin-bottom: 10px;
+
+  color: #a678ff;
+
+  font-size: 13px;
+  font-weight: 800;
+
+  letter-spacing: 2px;
+}
+
+.admin-header h1 {
+  margin: 0;
+
+  color: #ffffff;
+
+  font-size: 48px;
+  line-height: 1.1;
+
+  font-weight: 800;
+
+  letter-spacing: -1.5px;
+}
+
+.admin-header p {
+  max-width: 680px;
+
+  margin: 14px 0 0;
+
+  color: #8e9dbc;
+
+  font-size: 16px;
+
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
+.export-button,
+.refresh-button {
+  border: 1px solid #5f49b7;
+
+  border-radius: 11px;
+
+  background: rgba(91, 67, 177, 0.12);
+
+  color: #c1adff;
+
+  padding: 12px 18px;
+
+  font-size: 14px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.export-button:hover,
+.refresh-button:hover {
+  background: rgba(105, 76, 211, 0.25);
+
+  border-color: #8065dc;
+
+  transform: translateY(-1px);
+}
+
+.refresh-button {
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   ERROR
+   ========================================================= */
+
+.error-box {
+  margin-bottom: 22px;
+
+  padding: 14px 18px;
+
+  border: 1px solid rgba(239, 68, 68, 0.35);
+
+  border-radius: 10px;
+
+  background: rgba(127, 29, 29, 0.12);
+
+  color: #fca5a5;
+
+  font-size: 14px;
+}
+
+
+/* =========================================================
+   KPI CARDS
+   ========================================================= */
+
+.kpi-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(5, minmax(0, 1fr));
+
+  gap: 15px;
+
+  margin-bottom: 20px;
+}
+
+.kpi-card {
+  min-height: 105px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 14px;
+
+  padding: 18px;
+
+  box-sizing: border-box;
+
+  border: 1px solid #26324a;
+
+  border-radius: 15px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(20, 28, 46, 0.95),
+      rgba(14, 20, 34, 0.95)
+    );
+
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.kpi-card:hover {
+  border-color: #51418c;
+
+  transform: translateY(-2px);
+}
+
+.kpi-icon {
+  width: 45px;
+  height: 45px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 12px;
+
+  background: rgba(103, 80, 190, 0.16);
+
+  font-size: 20px;
+}
+
+.kpi-icon.success {
+  background: rgba(16, 185, 129, 0.12);
+}
+
+.kpi-icon.pending {
+  background: rgba(245, 158, 11, 0.12);
+}
+
+.kpi-icon.verified {
+  background: rgba(59, 130, 246, 0.12);
+}
+
+.kpi-icon.payment {
+  background: rgba(217, 70, 239, 0.12);
+}
+
+.kpi-card span {
+  display: block;
+
+  margin-bottom: 6px;
+
+  color: #8190af;
+
+  font-size: 12px;
+}
+
+.kpi-card strong {
+  color: #ffffff;
+
+  font-size: 27px;
+
+  line-height: 1;
+}
+
+
+/* =========================================================
+   GENERAL CARD
+   ========================================================= */
+
+.analytics-grid {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 20px;
+
+  margin-bottom: 20px;
+}
+
+.analytics-card {
+  box-sizing: border-box;
+
+  padding: 24px;
+
+  border: 1px solid #26324a;
+
+  border-radius: 17px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(20, 28, 46, 0.96),
+      rgba(14, 20, 34, 0.96)
+    );
+}
+
+.card-header {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 20px;
+}
+
+.card-header h2 {
+  margin: 0;
+
+  color: #ffffff;
+
+  font-size: 19px;
+
+  font-weight: 700;
+}
+
+.card-header p {
+  margin: 6px 0 0;
+
+  color: #7f8eac;
+
+  font-size: 13px;
+}
+
+.percentage {
+  color: #a87dff;
+
+  font-size: 31px;
+
+  font-weight: 800;
+}
+
+
+/* =========================================================
+   COMPLETION
+   ========================================================= */
+
+.progress-track {
+  height: 10px;
+
+  margin-top: 25px;
+
+  overflow: hidden;
+
+  border-radius: 20px;
+
+  background: #242c40;
+}
+
+.progress-fill {
+  height: 100%;
+
+  border-radius: inherit;
+
+  background:
+    linear-gradient(
+      90deg,
+      #7254e8,
+      #d63bb5
+    );
+
+  transition: width 0.5s ease;
+}
+
+.completion-info {
+  display: flex;
+
+  justify-content: space-between;
+
+  margin-top: 13px;
+
+  color: #7585a5;
+
+  font-size: 13px;
+}
+
+.completion-info strong {
+  color: #dce2f2;
+}
+
+
+/* =========================================================
+   HEALTH
+   ========================================================= */
+
+.health-list {
+  margin-top: 16px;
+}
+
+.health-row {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  padding: 13px 0;
+
+  border-bottom: 1px solid #242e45;
+
+  color: #8493b0;
+
+  font-size: 14px;
+}
+
+.health-row:last-child {
+  border-bottom: none;
+}
+
+.health-row strong {
+  color: #ffffff;
+
+  font-size: 17px;
+}
+
+
+/* =========================================================
+   CHART GRID
+   ========================================================= */
+
+.charts-grid {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 20px;
+
+  margin-bottom: 20px;
+}
+
+.chart-card {
+  min-height: 350px;
+}
+
+.chart-container {
+  width: 100%;
+
+  height: 270px;
+
+  margin-top: 10px;
+}
+
+.donut-area {
+  position: relative;
+
+  width: 100%;
+
+  height: 270px;
+}
+
+.donut-stats {
+  position: absolute;
+
+  right: 5px;
+
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 14px;
+
+  font-size: 13px;
+
+  color: #9aa7c2;
+}
+
+.donut-stats div {
+  display: grid;
+
+  grid-template-columns: 8px 1fr auto;
+
+  align-items: center;
+
+  gap: 7px;
+}
+
+.donut-stats strong {
+  margin-left: 10px;
+
+  color: #ffffff;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+}
+
+.dot.purple {
+  background: #7c4dff;
+}
+
+.dot.pink {
+  background: #ec3bb5;
+}
+
+.empty-chart {
+  height: 250px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  color: #697996;
+
+  font-size: 14px;
+}
+
+
+/* =========================================================
+   PROGRAM CARD
+   ========================================================= */
+
+.program-card {
+  margin-bottom: 20px;
+}
+
+.program-chart {
+  width: 100%;
+
+  height: 270px;
+
+  margin-top: 12px;
+}
+
+
+/* =========================================================
+   APPLICATIONS
+   ========================================================= */
+
+.applications-card {
+  padding: 24px;
+
+  border: 1px solid #26324a;
+
+  border-radius: 17px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(20, 28, 46, 0.96),
+      rgba(14, 20, 34, 0.96)
+    );
+}
+
+.applications-header {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 20px;
+}
+
+.applications-header h2 {
+  margin: 0;
+
+  color: #ffffff;
+
+  font-size: 21px;
+}
+
+.applications-header p {
+  margin: 6px 0 0;
+
+  color: #7f8eac;
+
+  font-size: 13px;
+}
+
+
+/* =========================================================
+   FILTERS
+   ========================================================= */
+
+.filters {
+  display: grid;
+
+  grid-template-columns: 1fr 220px;
+
+  gap: 12px;
+
+  margin: 22px 0;
+}
+
+.filters input,
+.filters select {
+  width: 100%;
+
+  height: 46px;
+
+  box-sizing: border-box;
+
+  padding: 0 14px;
+
+  border: 1px solid #2d3953;
+
+  border-radius: 10px;
+
+  outline: none;
+
+  background: #0b1120;
+
+  color: #e9edfa;
+
+  font-size: 13px;
+}
+
+.filters input::placeholder {
+  color: #61708d;
+}
+
+.filters input:focus,
+.filters select:focus {
+  border-color: #7052d6;
+
+  box-shadow:
+    0 0 0 2px rgba(112, 82, 214, 0.1);
+}
+
+.filters select {
+  cursor: pointer;
+}
+
+
+/* =========================================================
+   TABLE
+   ========================================================= */
+
+.table-wrapper {
+  width: 100%;
+
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+
+  min-width: 850px;
+
+  border-collapse: collapse;
+}
+
+th {
+  padding: 12px 14px;
+
+  border-bottom: 1px solid #2a354d;
+
+  color: #687997;
+
+  text-align: left;
+
+  font-size: 11px;
+
+  font-weight: 800;
+
+  letter-spacing: 1px;
+}
+
+td {
+  padding: 15px 14px;
+
+  border-bottom: 1px solid #202a40;
+
+  color: #dbe1f0;
+
+  font-size: 13px;
+}
+
+tbody tr {
+  transition: background 0.15s ease;
+}
+
+tbody tr:hover {
+  background: rgba(92, 70, 170, 0.06);
+}
+
+.registration-id {
+  color: #a982ff;
+
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   STATUS BADGES
+   ========================================================= */
+
+.status-badge {
+  display: inline-flex;
+
+  align-items: center;
+
+  padding: 6px 10px;
+
+  border-radius: 20px;
+
+  font-size: 11px;
+
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+.verified-badge,
+.paid-badge,
+.success-badge {
+  border: 1px solid rgba(30, 210, 150, 0.28);
+
+  background: rgba(30, 210, 150, 0.07);
+
+  color: #42dba7;
+}
+
+.pending-badge {
+  border: 1px solid rgba(245, 175, 50, 0.3);
+
+  background: rgba(245, 175, 50, 0.07);
+
+  color: #f5bd55;
+}
+
+.table-message {
+  padding: 35px !important;
+
+  text-align: center;
+
+  color: #6f809f !important;
+}
+
+
+/* =========================================================
+   PROTOTYPE NOTE
+   ========================================================= */
+
+.prototype-note {
+  margin-top: 18px;
+
+  padding: 18px 20px;
+
+  border: 1px solid rgba(245, 175, 50, 0.25);
+
+  border-radius: 13px;
+
+  background: rgba(245, 175, 50, 0.04);
+}
+
+.prototype-note strong {
+  color: #eab64f;
+
+  font-size: 13px;
+}
+
+.prototype-note p {
+  margin: 7px 0 0;
+
+  color: #7788a7;
+
+  font-size: 12px;
+
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1200px) {
+
+  .kpi-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+}
+
+@media (max-width: 850px) {
+
+  .admin-page {
+    padding: 30px 20px 50px;
+  }
+
+  .admin-header {
+    flex-direction: column;
+
+    align-items: flex-start;
+  }
+
+  .analytics-grid,
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .filters {
+    grid-template-columns: 1fr;
+  }
+
+  .applications-header {
+    align-items: flex-start;
+
+    flex-direction: column;
+  }
+
+}
+
+@media (max-width: 520px) {
+
+  .admin-header h1 {
+    font-size: 36px;
+  }
+
+  .kpi-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .kpi-card {
+    min-height: 90px;
+  }
+
+  .analytics-card,
+  .applications-card {
+    padding: 18px;
+  }
+
+}
+
+/* =========================================================
+   SPACING FIXES - KPI / LEGEND / PROGRESS ANALYTICS
+   ========================================================= */
+
+/* KPI card content */
+.kpi-content {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.kpi-content > span {
+  display: block;
+  margin-bottom: 6px;
+  color: #8190af;
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+.kpi-content > strong {
+  display: inline-block;
+  margin: 0 8px 0 0;
+  color: #ffffff;
+  font-size: 27px;
+  line-height: 1.1;
+  vertical-align: baseline;
+}
+
+.kpi-content > small {
+  display: inline-block;
+  margin: 0;
+  color: #9aa7c2;
+  font-size: 12px;
+  line-height: 1.3;
+  vertical-align: baseline;
+}
+
+/* Application Status legend */
+.status-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.legend-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.legend-row > div {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  column-gap: 7px;
+  row-gap: 2px;
+}
+
+.legend-row strong {
+  margin: 0;
+  color: #ffffff;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.legend-row small {
+  margin: 0;
+  color: #9aa7c2;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+/* Verification & Payment rows */
+.progress-list {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  margin-top: 22px;
+}
+
+.progress-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+}
+
+.progress-icon {
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: rgba(103, 80, 190, 0.16);
+  font-size: 16px;
+}
+
+.progress-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.progress-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 9px;
+  line-height: 1.4;
+}
+
+.progress-heading strong {
+  margin: 0;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.progress-heading span {
+  flex-shrink: 0;
+  margin-left: 8px;
+  color: #aeb9cf;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+/* Keep progress bars separated from their labels */
+.progress-main .progress-track {
+  margin-top: 0;
+}
+
+/* Program rows */
+.program-row {
+  display: grid;
+  grid-template-columns: minmax(150px, 1fr) minmax(160px, 2fr) 35px;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.program-row > strong {
+  text-align: right;
+  color: #ffffff;
+}
+
+/* Mobile spacing */
+@media (max-width: 520px) {
+  .kpi-content > strong {
+    margin-right: 6px;
+  }
+
+  .progress-heading {
+    flex-wrap: wrap;
+    gap: 4px 10px;
+  }
+
+  .progress-heading span {
+    margin-left: 0;
+  }
+
+  .program-row {
+    grid-template-columns: 1fr 80px 25px;
+    gap: 8px;
+  }
+}
+/* =========================================================
+   APPLICATION STATUS DONUT
+   ========================================================= */
+
+.status-content {
+  display: flex;
+  align-items: center;
+  gap: 45px;
+  min-height: 230px;
+  margin-top: 25px;
+}
+
+.status-donut {
+  position: relative;
+  width: 170px;
+  height: 170px;
+  min-width: 170px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Creates the hole in the middle of the donut */
+.status-donut::after {
+  content: "";
+  position: absolute;
+  width: 112px;
+  height: 112px;
+  border-radius: 50%;
+  background: #101a2b;
+}
+
+.donut-center {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.donut-center strong {
+  color: #ffffff;
+  font-size: 30px;
+  line-height: 1.1;
+}
+
+.donut-center span {
+  margin-top: 5px;
+  color: #7f8eac;
+  font-size: 12px;
+}
+
+/* Legend */
+.status-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  flex: 1;
+}
+
+.legend-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.legend-row > div {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.legend-row strong {
+  color: #ffffff;
+  font-size: 14px;
+}
+
+.legend-row small {
+  color: #9aa7c2;
+  font-size: 12px;
+}
+
+.legend-color {
+  width: 10px;
+  height: 10px;
+  min-width: 10px;
+  border-radius: 50%;
+}
+
+.legend-color.purple {
+  background: #8b5cf6;
+}
+
+.legend-color.orange {
+  background: #f59e0b;
+}
+
+
+/* Mobile */
+@media (max-width: 650px) {
+  .status-content {
+    flex-direction: column;
+    gap: 25px;
+    justify-content: center;
+  }
+
+  .status-donut {
+    width: 150px;
+    height: 150px;
+    min-width: 150px;
+  }
+
+  .status-donut::after {
+    width: 98px;
+    height: 98px;
+  }
+}
