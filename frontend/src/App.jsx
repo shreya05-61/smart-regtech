@@ -6,7 +6,7 @@ import "./new_digilocker.css";
 import "./SmartRegTech_mobile_responsive.css";
 
 const API_BASE = "https://smart-regtech.onrender.com";
-const DEMO_IDENTITY = "999988887777"; // Change this to your 12-digit demo number
+const DEMO_IDENTITY = "999988887777"; // Update this to your 12-digit test number!
 const DEMO_OTP = "123456";
 
 // ============================================================
@@ -116,7 +116,7 @@ function getCopilotAnswer(question) {
     return "For this prototype, verified identity details are retrieved automatically. You only need to provide the remaining mandatory information such as mobile number, email and program.";
   }
   if (q.includes("payment") || q.includes("fee") || q.includes("amount")) {
-    return "Payment is handled through a sandbox environment in this prototype. The registration fee is automatically selected based on the program you choose. No real money is charged. After registration is submitted, the sandbox payment updates your application to Paid and Successful.";
+    return "Payment is handled through a sandbox environment in this prototype. The registration fee is automatically selected based on the program you choose. No real money is charged.";
   }
   if (q.includes("process") || q.includes("registration") || q.includes("complete")) {
     return "The registration process is: 1. Verify your identity using the demo DigiLocker verification. 2. Complete the missing mandatory details. 3. Review your application. 4. Complete the sandbox payment. 5. Receive your registration ID and download the receipt.";
@@ -202,7 +202,6 @@ function App() {
   const [currentView, setCurrentView] = useState("home"); // "home", "admin", "flow"
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
 
-  // Workflow configuration state
   const [selectedPreset, setSelectedPreset] = useState("standard");
   const [activeFlow, setActiveFlow] = useState(PRESET_FLOWS.standard.steps);
 
@@ -229,8 +228,6 @@ function App() {
   });
 
   const currentFee = PROGRAM_FEES[formData.program] || 500;
-
-  // Active step ID derived dynamically from active workflow
   const activeStepId = currentView === "flow" ? activeFlow[currentStepIndex].id : currentView;
 
   const handlePresetChange = (presetKey) => {
@@ -248,15 +245,12 @@ function App() {
   const openAdmin = () => setCurrentView("admin");
 
   const goToPrevStep = () => {
-    // If we are at the very beginning of the flow, go back to the home screen
     if (currentStepIndex === 0) {
       goHome();
       return;
     }
 
     let targetIndex = currentStepIndex - 1;
-
-    // Skip the intermediate "verified" transition screen when moving backwards
     if (activeFlow[targetIndex]?.id === "verified") {
       targetIndex = targetIndex - 1;
     }
@@ -355,33 +349,23 @@ function App() {
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>DigiLocker Sandbox</title>
 <style>
-  *{box-sizing:border-box}
-  body{margin:0;background:#f5f7fb;color:#172033;font-family:Arial,Helvetica,sans-serif}
+  *{box-sizing:border-box} body{margin:0;background:#f5f7fb;color:#172033;font-family:Arial,Helvetica,sans-serif}
   .top{height:70px;background:#fff;border-bottom:1px solid #e2e6ee;display:flex;align-items:center;justify-content:space-between;padding:0 24px}
-  .brand{display:flex;align-items:center;gap:11px}
-  .logo{width:42px;height:42px;border-radius:10px;background:#673de6;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800}
-  .brand strong{display:block;color:#42229e;font-size:19px}
-  .brand span{display:block;color:#7a8494;font-size:9px;margin-top:2px}
+  .brand{display:flex;align-items:center;gap:11px} .logo{width:42px;height:42px;border-radius:10px;background:#673de6;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800}
+  .brand strong{display:block;color:#42229e;font-size:19px} .brand span{display:block;color:#7a8494;font-size:9px;margin-top:2px}
   .badge{padding:7px 11px;border-radius:20px;background:#fff3dc;color:#986300;font-size:9px;font-weight:800;letter-spacing:1px}
-  .page{width:calc(100% - 30px);max-width:620px;margin:30px auto}
-  .hero{text-align:center;margin-bottom:20px}
+  .page{width:calc(100% - 30px);max-width:620px;margin:30px auto} .hero{text-align:center;margin-bottom:20px}
   .lock{width:58px;height:58px;margin:auto;border-radius:50%;background:#eee8ff;display:flex;align-items:center;justify-content:center;font-size:26px}
-  .hero h1{margin:14px 0 6px;font-size:24px}
-  .hero p{margin:0;color:#6e7889;font-size:12px;line-height:1.6}
+  .hero h1{margin:14px 0 6px;font-size:24px} .hero p{margin:0;color:#6e7889;font-size:12px;line-height:1.6}
   .card{background:#fff;border:1px solid #e0e4eb;border-radius:17px;padding:25px;box-shadow:0 15px 45px rgba(50,35,100,.10)}
   .label{color:#6740d5;font-size:10px;font-weight:800;letter-spacing:1px;margin-bottom:12px}
   .app{display:flex;align-items:center;gap:12px;padding:15px;border:1px solid #e2e5ec;border-radius:12px;background:#faf9ff}
   .appLogo{width:44px;height:44px;border-radius:11px;background:#7044df;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800}
-  .app strong{display:block;font-size:15px}
-  .app small{display:block;margin-top:3px;color:#7c8492;font-size:10px}
-  .secure{margin-left:auto;color:#16804c;font-size:9px;font-weight:800}
-  .request{margin-top:22px}
-  .request h2{margin:0;font-size:18px}
+  .app strong{display:block;font-size:15px} .app small{display:block;margin-top:3px;color:#7c8492;font-size:10px}
+  .secure{margin-left:auto;color:#16804c;font-size:9px;font-weight:800} .request{margin-top:22px} .request h2{margin:0;font-size:18px}
   .request p{margin:8px 0 0;color:#6f7889;font-size:12px;line-height:1.6}
-  .info{margin-top:20px;padding:17px;border-radius:12px;background:#f7f5ff}
-  .infoTitle{color:#5932c9;font-size:11px;font-weight:800;margin-bottom:13px}
-  .grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
-  .item{font-size:11px;color:#4f596b}.item::before{content:'✓';color:#16804c;font-weight:900;margin-right:7px}
+  .info{margin-top:20px;padding:17px;border-radius:12px;background:#f7f5ff} .infoTitle{color:#5932c9;font-size:11px;font-weight:800;margin-bottom:13px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:11px} .item{font-size:11px;color:#4f596b}.item::before{content:'✓';color:#16804c;font-weight:900;margin-right:7px}
   .consent{display:flex;gap:9px;align-items:flex-start;margin-top:21px;color:#4d586b;font-size:11px;line-height:1.6;cursor:pointer}.consent input{width:16px;height:16px;accent-color:#673de6}
   .allow,.cancel{width:100%;padding:13px;border-radius:9px;font-weight:800;font-size:12px;cursor:pointer}
   .allow{margin-top:21px;border:0;background:#673de6;color:#fff}.allow:disabled{opacity:.45;cursor:not-allowed}
@@ -463,16 +447,11 @@ allow.addEventListener('click',()=>{
     }
   };
 
-  const continueToForm = () => {
-    goToNextStep();
-  };
-
-  const continueToReview = () => {
+  const continueFromForm = () => {
     if (!/^[0-9]{10}$/.test(formData.mobile)) {
       alert("Please enter a valid 10-digit mobile number.");
       return;
     }
-
     if (!formData.email || !formData.email.includes("@")) {
       alert("Please enter a valid email address.");
       return;
@@ -481,19 +460,11 @@ allow.addEventListener('click',()=>{
     goToNextStep();
   };
 
-  const continueToPayment = () => {
-    goToNextStep();
-  };
-
   const completePayment = async () => {
     if (processingPayment) return;
 
     if (paymentMethod === "upi") {
-      if (!upiId.trim()) {
-        alert("Please enter a demo UPI ID, for example demo@upi.");
-        return;
-      }
-      if (!upiId.includes("@")) {
+      if (!upiId.trim() || !upiId.includes("@")) {
         alert("Please enter a valid demo UPI ID, for example demo@upi.");
         return;
       }
@@ -508,9 +479,7 @@ allow.addEventListener('click',()=>{
       if (!currentRegistrationId) {
         const registerResponse = await fetch(`${API_BASE}/api/register`, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             name: verifiedProfile?.name || "Rohan Verma",
             email: formData.email,
@@ -519,15 +488,9 @@ allow.addEventListener('click',()=>{
           }),
         });
 
-        if (!registerResponse.ok) {
-          throw new Error("Registration request failed.");
-        }
-
+        if (!registerResponse.ok) throw new Error("Registration request failed.");
         const registerData = await registerResponse.json();
-
-        if (!registerData.success) {
-          throw new Error(registerData.message || "Registration failed.");
-        }
+        if (!registerData.success) throw new Error(registerData.message || "Registration failed.");
 
         currentRegistrationId = registerData.registration_id;
         setRegistrationId(currentRegistrationId);
@@ -537,24 +500,16 @@ allow.addEventListener('click',()=>{
 
       const paymentResponse = await fetch(`${API_BASE}/api/payment/${currentRegistrationId}`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           amount: currentFee,
           program: getShortProgramName(formData.program),
         }),
       });
 
-      if (!paymentResponse.ok) {
-        throw new Error("Payment request failed.");
-      }
-
+      if (!paymentResponse.ok) throw new Error("Payment request failed.");
       const paymentData = await paymentResponse.json();
-
-      if (!paymentData.success) {
-        throw new Error(paymentData.message || "Payment failed.");
-      }
+      if (!paymentData.success) throw new Error(paymentData.message || "Payment failed.");
 
       const generatedPaymentId = paymentData.payment_id || `PAY-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
 
@@ -996,7 +951,7 @@ body { font-family: Arial, sans-serif; background: #f4f5fb; margin: 0; padding: 
             <span>✦</span>
             <div><strong>Smart form activated</strong><p>Your verified details have been automatically carried forward.</p></div>
           </div>
-          <button type="button" className="primary-button" onClick={continueToForm}>Continue to Registration <span>→</span></button>
+          <button type="button" className="primary-button" onClick={goToNextStep}>Continue to Registration <span>→</span></button>
         </div>
       </Page>
     );
@@ -1037,7 +992,27 @@ body { font-family: Arial, sans-serif; background: #f4f5fb; margin: 0; padding: 
                 ))}
               </select>
             </div>
-            <button type="button" className="primary-button full" onClick={continueToReview}>Review Application <span>→</span></button>
+            
+            {/* Compute dynamic button text based on the workflow order */}
+            {(() => {
+              const nextStep = activeFlow[currentStepIndex + 1];
+              let nextLabel = "Continue";
+              
+              if (nextStep?.id === "review") {
+                nextLabel = "Review Application";
+              } else if (nextStep?.id === "identity") {
+                nextLabel = "Continue to Identity Verification";
+              } else if (nextStep?.id === "payment") {
+                nextLabel = "Continue to Payment";
+              }
+
+              return (
+                <button type="button" className="primary-button full" onClick={continueFromForm}>
+                  {nextLabel} <span>→</span>
+                </button>
+              );
+            })()}
+
             <button type="button" className="back-button" onClick={goToPrevStep}>← Back</button>
           </div>
         </div>
@@ -1083,8 +1058,8 @@ body { font-family: Arial, sans-serif; background: #f4f5fb; margin: 0; padding: 
           </div>
 
           <div className="review-actions">
-            <button type="button" className="back-button" onClick={goToPrevStep}>← Edit Details</button>
-            <button type="button" className="primary-button" onClick={continueToPayment}>Continue to Payment <span>→</span></button>
+            <button type="button" className="back-button" onClick={goToPrevStep}>← Back</button>
+            <button type="button" className="primary-button" onClick={goToNextStep}>Continue to Payment <span>→</span></button>
           </div>
         </div>
       </Page>
