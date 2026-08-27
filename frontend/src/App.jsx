@@ -6,7 +6,7 @@ import "./new_digilocker.css";
 import "./SmartRegTech_mobile_responsive.css";
 
 const API_BASE = "http://localhost:8000";
-const DEMO_IDENTITY = "[Aadhaar Redacted]"; // Change to your 12-digit demo number
+const DEMO_IDENTITY = "999988887777"; // Change to your 12-digit demo number
 const DEMO_OTP = "123456";
 
 // ============================================================
