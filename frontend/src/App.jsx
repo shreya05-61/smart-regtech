@@ -5,8 +5,8 @@ import "./SmartRegTech_OTP_Popup.css";
 import "./new_digilocker.css";
 import "./SmartRegTech_mobile_responsive.css";
 
-const API_BASE = "https://smart-regtech.onrender.com";
-const DEMO_IDENTITY = "999988887777"; // Update this to your 12-digit test number!
+const API_BASE = "http://localhost:8000";
+const DEMO_IDENTITY = "[Aadhaar Redacted]"; // Change to your 12-digit demo number
 const DEMO_OTP = "123456";
 
 // ============================================================
@@ -112,23 +112,20 @@ function getCopilotAnswer(question) {
   if (q.includes("digilocker") || q.includes("verification")) {
     return "The prototype now follows a realistic DigiLocker-style flow: enter the demo 12-digit identity number, verify a demo OTP, provide consent, and then simulate a secure connector response that retrieves profile and education details. No real Aadhaar or DigiLocker account is used.";
   }
-  if (q.includes("document")) {
-    return "For this prototype, verified identity details are retrieved automatically. You only need to provide the remaining mandatory information such as mobile number, email and program.";
+  if (q.includes("login") || q.includes("password") || q.includes("uid")) {
+    return "Once your identity is verified, the system automatically generates an Application ID (UID) and Password, sending them to your registered email and WhatsApp. You can use these to log out and resume your application at any time.";
+  }
+  if (q.includes("cart") || q.includes("courses") || q.includes("multiple")) {
+    return "You can now select one or more programs. All selected items are added to your cart, and the total fee is dynamically calculated. You can also remove items from your cart on the payment screen.";
   }
   if (q.includes("payment") || q.includes("fee") || q.includes("amount")) {
-    return "Payment is handled through a sandbox environment in this prototype. The registration fee is automatically selected based on the program you choose. No real money is charged.";
+    return "Payment is handled through a sandbox environment in this prototype. The registration fee is calculated based on the items in your cart. No real money is charged.";
   }
   if (q.includes("process") || q.includes("registration") || q.includes("complete")) {
-    return "The registration process is: 1. Verify your identity using the demo DigiLocker verification. 2. Complete the missing mandatory details. 3. Review your application. 4. Complete the sandbox payment. 5. Receive your registration ID and download the receipt.";
-  }
-  if (q.includes("receipt") || q.includes("download")) {
-    return "After successful payment, your registration ID is displayed on the success page. Click Download Receipt to save your SmartRegTech registration receipt.";
-  }
-  if (q.includes("status") || q.includes("application")) {
-    return "Your application status can be viewed through the Admin Analytics dashboard. The dashboard retrieves registration records directly from the SmartRegTech FastAPI backend.";
+    return "The registration process is: 1. Verify your identity (UID generated). 2. Add details & select courses for your cart. 3. Review application. 4. Manage cart and complete sandbox payment. 5. Download receipt.";
   }
 
-  return "I can help you with registration, DigiLocker verification, documents, payment, application status and receipt download. Try asking about one of these topics.";
+  return "I can help you with registration, DigiLocker verification, cart management, payment, application status, login, and receipt download. Try asking about one of these topics.";
 }
 
 function AICopilot({ onClose }) {
@@ -183,9 +180,9 @@ function AICopilot({ onClose }) {
           {loading && <div className="copilot-message copilot-assistant">Thinking...</div>}
         </div>
         <div className="copilot-suggestions">
+          <button onClick={() => sendMessage("How does the cart work?")}>Cart</button>
+          <button onClick={() => sendMessage("How do I log in or resume?")}>Login</button>
           <button onClick={() => sendMessage("What is DigiLocker verification?")}>DigiLocker</button>
-          <button onClick={() => sendMessage("What documents do I need?")}>Documents</button>
-          <button onClick={() => sendMessage("How does payment work?")}>Payment</button>
           <button onClick={() => sendMessage("What is the registration process?")}>Process</button>
         </div>
         <div className="copilot-input-row">
@@ -199,19 +196,41 @@ function AICopilot({ onClose }) {
 }
 
 function App() {
-  const [currentView, setCurrentView] = useState("home"); // "home", "admin", "flow"
+  // GLOBAL MOCK DB FOR SESSION MANAGEMENT (UPGRADED TO LOCAL STORAGE)
+  const [mockUsersDB, setMockUsersDB] = useState(() => {
+    try {
+      const saved = localStorage.getItem("smartRegUsers");
+      return saved ? JSON.parse(saved) : [];
+    } catch (e) {
+      return [];
+    }
+  });
+
+  // Save changes to localStorage automatically
+  useEffect(() => {
+    localStorage.setItem("smartRegUsers", JSON.stringify(mockUsersDB));
+  }, [mockUsersDB]);
+
+  const [currentUserUid, setCurrentUserUid] = useState(null);
+
+  const [currentView, setCurrentView] = useState("home"); // "home", "admin", "flow", "login", "forgotPwd", "changePwd"
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
 
   const [selectedPreset, setSelectedPreset] = useState("standard");
   const [activeFlow, setActiveFlow] = useState(PRESET_FLOWS.standard.steps);
 
   const [showCopilot, setShowCopilot] = useState(false);
+  
+  // Show/Hide Password State
+  const [showLoginPwd, setShowLoginPwd] = useState(false);
+
   const [registrationId, setRegistrationId] = useState("");
   const [processingPayment, setProcessingPayment] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("upi");
   const [upiId, setUpiId] = useState("");
   const [paymentStatus, setPaymentStatus] = useState("idle");
   const [paymentId, setPaymentId] = useState("");
+  
   const [identityPhase, setIdentityPhase] = useState("aadhaar");
   const [otp, setOtp] = useState("");
   const otpInputRefs = useRef([]);
@@ -224,11 +243,22 @@ function App() {
     identity: "",
     mobile: "",
     email: "",
-    program: programs[0],
   });
+  const [cart, setCart] = useState([]);
 
-  const currentFee = PROGRAM_FEES[formData.program] || 500;
+  const currentTotalFee = cart.reduce((sum, program) => sum + (PROGRAM_FEES[program] || 500), 0);
   const activeStepId = currentView === "flow" ? activeFlow[currentStepIndex].id : currentView;
+
+  // AUTO-SAVE PROGRESS HOOK
+  useEffect(() => {
+    if (currentUserUid) {
+      setMockUsersDB(prev => prev.map(user => 
+        user.uid === currentUserUid 
+          ? { ...user, cart, formData, currentStepIndex, verifiedProfile, activeFlowKey: selectedPreset } 
+          : user
+      ));
+    }
+  }, [cart, formData, currentStepIndex, verifiedProfile, selectedPreset, currentUserUid]);
 
   const handlePresetChange = (presetKey) => {
     setSelectedPreset(presetKey);
@@ -262,6 +292,24 @@ function App() {
     }
   };
 
+  // Generate Application Credentials (UPGRADED TO GENERAL PASSWORD)
+  const generateCredentials = () => {
+    const uid = "APP-" + Math.floor(100000 + Math.random() * 900000);
+    const pwd = "demo123"; // Standardized general password
+    return { uid, pwd };
+  };
+
+  const handleLogout = () => {
+    setCurrentUserUid(null);
+    setCart([]);
+    setFormData({ identity: "", mobile: "", email: "" });
+    setVerifiedProfile(null);
+    setCurrentStepIndex(0);
+    setIdentityPhase("aadhaar");
+    setCurrentView("home");
+    alert("You have successfully logged out. Your progress has been securely saved.");
+  };
+
   useEffect(() => {
     if (identityPhase !== "otp" || otpSeconds <= 0) return;
     const timer = setInterval(() => {
@@ -282,6 +330,24 @@ function App() {
         const profile = await fetchMockDigiLockerProfile();
         setFetchStatus("success");
         setVerifiedProfile(profile);
+
+        if (!currentUserUid) {
+          const { uid, pwd } = generateCredentials();
+          const newUser = {
+            uid,
+            password: pwd,
+            cart: [],
+            formData: { identity: formData.identity, mobile: "", email: "" },
+            currentStepIndex: currentStepIndex + 1,
+            verifiedProfile: profile,
+            activeFlowKey: selectedPreset
+          };
+          setMockUsersDB(prev => [...prev, newUser]);
+          setCurrentUserUid(uid);
+          
+          alert(`✅ IDENTITY VERIFIED!\n\nYour Registration Account has been created.\n\nApplication ID (UID): ${uid}\nPassword: ${pwd}\n\n*These credentials have been simulated as sent to your registered Email and WhatsApp. You may log out and use them to resume later.*`);
+        }
+
         setTimeout(() => goToNextStep(), 700);
       } catch (error) {
         console.error(error);
@@ -293,20 +359,33 @@ function App() {
 
     window.addEventListener("message", handleDigiLockerMessage);
     return () => window.removeEventListener("message", handleDigiLockerMessage);
-  }, [currentStepIndex, activeFlow]);
+  }, [currentStepIndex, activeFlow, currentUserUid, formData, selectedPreset]);
 
   const updateField = (field, value) => {
     setFormData((previous) => ({ ...previous, [field]: value }));
   };
 
+  const toggleCartItem = (program) => {
+    if (cart.includes(program)) {
+      setCart(cart.filter(item => item !== program));
+    } else {
+      setCart([...cart, program]);
+    }
+  };
+
   const startRegistration = () => {
-    setIdentityPhase("aadhaar");
-    setOtp("");
-    setConsentGiven(false);
-    setFetchStatus("idle");
-    setVerifiedProfile(null);
+    if (!currentUserUid) {
+      setIdentityPhase("aadhaar");
+      setOtp("");
+      setConsentGiven(false);
+      setFetchStatus("idle");
+      setVerifiedProfile(null);
+      setCart([]);
+      setFormData({ identity: "", mobile: "", email: "" });
+      setActiveFlow(PRESET_FLOWS[selectedPreset].steps);
+      setCurrentStepIndex(0);
+    }
     setCurrentView("flow");
-    setCurrentStepIndex(0);
   };
 
   const verifyIdentity = () => {
@@ -432,11 +511,22 @@ allow.addEventListener('click',()=>{
       setFetchStatus("success");
       setVerifiedProfile(profile);
 
-      setFormData((previous) => ({
-        ...previous,
-        mobile: previous.mobile,
-        email: previous.email,
-      }));
+      if (!currentUserUid) {
+        const { uid, pwd } = generateCredentials();
+        const newUser = {
+          uid,
+          password: pwd,
+          cart: [],
+          formData: { identity: formData.identity, mobile: "", email: "" },
+          currentStepIndex: currentStepIndex + 1,
+          verifiedProfile: profile,
+          activeFlowKey: selectedPreset
+        };
+        setMockUsersDB(prev => [...prev, newUser]);
+        setCurrentUserUid(uid);
+        
+        alert(`✅ IDENTITY VERIFIED!\n\nYour Registration Account has been created.\n\nApplication ID (UID): ${uid}\nPassword: ${pwd}\n\n*These credentials have been simulated as sent to your registered Email and WhatsApp. You may log out and use them to resume later.*`);
+      }
 
       setTimeout(() => goToNextStep(), 700);
     } catch (error) {
@@ -456,12 +546,21 @@ allow.addEventListener('click',()=>{
       alert("Please enter a valid email address.");
       return;
     }
+    if (cart.length === 0) {
+      alert("Please select at least one program to add to your cart.");
+      return;
+    }
 
     goToNextStep();
   };
 
   const completePayment = async () => {
     if (processingPayment) return;
+
+    if (cart.length === 0) {
+      alert("Your cart is empty! Please go back and add courses before paying.");
+      return;
+    }
 
     if (paymentMethod === "upi") {
       if (!upiId.trim() || !upiId.includes("@")) {
@@ -479,18 +578,26 @@ allow.addEventListener('click',()=>{
       if (!currentRegistrationId) {
         const registerResponse = await fetch(`${API_BASE}/api/register`, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+          },
           body: JSON.stringify({
             name: verifiedProfile?.name || "Rohan Verma",
             email: formData.email,
             phone: formData.mobile,
-            program: getShortProgramName(formData.program),
+            program: cart.join(", "),
           }),
         });
 
-        if (!registerResponse.ok) throw new Error("Registration request failed.");
+        if (!registerResponse.ok) {
+          throw new Error("Registration request failed.");
+        }
+
         const registerData = await registerResponse.json();
-        if (!registerData.success) throw new Error(registerData.message || "Registration failed.");
+
+        if (!registerData.success) {
+          throw new Error(registerData.message || "Registration failed.");
+        }
 
         currentRegistrationId = registerData.registration_id;
         setRegistrationId(currentRegistrationId);
@@ -500,16 +607,24 @@ allow.addEventListener('click',()=>{
 
       const paymentResponse = await fetch(`${API_BASE}/api/payment/${currentRegistrationId}`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
-          amount: currentFee,
-          program: getShortProgramName(formData.program),
+          amount: currentTotalFee,
+          program: cart.join(", "),
         }),
       });
 
-      if (!paymentResponse.ok) throw new Error("Payment request failed.");
+      if (!paymentResponse.ok) {
+        throw new Error("Payment request failed.");
+      }
+
       const paymentData = await paymentResponse.json();
-      if (!paymentData.success) throw new Error(paymentData.message || "Payment failed.");
+
+      if (!paymentData.success) {
+        throw new Error(paymentData.message || "Payment failed.");
+      }
 
       const generatedPaymentId = paymentData.payment_id || `PAY-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
 
@@ -561,8 +676,8 @@ body { font-family: Arial, sans-serif; background: #f4f5fb; margin: 0; padding: 
   <div class="row"><span class="label">Identity Verification</span><span class="value">DigiLocker Sandbox — Consent + Mock JSON</span></div>
   <div class="row"><span class="label">Mobile Number</span><span class="value">${formData.mobile}</span></div>
   <div class="row"><span class="label">Email</span><span class="value">${formData.email}</span></div>
-  <div class="row"><span class="label">Program</span><span class="value">${formData.program}</span></div>
-  <div class="row"><span class="label">Registration Fee</span><span class="value">₹${currentFee.toLocaleString("en-IN")}</span></div>
+  <div class="row"><span class="label">Programs Enrolled</span><span class="value">${cart.join(", ")}</span></div>
+  <div class="row"><span class="label">Total Registration Fee</span><span class="value">₹${currentTotalFee.toLocaleString("en-IN")}</span></div>
   <div class="row"><span class="label">Payment Status</span><span class="value">Paid — Sandbox</span></div>
   <div class="row"><span class="label">Application Status</span><span class="value">Registration Successful</span></div>
   <div class="row"><span class="label">Date</span><span class="value">${new Date().toLocaleDateString()}</span></div>
@@ -581,6 +696,177 @@ body { font-family: Arial, sans-serif; background: #f4f5fb; margin: 0; padding: 
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
   };
+
+
+  /* ============================================================
+     AUTHENTICATION PAGES (LOGIN, FORGOT PWD, CHANGE PWD)
+  ============================================================ */
+  if (currentView === "login") {
+    return (
+      <div className="app">
+        <header className="navbar">
+          <div className="brand" onClick={goHome}>
+            <div className="brand-mark">SR</div><div><h2>SmartRegTech</h2><p>Digital Registration & Compliance</p></div>
+          </div>
+        </header>
+        <main className="page-container" style={{ maxWidth: "500px", margin: "50px auto" }}>
+          <section className="content-card form-panel">
+            <h2>Login to Resume Registration</h2>
+            <p className="description">Enter the Application ID (UID) and password generated during your identity verification.</p>
+            
+            <div className="form-group" style={{ marginTop: "20px" }}>
+              <label>APPLICATION ID (UID)</label>
+              <input type="text" id="loginUid" placeholder="e.g. APP-123456" />
+            </div>
+            
+            <div className="form-group">
+              <label>PASSWORD</label>
+              <div style={{ position: "relative" }}>
+                <input 
+                  type={showLoginPwd ? "text" : "password"} 
+                  id="loginPwd" 
+                  placeholder="Enter your password" 
+                  style={{ width: "100%", paddingRight: "50px", boxSizing: "border-box" }} 
+                />
+                <button 
+                  type="button" 
+                  onClick={() => setShowLoginPwd(!showLoginPwd)} 
+                  style={{ 
+                    position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", 
+                    background: "none", border: "none", cursor: "pointer", fontSize: "12px", fontWeight: "bold", color: "#a5b4fc", padding: 0 
+                  }}
+                  title={showLoginPwd ? "Hide Password" : "Show Password"}
+                >
+                  {showLoginPwd ? "HIDE" : "SHOW"}
+                </button>
+              </div>
+            </div>
+
+            <button type="button" className="primary-button full" onClick={() => {
+              const uid = document.getElementById("loginUid").value.trim();
+              const pwd = document.getElementById("loginPwd").value.trim();
+              const user = mockUsersDB.find(u => u.uid === uid && u.password === pwd);
+              
+              if (user) {
+                setCurrentUserUid(uid);
+                setCart(user.cart || []);
+                setFormData(user.formData);
+                setVerifiedProfile(user.verifiedProfile);
+                setSelectedPreset(user.activeFlowKey);
+                setActiveFlow(PRESET_FLOWS[user.activeFlowKey].steps);
+                setCurrentStepIndex(user.currentStepIndex);
+                setCurrentView("flow");
+              } else {
+                alert("Invalid UID or Password. Please check your credentials and try again.");
+              }
+            }}>
+              Login & Resume <span>→</span>
+            </button>
+
+            <div style={{ display: "flex", justifyContent: "space-between", marginTop: "15px" }}>
+              <button type="button" className="nav-button" onClick={() => setCurrentView("forgotPwd")}>Forgot Password?</button>
+              <button type="button" className="nav-button" onClick={goHome}>Cancel</button>
+            </div>
+          </section>
+        </main>
+      </div>
+    );
+  }
+
+  if (currentView === "forgotPwd") {
+    return (
+      <div className="app">
+        <header className="navbar">
+          <div className="brand" onClick={goHome}>
+            <div className="brand-mark">SR</div><div><h2>SmartRegTech</h2><p>Digital Registration & Compliance</p></div>
+          </div>
+        </header>
+        <main className="page-container" style={{ maxWidth: "500px", margin: "50px auto" }}>
+          <section className="content-card form-panel">
+            <h2>Forgot Password</h2>
+            <p className="description">Enter your Application ID (UID) to receive a password reset link.</p>
+            
+            <div className="form-group" style={{ marginTop: "20px" }}>
+              <label>APPLICATION ID (UID)</label>
+              <input type="text" id="resetUid" placeholder="APP-XXXXXX" />
+            </div>
+
+            <button type="button" className="primary-button full" onClick={() => {
+              const uid = document.getElementById("resetUid").value.trim();
+              const user = mockUsersDB.find(u => u.uid === uid);
+              if (user) {
+                alert(`✅ SIMULATION SUCCESS: An email has been sent to the registered address with the recovered password: ${user.password}`);
+              } else {
+                alert("UID not found in the system.");
+              }
+              setCurrentView("login");
+            }}>
+              Send Reset Link
+            </button>
+
+            <button type="button" className="back-button" onClick={() => setCurrentView("login")} style={{ marginTop: "15px" }}>
+              ← Back to Login
+            </button>
+          </section>
+        </main>
+      </div>
+    );
+  }
+
+  if (currentView === "changePwd") {
+    return (
+      <div className="app">
+        <header className="navbar">
+          <div className="brand" onClick={goHome}>
+            <div className="brand-mark">SR</div><div><h2>SmartRegTech</h2><p>Digital Registration & Compliance</p></div>
+          </div>
+        </header>
+        <main className="page-container" style={{ maxWidth: "500px", margin: "50px auto" }}>
+          <section className="content-card form-panel">
+            <h2>Change Password</h2>
+            <p className="description">Update your password to something secure of your choice.</p>
+            
+            <div className="form-group" style={{ marginTop: "20px" }}>
+              <label>OLD PASSWORD</label>
+              <input type="password" id="oldPwd" placeholder="Enter current password" />
+            </div>
+
+            <div className="form-group">
+              <label>NEW PASSWORD</label>
+              <input type="password" id="newPwd" placeholder="Enter new password" />
+            </div>
+
+            <button type="button" className="primary-button full" onClick={() => {
+              const old = document.getElementById("oldPwd").value.trim();
+              const newP = document.getElementById("newPwd").value.trim();
+              const userIndex = mockUsersDB.findIndex(u => u.uid === currentUserUid);
+              
+              if (mockUsersDB[userIndex].password === old) {
+                if (newP.length < 4) {
+                  alert("New password must be at least 4 characters.");
+                  return;
+                }
+                const updatedDB = [...mockUsersDB];
+                updatedDB[userIndex].password = newP;
+                setMockUsersDB(updatedDB);
+                alert("Password changed successfully!");
+                setCurrentView("home");
+              } else {
+                alert("Old password incorrect.");
+              }
+            }}>
+              Update Password
+            </button>
+
+            <button type="button" className="back-button" onClick={goHome} style={{ marginTop: "15px" }}>
+              ← Cancel
+            </button>
+          </section>
+        </main>
+      </div>
+    );
+  }
+
 
   /* ============================================================
      ADMIN
@@ -616,6 +902,20 @@ body { font-family: Arial, sans-serif; background: #f4f5fb; margin: 0; padding: 
             <button type="button" className="nav-button" onClick={openAdmin}>
               <span>▦</span> Admin Analytics
             </button>
+            {currentUserUid ? (
+              <>
+                <button type="button" className="nav-button" onClick={() => setCurrentView("changePwd")}>
+                  Change Password
+                </button>
+                <button type="button" className="nav-button secondary" onClick={handleLogout}>
+                  Logout ({currentUserUid})
+                </button>
+              </>
+            ) : (
+              <button type="button" className="nav-button secondary" onClick={() => setCurrentView("login")}>
+                Login / Resume
+              </button>
+            )}
           </div>
         </header>
 
@@ -626,45 +926,26 @@ body { font-family: Arial, sans-serif; background: #f4f5fb; margin: 0; padding: 
               <h1>Register smarter.<br /><span>Skip the paperwork.</span></h1>
               <p className="hero-description">A secure digital registration platform that verifies identity, reduces repetitive form filling and streamlines the complete registration journey.</p>
               
-              {/* Customer Workflow Configuration Selector */}
-              <div style={{
-                margin: "24px 0",
-                padding: "16px 20px",
-                background: "rgba(108, 76, 255, 0.08)",
-                borderRadius: "14px",
-                border: "1px solid rgba(108, 76, 255, 0.3)"
-              }}>
-                <label style={{ display: "block", fontSize: "12px", color: "#b99cff", fontWeight: 800, marginBottom: "8px", letterSpacing: "0.5px" }}>
-                  ⚙️ SELECT CUSTOMER WORKFLOW CONFIGURATION
-                </label>
-                <select
-                  value={selectedPreset}
-                  onChange={(e) => handlePresetChange(e.target.value)}
-                  style={{
-                    width: "100%",
-                    padding: "12px",
-                    borderRadius: "10px",
-                    background: "#0e172a",
-                    color: "#fff",
-                    border: "1px solid #3b486d",
-                    fontSize: "14px",
-                    outline: "none",
-                    cursor: "pointer"
-                  }}
-                >
-                  {Object.entries(PRESET_FLOWS).map(([key, config]) => (
-                    <option key={key} value={key}>
-                      {config.name}
-                    </option>
-                  ))}
-                </select>
-                <small style={{ display: "block", marginTop: "8px", color: "#8a9fc2", fontSize: "12px" }}>
-                  {PRESET_FLOWS[selectedPreset].description}
-                </small>
-              </div>
+              {!currentUserUid && (
+                <div style={{ margin: "24px 0", padding: "16px 20px", background: "rgba(108, 76, 255, 0.08)", borderRadius: "14px", border: "1px solid rgba(108, 76, 255, 0.3)" }}>
+                  <label style={{ display: "block", fontSize: "12px", color: "#b99cff", fontWeight: 800, marginBottom: "8px", letterSpacing: "0.5px" }}>
+                    ⚙️ SELECT CUSTOMER WORKFLOW CONFIGURATION
+                  </label>
+                  <select value={selectedPreset} onChange={(e) => handlePresetChange(e.target.value)} style={{ width: "100%", padding: "12px", borderRadius: "10px", background: "#0e172a", color: "#fff", border: "1px solid #3b486d", fontSize: "14px", outline: "none", cursor: "pointer" }}>
+                    {Object.entries(PRESET_FLOWS).map(([key, config]) => (
+                      <option key={key} value={key}>{config.name}</option>
+                    ))}
+                  </select>
+                  <small style={{ display: "block", marginTop: "8px", color: "#8a9fc2", fontSize: "12px" }}>
+                    {PRESET_FLOWS[selectedPreset].description}
+                  </small>
+                </div>
+              )}
 
               <div className="hero-actions">
-                <button type="button" className="primary-button" onClick={startRegistration}>Start Registration <span>→</span></button>
+                <button type="button" className="primary-button" onClick={startRegistration}>
+                  {currentUserUid ? "Resume Registration" : "Start Registration"} <span>→</span>
+                </button>
                 <button type="button" className="outline-button" onClick={() => setShowCopilot(true)}>Ask AI Copilot</button>
               </div>
               <div className="trust-row">
@@ -741,7 +1022,7 @@ body { font-family: Arial, sans-serif; background: #f4f5fb; margin: 0; padding: 
   ============================================================ */
   if (activeStepId === "identity") {
     return (
-      <Page currentStep={activeStepId} onHome={goHome} onCopilot={() => setShowCopilot(true)} flowConfig={activeFlow} currentIndex={currentStepIndex}>
+      <Page currentStep={activeStepId} onHome={goHome} onCopilot={() => setShowCopilot(true)} flowConfig={activeFlow} currentIndex={currentStepIndex} currentUserUid={currentUserUid} handleLogout={handleLogout} openAdmin={openAdmin}>
         <div className="form-layout">
           <div className="form-intro">
             <div className="step-label">STEP / IDENTITY</div>
@@ -917,7 +1198,7 @@ body { font-family: Arial, sans-serif; background: #f4f5fb; margin: 0; padding: 
   ============================================================ */
   if (activeStepId === "verified") {
     return (
-      <Page currentStep={activeStepId} onHome={goHome} flowConfig={activeFlow} currentIndex={currentStepIndex}>
+      <Page currentStep={activeStepId} onHome={goHome} flowConfig={activeFlow} currentIndex={currentStepIndex} currentUserUid={currentUserUid} handleLogout={handleLogout} openAdmin={openAdmin}>
         <div className="verification-result">
           <div className="verified-icon">✓</div>
           <div className="success-badge">IDENTITY VERIFIED</div>
@@ -962,7 +1243,7 @@ body { font-family: Arial, sans-serif; background: #f4f5fb; margin: 0; padding: 
   ============================================================ */
   if (activeStepId === "form") {
     return (
-      <Page currentStep={activeStepId} onHome={goHome} flowConfig={activeFlow} currentIndex={currentStepIndex}>
+      <Page currentStep={activeStepId} onHome={goHome} flowConfig={activeFlow} currentIndex={currentStepIndex} currentUserUid={currentUserUid} handleLogout={handleLogout} openAdmin={openAdmin}>
         <div className="form-layout">
           <div className="form-intro">
             <div className="step-label">STEP / DETAILS</div>
@@ -976,34 +1257,52 @@ body { font-family: Arial, sans-serif; background: #f4f5fb; margin: 0; padding: 
 
           <div className="form-panel">
             <div className="panel-heading"><div className="panel-icon">✦</div><div><h2>Registration Details</h2><p>Complete the required fields.</p></div></div>
+            
             <div className="form-group">
               <label>MOBILE NUMBER</label>
               <input type="tel" maxLength="10" placeholder="Enter 10-digit mobile number" value={formData.mobile} onChange={(event) => updateField("mobile", event.target.value.replace(/\D/g, ""))} />
             </div>
+            
             <div className="form-group">
               <label>EMAIL ADDRESS</label>
               <input type="email" placeholder="yourname@example.com" value={formData.email} onChange={(event) => updateField("email", event.target.value)} />
             </div>
-            <div className="form-group">
-              <label>PROGRAM / COURSE</label>
-              <select value={formData.program} onChange={(event) => updateField("program", event.target.value)}>
+
+            <div className="form-group" style={{ marginTop: "24px" }}>
+              <label>PROGRAM / COURSE <span style={{ textTransform: "none", color: "#8a9fc2", fontWeight: "normal" }}>(Select one or more items to add to cart)</span></label>
+              <div style={{ display: "grid", gap: "12px", maxHeight: "250px", overflowY: "auto", background: "#0a1124", padding: "16px", borderRadius: "10px", border: "1px solid #3b486d" }}>
                 {programs.map((program) => (
-                  <option key={program} value={program}>{program}</option>
+                  <label key={program} style={{ display: "flex", alignItems: "center", gap: "12px", color: "#fff", cursor: "pointer", fontSize: "14px" }}>
+                    <input
+                      type="checkbox"
+                      checked={cart.includes(program)}
+                      onChange={() => toggleCartItem(program)}
+                      style={{ width: "20px", height: "20px", accentColor: "#6c4cff", cursor: "pointer" }}
+                    />
+                    <span>{program} <strong style={{ color: "#a5b4fc", marginLeft: "6px" }}>(₹{PROGRAM_FEES[program] || 500})</strong></span>
+                  </label>
                 ))}
-              </select>
+              </div>
+
+              {cart.length > 0 && (
+                <div style={{ marginTop: "16px", padding: "14px", background: "rgba(21,153,87,0.1)", borderRadius: "10px", border: "1px solid rgba(21,153,87,0.3)", color: "#159957", fontWeight: "bold", fontSize: "15px", display: "flex", justifyContent: "space-between" }}>
+                  <span>Cart Items: {cart.length}</span>
+                  <span>Total Fee: ₹{currentTotalFee.toLocaleString("en-IN")}</span>
+                </div>
+              )}
             </div>
             
-            {/* Compute dynamic button text based on the workflow order */}
             {(() => {
-              const nextStep = activeFlow[currentStepIndex + 1];
-              let nextLabel = "Continue";
+              const currentFlowSteps = activeFlow && activeFlow.length > 0 ? activeFlow : PRESET_FLOWS[selectedPreset].steps;
+              const nextStep = currentFlowSteps[currentStepIndex + 1];
+              let nextLabel = "Review Application";
               
-              if (nextStep?.id === "review") {
-                nextLabel = "Review Application";
-              } else if (nextStep?.id === "identity") {
+              if (nextStep?.id === "identity") {
                 nextLabel = "Continue to Identity Verification";
               } else if (nextStep?.id === "payment") {
                 nextLabel = "Continue to Payment";
+              } else if (nextStep?.id === "review") {
+                nextLabel = "Review Application";
               }
 
               return (
@@ -1025,7 +1324,7 @@ body { font-family: Arial, sans-serif; background: #f4f5fb; margin: 0; padding: 
   ============================================================ */
   if (activeStepId === "review") {
     return (
-      <Page currentStep={activeStepId} onHome={goHome} flowConfig={activeFlow} currentIndex={currentStepIndex}>
+      <Page currentStep={activeStepId} onHome={goHome} flowConfig={activeFlow} currentIndex={currentStepIndex} currentUserUid={currentUserUid} handleLogout={handleLogout} openAdmin={openAdmin}>
         <div className="review-page">
           <div className="step-label">STEP / REVIEW</div>
           <h1>Review your application.</h1>
@@ -1038,7 +1337,7 @@ body { font-family: Arial, sans-serif; background: #f4f5fb; margin: 0; padding: 
                 <div><h2>Verified Information</h2><span>Retrieved through DigiLocker</span></div>
               </div>
               <ReviewRow label="Applicant Name" value={verifiedProfile?.name || "Verified Applicant"} verified />
-              <ReviewRow label="Identity" value="Verified" verified />
+              <ReviewRow label="Identity" value={currentUserUid ? `UID: ${currentUserUid}` : "Verified"} verified />
               <ReviewRow label="Date of Birth" value={verifiedProfile?.dob || "—"} verified />
             </div>
             <div className="review-card">
@@ -1048,7 +1347,15 @@ body { font-family: Arial, sans-serif; background: #f4f5fb; margin: 0; padding: 
               </div>
               <ReviewRow label="Mobile" value={formData.mobile} />
               <ReviewRow label="Email" value={formData.email} />
-              <ReviewRow label="Program" value={formData.program} />
+              
+              <div style={{ marginTop: "15px", paddingTop: "15px", borderTop: "1px dashed #3b486d" }}>
+                <span style={{ fontSize: "12px", color: "#8a9fc2", fontWeight: 700 }}>COURSES SELECTED IN CART ({cart.length})</span>
+                {cart.map((item, idx) => (
+                  <div key={idx} style={{ color: "#fff", fontSize: "14px", marginTop: "8px", fontWeight: "bold" }}>
+                    • {item}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -1058,7 +1365,7 @@ body { font-family: Arial, sans-serif; background: #f4f5fb; margin: 0; padding: 
           </div>
 
           <div className="review-actions">
-            <button type="button" className="back-button" onClick={goToPrevStep}>← Back</button>
+            <button type="button" className="back-button" onClick={goToPrevStep}>← Edit Details</button>
             <button type="button" className="primary-button" onClick={goToNextStep}>Continue to Payment <span>→</span></button>
           </div>
         </div>
@@ -1071,24 +1378,50 @@ body { font-family: Arial, sans-serif; background: #f4f5fb; margin: 0; padding: 
   ============================================================ */
   if (activeStepId === "payment") {
     return (
-      <Page currentStep={activeStepId} onHome={goHome} flowConfig={activeFlow} currentIndex={currentStepIndex}>
+      <Page currentStep={activeStepId} onHome={goHome} flowConfig={activeFlow} currentIndex={currentStepIndex} currentUserUid={currentUserUid} handleLogout={handleLogout} openAdmin={openAdmin}>
         <div className="payment-page">
           <div className="step-label">STEP / PAYMENT</div>
           <h1>Complete your payment.</h1>
-          <p className="description">Choose a payment method and complete the sandbox transaction.</p>
+          <p className="description">Manage your cart and complete the sandbox transaction.</p>
 
           <div className="payment-layout" style={{ display: "grid", gridTemplateColumns: "minmax(0, 1.5fr) minmax(280px, .7fr)", gap: "24px", alignItems: "start" }}>
             <div className="payment-card" style={{ padding: "28px" }}>
               <div className="payment-card-top">
-                <div><span>REGISTRATION FEE</span><h2>₹{currentFee.toLocaleString("en-IN")}</h2></div>
+                <div><span>TOTAL CART FEE</span><h2>₹{currentTotalFee.toLocaleString("en-IN")}</h2></div>
                 <div className="sandbox-pill">SANDBOX</div>
               </div>
 
               <div className="payment-divider" />
 
               <div className="payment-detail"><span>Applicant</span><strong>{verifiedProfile?.name || "Verified Applicant"}</strong></div>
-              <div className="payment-detail"><span>Program</span><strong>{getShortProgramName(formData.program)}</strong></div>
-              <div className="payment-detail"><span>Identity</span><strong className="green-text">✓ DigiLocker Verified</strong></div>
+              <div className="payment-detail"><span>Identity UID</span><strong className="green-text">✓ {currentUserUid || "Verified"}</strong></div>
+
+              <div style={{ marginTop: "24px", marginBottom: "24px" }}>
+                <h3 style={{ marginBottom: "12px", fontSize: "14px", color: "#a5b4fc" }}>Manage Cart Items</h3>
+                <div style={{ display: "grid", gap: "10px" }}>
+                  {cart.map((item, idx) => (
+                    <div key={idx} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px", background: "#0a1124", border: "1px solid #3b486d", borderRadius: "10px" }}>
+                      <div>
+                        <strong style={{ display: "block", color: "#fff", fontSize: "13px" }}>{item}</strong>
+                        <span style={{ color: "#159957", fontSize: "12px", fontWeight: "bold" }}>₹{PROGRAM_FEES[item] || 500}</span>
+                      </div>
+                      <button 
+                        type="button" 
+                        onClick={() => toggleCartItem(item)} 
+                        disabled={processingPayment}
+                        style={{ background: "rgba(255, 77, 79, 0.1)", color: "#ff4d4f", border: "1px solid rgba(255, 77, 79, 0.3)", padding: "6px 12px", borderRadius: "6px", cursor: processingPayment ? "not-allowed" : "pointer", fontSize: "12px", fontWeight: "bold" }}
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  ))}
+                  {cart.length === 0 && (
+                    <div style={{ padding: "15px", background: "rgba(255, 77, 79, 0.1)", border: "1px solid rgba(255, 77, 79, 0.3)", borderRadius: "10px", color: "#ff4d4f", fontSize: "14px" }}>
+                      Your cart is currently empty. Please go back to add courses to your cart before proceeding.
+                    </div>
+                  )}
+                </div>
+              </div>
 
               <div style={{ marginTop: "24px" }}>
                 <h3 style={{ marginBottom: "12px" }}>Select payment method</h3>
@@ -1098,8 +1431,8 @@ body { font-family: Arial, sans-serif; background: #f4f5fb; margin: 0; padding: 
                     ["card", "Card", "Credit / Debit Card", "💳"],
                     ["netbanking", "Net Banking", "All major banks", "🏦"],
                   ].map(([id, title, subtitle, icon]) => (
-                    <button key={id} type="button" onClick={() => setPaymentMethod(id)} disabled={processingPayment}
-                      style={{ display: "grid", gridTemplateColumns: "42px 1fr auto", alignItems: "center", gap: "12px", width: "100%", padding: "14px", borderRadius: "12px", border: paymentMethod === id ? "1px solid #7556ff" : "1px solid #293c5c", background: paymentMethod === id ? "#151f3c" : "#101c30", color: "#fff", textAlign: "left", cursor: processingPayment ? "not-allowed" : "pointer" }}>
+                    <button key={id} type="button" onClick={() => setPaymentMethod(id)} disabled={processingPayment || cart.length === 0}
+                      style={{ display: "grid", gridTemplateColumns: "42px 1fr auto", alignItems: "center", gap: "12px", width: "100%", padding: "14px", borderRadius: "12px", border: paymentMethod === id ? "1px solid #7556ff" : "1px solid #293c5c", background: paymentMethod === id ? "#151f3c" : "#101c30", color: "#fff", textAlign: "left", cursor: processingPayment || cart.length === 0 ? "not-allowed" : "pointer" }}>
                       <span style={{ width: "42px", height: "42px", display: "flex", alignItems: "center", justifyContent: "center", borderRadius: "11px", background: "#211d49", color: "#b99cff", fontWeight: 800 }}>{icon}</span>
                       <span><strong style={{ display: "block" }}>{title}</strong><small style={{ color: "#7890b2" }}>{subtitle}</small></span>
                       <span style={{ color: "#a47bff", fontSize: "18px" }}>{paymentMethod === id ? "●" : "○"}</span>
@@ -1108,7 +1441,7 @@ body { font-family: Arial, sans-serif; background: #f4f5fb; margin: 0; padding: 
                 </div>
               </div>
 
-              {paymentMethod === "upi" && (
+              {paymentMethod === "upi" && cart.length > 0 && (
                 <div style={{ marginTop: "18px" }}>
                   <label style={{ display: "block", marginBottom: "8px", fontWeight: 700 }}>UPI ID</label>
                   <input value={upiId} onChange={(e) => setUpiId(e.target.value)} placeholder="demo@upi" disabled={processingPayment} style={{ width: "100%", boxSizing: "border-box", padding: "14px", borderRadius: "11px", border: "1px solid #33496d", background: "#081222", color: "#fff" }} />
@@ -1116,7 +1449,7 @@ body { font-family: Arial, sans-serif; background: #f4f5fb; margin: 0; padding: 
                 </div>
               )}
 
-              {paymentMethod !== "upi" && (
+              {paymentMethod !== "upi" && cart.length > 0 && (
                 <div style={{ marginTop: "18px", padding: "16px", borderRadius: "12px", border: "1px dashed #40577c", background: "#0a1527", color: "#9aadd0", fontSize: "13px" }}>
                   🧪 This prototype simulates {paymentMethod === "card" ? "card" : "net banking"} payment. No real financial credentials are required.
                 </div>
@@ -1124,7 +1457,7 @@ body { font-family: Arial, sans-serif; background: #f4f5fb; margin: 0; padding: 
 
               <div className="payment-total" style={{ marginTop: "24px" }}>
                 <span>Total payable</span>
-                <strong>₹{currentFee.toLocaleString("en-IN")}</strong>
+                <strong>₹{currentTotalFee.toLocaleString("en-IN")}</strong>
               </div>
 
               {paymentStatus === "processing" && (
@@ -1136,8 +1469,8 @@ body { font-family: Arial, sans-serif; background: #f4f5fb; margin: 0; padding: 
 
               <div className="payment-actions">
                 <button type="button" className="back-button" onClick={goToPrevStep} disabled={processingPayment}>← Back</button>
-                <button type="button" className="primary-button" onClick={completePayment} disabled={processingPayment}>
-                  {processingPayment ? "Processing..." : `Pay ₹${currentFee.toLocaleString("en-IN")}`}
+                <button type="button" className="primary-button" onClick={completePayment} disabled={processingPayment || cart.length === 0}>
+                  {processingPayment ? "Processing..." : `Pay ₹${currentTotalFee.toLocaleString("en-IN")}`}
                   {!processingPayment && <span>→</span>}
                 </button>
               </div>
@@ -1149,7 +1482,10 @@ body { font-family: Arial, sans-serif; background: #f4f5fb; margin: 0; padding: 
               <p>Complete your registration payment in seconds.</p>
 
               <div className="sandbox-warning">
-                <strong>Registration Fee</strong><span>₹{currentFee.toLocaleString("en-IN")}</span>
+                <strong>Items in Cart</strong><span>{cart.length}</span>
+              </div>
+              <div className="sandbox-warning">
+                <strong>Total Fee</strong><span>₹{currentTotalFee.toLocaleString("en-IN")}</span>
               </div>
               <div className="sandbox-warning">
                 <strong>Identity</strong><span className="green-text">✓ DigiLocker Verified</span>
@@ -1169,7 +1505,7 @@ body { font-family: Arial, sans-serif; background: #f4f5fb; margin: 0; padding: 
   ============================================================ */
   if (activeStepId === "success") {
     return (
-      <Page currentStep={activeStepId} onHome={goHome} flowConfig={activeFlow} currentIndex={currentStepIndex}>
+      <Page currentStep={activeStepId} onHome={goHome} flowConfig={activeFlow} currentIndex={currentStepIndex} currentUserUid={currentUserUid} handleLogout={handleLogout} openAdmin={openAdmin}>
         <div className="success-page">
           <div className="success-large-icon">✓</div>
           <div className="success-badge">REGISTRATION SUCCESSFUL</div>
@@ -1182,8 +1518,9 @@ body { font-family: Arial, sans-serif; background: #f4f5fb; margin: 0; padding: 
 
           <div className="success-summary">
             <div><span>Applicant</span><strong>{verifiedProfile?.name || "Verified Applicant"}</strong></div>
+            <div><span>UID</span><strong>{currentUserUid || "Verified"}</strong></div>
             <div><span>Verification</span><strong className="green-text">✓ Verified</strong></div>
-            <div><span>Payment</span><strong className="green-text">✓ Paid — ₹{currentFee.toLocaleString("en-IN")}</strong></div>
+            <div><span>Payment</span><strong className="green-text">✓ Paid — ₹{currentTotalFee.toLocaleString("en-IN")}</strong></div>
             <div><span>Payment ID</span><strong>{paymentId || "Sandbox transaction"}</strong></div>
             <div><span>Status</span><strong className="green-text">✓ Successful</strong></div>
           </div>
@@ -1203,7 +1540,7 @@ body { font-family: Arial, sans-serif; background: #f4f5fb; margin: 0; padding: 
 /* ============================================================
    PAGE WRAPPER
 ============================================================ */
-function Page({ children, currentStep, onHome, onCopilot, flowConfig, currentIndex }) {
+function Page({ children, currentStep, onHome, onCopilot, flowConfig, currentIndex, currentUserUid, handleLogout, openAdmin }) {
   const visibleSteps = flowConfig.filter((step) => step.showInProgress);
 
   return (
@@ -1217,7 +1554,14 @@ function Page({ children, currentStep, onHome, onCopilot, flowConfig, currentInd
           {onCopilot && (
             <button type="button" className="nav-button secondary" onClick={onCopilot}><span>✦</span> AI Copilot</button>
           )}
-          <div className="secure-nav"><span>●</span> Secure Session</div>
+          {openAdmin && (
+            <button type="button" className="nav-button" onClick={openAdmin}><span>▦</span> Admin Analytics</button>
+          )}
+          {currentUserUid ? (
+            <button type="button" className="nav-button secondary" onClick={handleLogout}>Logout ({currentUserUid})</button>
+          ) : (
+            <div className="secure-nav"><span>●</span> Secure Session</div>
+          )}
         </div>
       </header>
 
