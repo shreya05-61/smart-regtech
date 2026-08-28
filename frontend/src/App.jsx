@@ -5,7 +5,7 @@ import "./SmartRegTech_OTP_Popup.css";
 import "./new_digilocker.css";
 import "./SmartRegTech_mobile_responsive.css";
 
-const API_BASE = "http://localhost:8000";
+const API_BASE = "https://smart-regtech.onrender.com";
 const DEMO_IDENTITY = "999988887777"; // Change to your 12-digit demo number
 const DEMO_OTP = "123456";
 
