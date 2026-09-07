@@ -73,47 +73,38 @@ const fetchMockDigiLockerProfile = async () => {
 };
 
 // ============================================================
-// RELATIONAL DATA MODEL: EXPANDED COLLEGE & COURSE CATALOG
+// CATALOG DATA: EXAM FEES (1000 - 2000) & PROGRAM FEES (> EXAM)
 // ============================================================
 const COURSE_CATALOG = {
-  // Symbiosis
-  "SIU-BTECH-CS": { university: "Symbiosis International University (Pune)", name: "B.Tech (Computer Science & Engineering)", exam: "SITEEE 2026", fee: 1500, eligibilityType: "PCM: 91.3%" },
-  "SIU-BBA": { university: "Symbiosis International University (Pune)", name: "BBA (Honours)", exam: "SET 2026", fee: 1200, eligibilityType: "Aggregate: 92.8%" },
-  "SIU-BALLB": { university: "Symbiosis International University (Pune)", name: "B.A. LL.B (Honours)", exam: "SLAT 2026", fee: 1500, eligibilityType: "Aggregate: 92.8%" },
+  "SIU-BTECH-CS": { university: "Symbiosis International University (Pune)", name: "B.Tech (Computer Science & Engineering)", exam: "SITEEE 2026", programFee: 4500, examFee: 1500, eligibilityType: "PCM: 91.3%" },
+  "SIU-BBA": { university: "Symbiosis International University (Pune)", name: "BBA (Honours)", exam: "SET 2026", programFee: 3800, examFee: 1200, eligibilityType: "Aggregate: 92.8%" },
+  "SIU-BALLB": { university: "Symbiosis International University (Pune)", name: "B.A. LL.B (Honours)", exam: "SLAT 2026", programFee: 4200, examFee: 1400, eligibilityType: "Aggregate: 92.8%" },
   
-  // VIT
-  "VIT-BTECH-CS": { university: "Vellore Institute of Technology (VIT)", name: "B.Tech (Computer Science)", exam: "VITEEE 2026", fee: 1350, eligibilityType: "PCM: 91.3%" },
-  "VIT-BTECH-EC": { university: "Vellore Institute of Technology (VIT)", name: "B.Tech (Electronics & Communication)", exam: "VITEEE 2026", fee: 1350, eligibilityType: "PCM: 91.3%" },
-  "VIT-BCA": { university: "Vellore Institute of Technology (VIT)", name: "BCA (Data Analytics)", exam: "Merit Based Admission", fee: 800, eligibilityType: "Aggregate: 92.8%" },
+  "VIT-BTECH-CS": { university: "Vellore Institute of Technology (VIT)", name: "B.Tech (Computer Science)", exam: "VITEEE 2026", programFee: 5000, examFee: 1600, eligibilityType: "PCM: 91.3%" },
+  "VIT-BTECH-EC": { university: "Vellore Institute of Technology (VIT)", name: "B.Tech (Electronics & Communication)", exam: "VITEEE 2026", programFee: 4800, examFee: 1600, eligibilityType: "PCM: 91.3%" },
+  "VIT-BCA": { university: "Vellore Institute of Technology (VIT)", name: "BCA (Data Analytics)", exam: "Merit Based Admission", programFee: 3500, examFee: 0, eligibilityType: "Aggregate: 92.8%" },
 
-  // BITS Pilani
-  "BITS-BE-CS": { university: "Birla Institute of Technology and Science (BITS)", name: "B.E. (Computer Science)", exam: "BITSAT 2026", fee: 2000, eligibilityType: "PCM: 91.3%" },
-  "BITS-BE-MECH": { university: "Birla Institute of Technology and Science (BITS)", name: "B.E. (Mechanical Engineering)", exam: "BITSAT 2026", fee: 2000, eligibilityType: "PCM: 91.3%" },
-  "BITS-BPHARM": { university: "Birla Institute of Technology and Science (BITS)", name: "B.Pharm (Honours)", exam: "BITSAT 2026", fee: 1800, eligibilityType: "PCB/PCM: 91.3%" },
+  "BITS-BE-CS": { university: "Birla Institute of Technology and Science (BITS)", name: "B.E. (Computer Science)", exam: "BITSAT 2026", programFee: 6000, examFee: 2000, eligibilityType: "PCM: 91.3%" },
+  "BITS-BE-MECH": { university: "Birla Institute of Technology and Science (BITS)", name: "B.E. (Mechanical Engineering)", exam: "BITSAT 2026", programFee: 5500, examFee: 2000, eligibilityType: "PCM: 91.3%" },
+  "BITS-BPHARM": { university: "Birla Institute of Technology and Science (BITS)", name: "B.Pharm (Honours)", exam: "BITSAT 2026", programFee: 4500, examFee: 2000, eligibilityType: "PCB/PCM: 91.3%" },
 
-  // Delhi University
-  "DU-BCOM": { university: "Delhi University (DU)", name: "B.Com (Honours)", exam: "CUET UG 2026", fee: 500, eligibilityType: "Aggregate: 92.8%" },
-  "DU-BA-ECO": { university: "Delhi University (DU)", name: "B.A. (Honours) Economics", exam: "CUET UG 2026", fee: 500, eligibilityType: "Aggregate: 92.8%" },
-  "DU-BSC-MATH": { university: "Delhi University (DU)", name: "B.Sc. (Honours) Mathematics", exam: "CUET UG 2026", fee: 500, eligibilityType: "PCM: 91.3%" },
+  "DU-BCOM": { university: "Delhi University (DU)", name: "B.Com (Honours)", exam: "CUET UG 2026", programFee: 3000, examFee: 1000, eligibilityType: "Aggregate: 92.8%" },
+  "DU-BA-ECO": { university: "Delhi University (DU)", name: "B.A. (Honours) Economics", exam: "CUET UG 2026", programFee: 3200, examFee: 1000, eligibilityType: "Aggregate: 92.8%" },
+  "DU-BSC-MATH": { university: "Delhi University (DU)", name: "B.Sc. (Honours) Mathematics", exam: "CUET UG 2026", programFee: 3400, examFee: 1000, eligibilityType: "PCM: 91.3%" },
 
-  // IIM Rohtak
-  "IIM-IPM": { university: "Indian Institute of Management (IIM) Rohtak", name: "Five Year Integrated Programme in Management (IPM)", exam: "IPMAT 2026", fee: 2500, eligibilityType: "Aggregate: 92.8%" },
+  "IIM-IPM": { university: "Indian Institute of Management (IIM) Rohtak", name: "Five Year Integrated Programme in Management (IPM)", exam: "IPMAT 2026", programFee: 7500, examFee: 2000, eligibilityType: "Aggregate: 92.8%" },
 
-  // IIT Bombay
-  "IITB-BTECH-CS": { university: "Indian Institute of Technology (IIT) Bombay", name: "B.Tech in Computer Science and Engineering", exam: "JEE Advanced 2026", fee: 3000, eligibilityType: "JEE Adv Top Ranks" },
-  "IITB-BTECH-EE": { university: "Indian Institute of Technology (IIT) Bombay", name: "B.Tech in Electrical Engineering", exam: "JEE Advanced 2026", fee: 3000, eligibilityType: "JEE Adv Top Ranks" },
+  "IITB-BTECH-CS": { university: "Indian Institute of Technology (IIT) Bombay", name: "B.Tech in Computer Science and Engineering", exam: "JEE Advanced 2026", programFee: 6500, examFee: 1900, eligibilityType: "JEE Adv Top Ranks" },
+  "IITB-BTECH-EE": { university: "Indian Institute of Technology (IIT) Bombay", name: "B.Tech in Electrical Engineering", exam: "JEE Advanced 2026", programFee: 6200, examFee: 1900, eligibilityType: "JEE Adv Top Ranks" },
 
-  // Anna University
-  "ANNA-BTECH-IT": { university: "Anna University (CEG Campus, Chennai)", name: "B.Tech (Information Technology)", exam: "TNEA Counseling 2026", fee: 1000, eligibilityType: "PCM Cutoff: 195+" },
-  "ANNA-BE-CIVIL": { university: "Anna University (CEG Campus, Chennai)", name: "B.E. (Civil Engineering)", exam: "TNEA Counseling 2026", fee: 1000, eligibilityType: "PCM Cutoff: 180+" },
+  "ANNA-BTECH-IT": { university: "Anna University (CEG Campus, Chennai)", name: "B.Tech (Information Technology)", exam: "TNEA Counseling 2026", programFee: 3500, examFee: 1000, eligibilityType: "PCM Cutoff: 195+" },
+  "ANNA-BE-CIVIL": { university: "Anna University (CEG Campus, Chennai)", name: "B.E. (Civil Engineering)", exam: "TNEA Counseling 2026", programFee: 3200, examFee: 1000, eligibilityType: "PCM Cutoff: 180+" },
 
-  // Manipal Academy of Higher Education (MAHE)
-  "MAHE-BTECH-AI": { university: "Manipal Academy of Higher Education (MAHE)", name: "B.Tech (Artificial Intelligence & Machine Learning)", exam: "MET 2026", fee: 1600, eligibilityType: "PCM: 85%+" },
-  "MAHE-BBA": { university: "Manipal Academy of Higher Education (MAHE)", name: "BBA (FinTech)", exam: "Merit Based Admission", fee: 1200, eligibilityType: "Aggregate: 80%+" },
+  "MAHE-BTECH-AI": { university: "Manipal Academy of Higher Education (MAHE)", name: "B.Tech (Artificial Intelligence & Machine Learning)", exam: "MET 2026", programFee: 4600, examFee: 1400, eligibilityType: "PCM: 85%+" },
+  "MAHE-BBA": { university: "Manipal Academy of Higher Education (MAHE)", name: "BBA (FinTech)", exam: "Merit Based Admission", programFee: 3800, examFee: 0, eligibilityType: "Aggregate: 80%+" },
 
-  // SRM Institute of Science and Technology
-  "SRM-BTECH-IOT": { university: "SRM Institute of Science and Technology", name: "B.Tech (Cloud Computing & IoT)", exam: "SRMJEE 2026", fee: 1200, eligibilityType: "PCM: 75%+" },
-  "SRM-BARCH": { university: "SRM Institute of Science and Technology", name: "Bachelor of Architecture (B.Arch)", exam: "NATA 2026", fee: 1500, eligibilityType: "NATA Qualified + PCM" }
+  "SRM-BTECH-IOT": { university: "SRM Institute of Science and Technology", name: "B.Tech (Cloud Computing & IoT)", exam: "SRMJEE 2026", programFee: 4200, examFee: 1300, eligibilityType: "PCM: 75%+" },
+  "SRM-BARCH": { university: "SRM Institute of Science and Technology", name: "Bachelor of Architecture (B.Arch)", exam: "NATA 2026", programFee: 4900, examFee: 1700, eligibilityType: "NATA Qualified + PCM" }
 };
 
 const EXAM_SCHEDULE_OPTIONS = {
@@ -133,30 +124,17 @@ const EXAM_SCHEDULE_OPTIONS = {
 
 const CITIES = ["Pune", "Bengaluru", "Delhi NCR", "Chennai", "Hyderabad", "Mumbai", "Kolkata", "Ahmedabad", "Kochi", "Jaipur"];
 
-const getRequiredExams = (cart) => {
-  const exams = new Set();
-  if (Array.isArray(cart)) {
-    cart.forEach(program => {
-      if (COURSE_CATALOG[program]?.exam && COURSE_CATALOG[program].exam !== "Merit Based Admission") {
-        exams.add(COURSE_CATALOG[program].exam);
-      }
-    });
-  }
-  return Array.from(exams);
-};
-
-// Helper to check if any selected exam actually requires a physical test center
 const requiresTestCenter = (examsList) => {
-  return examsList.some(exam => !exam.includes("Online Document Verification") && !exam.includes("Remote Proctored"));
+  return examsList.some(exam => !exam.includes("TNEA Counseling") && !exam.includes("SRMJEE"));
 };
 
 function getCopilotAnswer(question) {
   const q = question.toLowerCase();
   if (q.includes("digilocker") || q.includes("verification")) return "The prototype follows a realistic identity verification flow: enter the demo 12-digit identity number, verify a demo OTP, and provide consent to securely fetch profile details.";
   if (q.includes("login") || q.includes("password") || q.includes("uid") || q.includes("resume")) return "Once your identity is verified, the system automatically generates an Application ID (UID) and Password. You can use these on the Login page to resume your application anytime.";
-  if (q.includes("cart") || q.includes("courses") || q.includes("program") || q.includes("exam")) return "You can select multiple programs. The system looks up each program in our academic database and automatically assigns the exact entrance exams required for those specific universities.";
+  if (q.includes("cart") || q.includes("courses") || q.includes("program") || q.includes("exam")) return "Selecting academic programs adds program fees, and you can optionally opt-in for their mapped entrance exams priced between 1000 and 2000.";
   if (q.includes("payment") || q.includes("fee") || q.includes("upi")) return "Payment is handled through a sandbox environment. We support simulated UPI, Card, and Netbanking. No real money is charged during this prototype phase.";
-  if (q.includes("process") || q.includes("registration") || q.includes("steps")) return "The workflow is: 1. Verify Identity 2. Select Programs & Test Preferences 3. Review Application 4. Complete Payment 5. Dashboard.";
+  if (q.includes("process") || q.includes("registration") || q.includes("steps")) return "The workflow is: 1. Verify Identity 2. Select Programs & Optional Exams Cart 3. Review Application 4. Complete Payment 5. Dashboard.";
   return `I am currently in prototype fallback mode. Once connected to a live LLM via the FastAPI backend, I will be able to fully answer: "${question}"`;
 }
 
@@ -276,7 +254,6 @@ function App() {
   const [cardCvv, setCardCvv] = useState("");
 
   const [paymentStatus, setPaymentStatus] = useState("idle");
-  const [paymentId, setPaymentId] = useState("");
   const [identityPhase, setIdentityPhase] = useState("aadhaar");
   const [otp, setOtp] = useState("");
   const otpInputRefs = useRef([]);
@@ -287,6 +264,7 @@ function App() {
   
   const [cityPreferences, setCityPreferences] = useState({ pref1: "Chennai", pref2: "Bengaluru", pref3: "Hyderabad" });
   const [selectedExamSlots, setSelectedExamSlots] = useState({});
+  const [selectedExamsCart, setSelectedExamsCart] = useState([]);
 
   const [activeDocument, setActiveDocument] = useState(null);
   
@@ -298,11 +276,17 @@ function App() {
   const [formData, setFormData] = useState({ identity: "" });
   const [cart, setCart] = useState([]);
 
-  const currentTotalFee = (Array.isArray(cart) ? cart : []).reduce((sum, program) => sum + (COURSE_CATALOG[program]?.fee || 500), 0);
+  // Consolidated Fee Calculation: Programs fee + Selected Optional Exams fee
+  const totalProgramsFee = (Array.isArray(cart) ? cart : []).reduce((sum, progKey) => sum + (COURSE_CATALOG[progKey]?.programFee || 3000), 0);
+  const totalExamsFee = (Array.isArray(selectedExamsCart) ? selectedExamsCart : []).reduce((sum, examName) => {
+    const matchingProgKey = Object.keys(COURSE_CATALOG).find(k => COURSE_CATALOG[k].exam === examName);
+    const examFee = matchingProgKey ? COURSE_CATALOG[matchingProgKey].examFee : 1200;
+    return sum + examFee;
+  }, 0);
+  const currentTotalFee = totalProgramsFee + totalExamsFee;
   
   const activeStepId = currentView === "flow" ? (activeFlow[currentStepIndex]?.id || "home") : currentView;
-  const requiredExamsList = getRequiredExams(cart);
-  const showCenterPreferences = requiredExamsList.length > 0 && requiresTestCenter(requiredExamsList);
+  const showCenterPreferences = selectedExamsCart.length > 0 && requiresTestCenter(selectedExamsCart);
 
   useEffect(() => {
     if (currentStepIndex > highestStepIndex) {
@@ -323,12 +307,12 @@ function App() {
         if (!Array.isArray(prev)) return [];
         return prev.map(user => 
           user.uid === currentUserUid 
-            ? { ...user, cart, formData, currentStepIndex, highestStepIndex, verifiedProfile, activeFlowKey: selectedPreset, cityPreferences, selectedExamSlots } 
+            ? { ...user, cart, selectedExamsCart, formData, currentStepIndex, highestStepIndex, verifiedProfile, activeFlowKey: selectedPreset, cityPreferences, selectedExamSlots } 
             : user
         );
       });
     }
-  }, [cart, formData, currentStepIndex, highestStepIndex, verifiedProfile, selectedPreset, currentUserUid, cityPreferences, selectedExamSlots]);
+  }, [cart, selectedExamsCart, formData, currentStepIndex, highestStepIndex, verifiedProfile, selectedPreset, currentUserUid, cityPreferences, selectedExamSlots]);
 
   const handlePresetChange = (presetKey) => {
     setSelectedPreset(presetKey);
@@ -371,6 +355,7 @@ function App() {
   const handleLogout = () => {
     setCurrentUserUid(null);
     setCart([]);
+    setSelectedExamsCart([]);
     setFormData({ identity: "" });
     setCityPreferences({ pref1: "Chennai", pref2: "Bengaluru", pref3: "Hyderabad" });
     setSelectedExamSlots({});
@@ -413,6 +398,7 @@ function App() {
             uid,
             password: pwd,
             cart: [],
+            selectedExamsCart: [],
             formData: { identity: formData.identity },
             currentStepIndex: currentStepIndex + 1,
             highestStepIndex: currentStepIndex + 1,
@@ -444,10 +430,29 @@ function App() {
   };
 
   const toggleCartItem = (program) => {
+    const courseData = COURSE_CATALOG[program];
+    const examName = courseData?.exam;
+
     if (cart.includes(program)) {
       setCart(cart.filter(item => item !== program));
+      const remainingPrograms = cart.filter(item => item !== program);
+      const stillNeeded = remainingPrograms.some(p => COURSE_CATALOG[p]?.exam === examName);
+      if (!stillNeeded && examName && examName !== "Merit Based Admission") {
+        setSelectedExamsCart(selectedExamsCart.filter(e => e !== examName));
+      }
     } else {
       setCart([...cart, program]);
+      if (examName && examName !== "Merit Based Admission" && !selectedExamsCart.includes(examName)) {
+        setSelectedExamsCart([...selectedExamsCart, examName]);
+      }
+    }
+  };
+
+  const toggleExamSelection = (examName) => {
+    if (selectedExamsCart.includes(examName)) {
+      setSelectedExamsCart(selectedExamsCart.filter(e => e !== examName));
+    } else {
+      setSelectedExamsCart([...selectedExamsCart, examName]);
     }
   };
 
@@ -459,6 +464,7 @@ function App() {
       setFetchStatus("idle");
       setVerifiedProfile(null);
       setCart([]);
+      setSelectedExamsCart([]);
       setFormData({ identity: "" });
       setCityPreferences({ pref1: "Chennai", pref2: "Bengaluru", pref3: "Hyderabad" });
       setSelectedExamSlots({});
@@ -524,6 +530,7 @@ function App() {
           uid,
           password: pwd,
           cart: [],
+          selectedExamsCart: [],
           formData: { identity: formData.identity },
           currentStepIndex: currentStepIndex + 1,
           highestStepIndex: currentStepIndex + 1,
@@ -551,7 +558,7 @@ function App() {
       alert("Please select at least one program to add to your cart.");
       return;
     }
-    const missingSlots = requiredExamsList.filter(exam => !selectedExamSlots[exam]);
+    const missingSlots = selectedExamsCart.filter(examName => !selectedExamSlots[examName]);
     if (missingSlots.length > 0) {
       alert(`Please select your preferred Date & Shift for: ${missingSlots.join(", ")}`);
       return;
@@ -612,7 +619,6 @@ function App() {
       if (!paymentData.success) throw new Error(paymentData.message || "Payment failed.");
       
       const generatedPaymentId = paymentData.payment_id || `PAY-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
-      setPaymentId(generatedPaymentId);
       setPaymentStatus("success");
       await new Promise((resolve) => setTimeout(resolve, 700));
       goToNextStep();
@@ -626,8 +632,18 @@ function App() {
   };
 
   const downloadReceipt = () => {
-    const examsSummaryHTML = requiredExamsList.map(e => `• ${e} (${selectedExamSlots[e]})`).join("<br/>");
-    const receiptHTML = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>SmartRegTech Registration Receipt</title><style>body { font-family: Arial, sans-serif; background: #f4f5fb; margin: 0; padding: 40px; color: #182033; }.receipt { max-width: 700px; margin: auto; background: white; padding: 40px; border-radius: 16px; box-shadow: 0 8px 30px rgba(0,0,0,0.12); }.header { text-align: center; border-bottom: 2px solid #6c4cff; padding-bottom: 20px; margin-bottom: 25px; }.logo { font-size: 30px; font-weight: bold; color: #6c4cff; }.subtitle { color: #666; margin-top: 5px; }.success { text-align: center; color: #159957; font-size: 20px; font-weight: bold; margin: 20px 0; }.registration-id { text-align: center; background: #f0edff; padding: 18px; border-radius: 10px; margin: 25px 0; }.registration-id strong { display: block; font-size: 24px; color: #6c4cff; margin-top: 8px; }.row { display: flex; justify-content: space-between; gap: 30px; padding: 14px 0; border-bottom: 1px solid #e5e5e5; }.label { color: #666; }.value { font-weight: bold; text-align: right; }.footer { margin-top: 30px; text-align: center; font-size: 13px; color: #777; }</style></head><body><div class="receipt"> <div class="header"> <div class="logo">SmartRegTech</div> <div class="subtitle">Zero-Friction Registration Portal</div> </div> <div class="success">✓ REGISTRATION SUCCESSFUL</div> <div class="registration-id">Registration ID<strong>${registrationId}</strong></div> <div class="row"><span class="label">Applicant Name</span><span class="value">${verifiedProfile?.name || "Verified Applicant"}</span></div> <div class="row"><span class="label">Identity Verification</span><span class="value">Sandbox — Consent + Mock JSON</span></div> <div class="row"><span class="label">Mobile Number</span><span class="value">${verifiedProfile?.phone || "9876543210"}</span></div> <div class="row"><span class="label">Email</span><span class="value">${verifiedProfile?.email || "rohan.v@example.com"}</span></div> <div class="row"><span class="label">Programs Enrolled</span><span class="value">${cart.map(id => COURSE_CATALOG[id]?.name).join(", ")}</span></div> <div class="row"><span class="label">Assigned Entrance Exams</span><span class="value">${examsSummaryHTML || "Merit Based (No Exam)"}</span></div> <div class="row"><span class="label">Test Center Preferences</span><span class="value">${showCenterPreferences ? `${cityPreferences.pref1}, ${cityPreferences.pref2}, ${cityPreferences.pref3}` : "Online / Direct Counseling"}</span></div> <div class="row"><span class="label">Total Registration Fee</span><span class="value">₹${currentTotalFee.toLocaleString("en-IN")}</span></div> <div class="row"><span class="label">Payment Status</span><span class="value">Paid — Sandbox</span></div> <div class="row"><span class="label">Application Status</span><span class="value">Registration Successful</span></div> <div class="row"><span class="label">Date</span><span class="value">${new Date().toLocaleDateString()}</span></div> <div class="footer">This receipt was generated by the SmartRegTech prototype.<br />Payment integrations are simulated for demonstration purposes.</div></div></body></html>`;
+    const programsSummaryHTML = cart.map(id => {
+      const entry = COURSE_CATALOG[id] || {};
+      return `• ${entry.name} (${entry.university}) — Program: ₹${entry.programFee || 3000}`;
+    }).join("<br/>");
+
+    const examsSummaryHTML = selectedExamsCart.map(e => {
+      const matchingProgKey = Object.keys(COURSE_CATALOG).find(k => COURSE_CATALOG[k].exam === e);
+      const examFee = matchingProgKey ? COURSE_CATALOG[matchingProgKey].examFee : 1200;
+      return `• ${e} (${selectedExamSlots[e] || "Slot Selected"}) — Exam Fee: ₹${examFee}`;
+    }).join("<br/>");
+    
+    const receiptHTML = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>SmartRegTech Registration Receipt</title><style>body { font-family: Arial, sans-serif; background: #f4f5fb; margin: 0; padding: 40px; color: #182033; }.receipt { max-width: 700px; margin: auto; background: white; padding: 40px; border-radius: 16px; box-shadow: 0 8px 30px rgba(0,0,0,0.12); }.header { text-align: center; border-bottom: 2px solid #6c4cff; padding-bottom: 20px; margin-bottom: 25px; }.logo { font-size: 30px; font-weight: bold; color: #6c4cff; }.subtitle { color: #666; margin-top: 5px; }.success { text-align: center; color: #159957; font-size: 20px; font-weight: bold; margin: 20px 0; }.registration-id { text-align: center; background: #f0edff; padding: 18px; border-radius: 10px; margin: 25px 0; }.registration-id strong { display: block; font-size: 24px; color: #6c4cff; margin-top: 8px; }.row { display: flex; justify-content: space-between; gap: 30px; padding: 14px 0; border-bottom: 1px solid #e5e5e5; }.label { color: #666; }.value { font-weight: bold; text-align: right; }.footer { margin-top: 30px; text-align: center; font-size: 13px; color: #777; }</style></head><body><div class="receipt"> <div class="header"> <div class="logo">SmartRegTech</div> <div class="subtitle">Zero-Friction Registration Portal</div> </div> <div class="success">✓ REGISTRATION SUCCESSFUL</div> <div class="registration-id">Registration ID<strong>${registrationId}</strong></div> <div class="row"><span class="label">Applicant Name</span><span class="value">${verifiedProfile?.name || "Verified Applicant"}</span></div> <div class="row"><span class="label">Identity Verification</span><span class="value">Sandbox — Consent + Mock JSON</span></div> <div class="row"><span class="label">Mobile Number</span><span class="value">${verifiedProfile?.phone || "9876543210"}</span></div> <div class="row"><span class="label">Email</span><span class="value">${verifiedProfile?.email || "rohan.v@example.com"}</span></div> <div class="row"><span class="label">Enrolled Programs</span><span class="value">${programsSummaryHTML}</span></div> <div class="row"><span class="label">Opted Entrance Exams</span><span class="value">${examsSummaryHTML || "None Opted"}</span></div> <div class="row"><span class="label">Test Center Preferences</span><span class="value">${showCenterPreferences ? `${cityPreferences.pref1}, ${cityPreferences.pref2}, ${cityPreferences.pref3}` : "Online / Remote"}</span></div> <div class="row"><span class="label">Total Consolidated Fee</span><span class="value">₹${currentTotalFee.toLocaleString("en-IN")}</span></div> <div class="row"><span class="label">Payment Status</span><span class="value">Paid — Sandbox</span></div> <div class="row"><span class="label">Application Status</span><span class="value">Registration Successful</span></div> <div class="row"><span class="label">Date</span><span class="value">${new Date().toLocaleDateString()}</span></div> <div class="footer">This receipt was generated by the SmartRegTech prototype.<br />Payment integrations are simulated for demonstration purposes.</div></div></body></html>`;
     const blob = new Blob([receiptHTML], { type: "text/html" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
@@ -639,12 +655,11 @@ function App() {
     URL.revokeObjectURL(url);
   };
 
-  const downloadAdmitCard = (item, catalogEntry) => {
-    const examName = catalogEntry.exam || "Merit Based Admission";
-    const slotInfo = selectedExamSlots[examName] || "Direct Counseling Slot";
+  const downloadAdmitCard = (examName) => {
+    const slotInfo = selectedExamSlots[examName] || "Direct Slot / Verified";
     const centerInfo = showCenterPreferences ? (cityPreferences?.pref1 || "Chennai") : "Online / Remote Verification";
     
-    const admitCardHTML = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>SmartRegTech Admit Card</title><style>body { font-family: Arial, sans-serif; background: #f4f5fb; margin: 0; padding: 40px; color: #182033; }.card { max-width: 650px; margin: auto; background: white; padding: 40px; border-radius: 16px; box-shadow: 0 8px 30px rgba(0,0,0,0.12); border-top: 6px solid #6c4cff; }.header { text-align: center; border-bottom: 2px solid #e5e5e5; padding-bottom: 20px; margin-bottom: 25px; }.logo { font-size: 26px; font-weight: bold; color: #6c4cff; }.title { font-size: 18px; font-weight: bold; color: #333; margin-top: 5px; }.badge { background: #e6f8ee; color: #16804c; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; display: inline-block; margin-top: 10px; }.row { display: flex; justify-content: space-between; gap: 20px; padding: 12px 0; border-bottom: 1px solid #f0f0f0; }.label { color: #666; font-size: 14px; }.value { font-weight: bold; text-align: right; font-size: 14px; }.instructions { margin-top: 30px; background: #f8fafc; padding: 15px; border-radius: 8px; font-size: 12px; color: #555; line-height: 1.5; }</style></head><body><div class="card"><div class="header"><div class="logo">SmartRegTech</div><div class="title">OFFICIAL ENTRANCE EXAMINATION ADMIT CARD</div><div class="badge">VERIFIED & APPROVED</div></div><div class="row"><span class="label">Applicant Name</span><span class="value">${verifiedProfile?.name || "Verified Applicant"}</span></div><div class="row"><span class="label">Application ID (UID)</span><span class="value">${currentUserUid}</span></div><div class="row"><span class="label">Enrolled Program</span><span class="value">${catalogEntry.name || item}</span></div><div class="row"><span class="label">University / Institution</span><span class="value">${catalogEntry.university}</span></div><div class="row"><span class="label">Assigned Examination</span><span class="value">${examName}</span></div><div class="row"><span class="label">Test Slot & Date</span><span class="value">${slotInfo}</span></div><div class="row"><span class="label">Allocated Test Center</span><span class="value">${centerInfo}</span></div><div class="instructions"><strong>Important Instructions:</strong><br>1. Please carry a hard copy of this admit card along with a valid government-issued photo ID.<br>2. Reach the test center at least 45 minutes prior to the scheduled shift time.<br>3. Electronic devices and calculators are strictly prohibited inside the examination hall.</div></div></body></html>`;
+    const admitCardHTML = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>SmartRegTech Admit Card</title><style>body { font-family: Arial, sans-serif; background: #f4f5fb; margin: 0; padding: 40px; color: #182033; }.card { max-width: 650px; margin: auto; background: white; padding: 40px; border-radius: 16px; box-shadow: 0 8px 30px rgba(0,0,0,0.12); border-top: 6px solid #6c4cff; }.header { text-align: center; border-bottom: 2px solid #e5e5e5; padding-bottom: 20px; margin-bottom: 25px; }.logo { font-size: 26px; font-weight: bold; color: #6c4cff; }.title { font-size: 18px; font-weight: bold; color: #333; margin-top: 5px; }.badge { background: #e6f8ee; color: #16804c; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; display: inline-block; margin-top: 10px; }.row { display: flex; justify-content: space-between; gap: 20px; padding: 12px 0; border-bottom: 1px solid #f0f0f0; }.label { color: #666; font-size: 14px; }.value { font-weight: bold; text-align: right; font-size: 14px; }.instructions { margin-top: 30px; background: #f8fafc; padding: 15px; border-radius: 8px; font-size: 12px; color: #555; line-height: 1.5; }</style></head><body><div class="card"><div class="header"><div class="logo">SmartRegTech</div><div class="title">OFFICIAL ENTRANCE EXAMINATION ADMIT CARD</div><div class="badge">VERIFIED & APPROVED</div></div><div class="row"><span class="label">Applicant Name</span><span class="value">${verifiedProfile?.name || "Verified Applicant"}</span></div><div class="row"><span class="label">Application ID (UID)</span><span class="value">${currentUserUid}</span></div><div class="row"><span class="label">Assigned Examination</span><span class="value">${examName}</span></div><div class="row"><span class="label">Test Slot & Date</span><span class="value">${slotInfo}</span></div><div class="row"><span class="label">Allocated Test Center</span><span class="value">${centerInfo}</span></div><div class="instructions"><strong>Important Instructions:</strong><br>1. Please carry a hard copy of this admit card along with a valid government-issued photo ID.<br>2. Reach the test center at least 45 minutes prior to the scheduled shift time.<br>3. Electronic devices and calculators are strictly prohibited inside the examination hall.</div></div></body></html>`;
     
     const blob = new Blob([admitCardHTML], { type: "text/html" });
     const url = URL.createObjectURL(blob);
@@ -678,7 +693,7 @@ function App() {
               const pwd = document.getElementById("loginPwd").value.trim();
               const user = (Array.isArray(mockUsersDB) ? mockUsersDB : []).find(u => u.uid === uid && u.password === pwd);
               if (user) {
-                setCurrentUserUid(uid); setCart(user.cart || []); setFormData(user.formData); setVerifiedProfile(user.verifiedProfile); setSelectedPreset(user.activeFlowKey); setCityPreferences(user.cityPreferences || { pref1: "Chennai", pref2: "Bengaluru", pref3: "Hyderabad" }); setSelectedExamSlots(user.selectedExamSlots || {}); setActiveFlow(PRESET_FLOWS[user.activeFlowKey].steps); setCurrentStepIndex(user.currentStepIndex); setHighestStepIndex(user.highestStepIndex || user.currentStepIndex); setCurrentView("flow");
+                setCurrentUserUid(uid); setCart(user.cart || []); setSelectedExamsCart(user.selectedExamsCart || []); setFormData(user.formData); setVerifiedProfile(user.verifiedProfile); setSelectedPreset(user.activeFlowKey); setCityPreferences(user.cityPreferences || { pref1: "Chennai", pref2: "Bengaluru", pref3: "Hyderabad" }); setSelectedExamSlots(user.selectedExamSlots || {}); setActiveFlow(PRESET_FLOWS[user.activeFlowKey].steps); setCurrentStepIndex(user.currentStepIndex); setHighestStepIndex(user.highestStepIndex || user.currentStepIndex); setCurrentView("flow");
               } else {
                 alert("Invalid UID or Password. Please check your credentials and try again.");
               }
@@ -1042,7 +1057,7 @@ function App() {
   }
 
   /* ============================================================
-     FORM / PROGRAM SELECTION + TEST DETAILS WITH SLOT BOOKING
+     FORM / PROGRAM SELECTION & OPTIONAL EXAM OPT-IN
   ============================================================ */
   if (activeStepId === "form") {
     const groupedCourses = Object.entries(COURSE_CATALOG).reduce((acc, [id, data]) => {
@@ -1051,18 +1066,22 @@ function App() {
       return acc;
     }, {});
 
+    const allAssociatedExams = Array.from(new Set(
+      cart.map(id => COURSE_CATALOG[id]?.exam).filter(exam => exam && exam !== "Merit Based Admission")
+    ));
+
     return (
       <Page currentStep={activeStepId} onHome={goHome} showCopilot={showCopilot} setShowCopilot={setShowCopilot} flowConfig={activeFlow} currentIndex={currentStepIndex} currentUserUid={currentUserUid} handleLogout={handleLogout} openAdmin={openAdmin} onStepClick={(idx) => setCurrentStepIndex(idx)}>
         <div className="form-layout">
           <div className="form-intro">
-            <div className="step-label">STEP / PROGRAM & EXAM DETAILS</div>
-            <h1>Select Your Programs</h1>
-            <p className="description">Choose academic programs. Entrance exams and test schedules are automatically assigned based on your selection.</p>
+            <div className="step-label">STEP / PROGRAM SELECTION</div>
+            <h1>Select Academic Programs</h1>
+            <p className="description">Choose programs with randomized course fees. Entrance exams are optional checkboxes below in the range of 1000 to 2000.</p>
             <div className="verified-summary"><div className="mini-verified">✓</div><div><strong>{verifiedProfile?.name || "Verified Applicant"}</strong><span style={{ display: "block", fontSize: "12px", color: "#8a9fc2", marginTop: "2px" }}>📱 Contact & Documents Verified</span></div></div>
           </div>
 
           <div className="form-panel">
-            <div className="panel-heading"><div className="panel-icon">✦</div><div><h2>Academic Program Selection</h2><p>Select one or more programs to include in your application cart.</p></div></div>
+            <div className="panel-heading"><div className="panel-icon">✦</div><div><h2>Academic Program Selection</h2><p>Select programs to add to cart.</p></div></div>
             
             <div className="form-group" style={{ marginTop: "16px" }}>
               <label>AVAILABLE PROGRAMS <span style={{ textTransform: "none", color: "#8a9fc2", fontWeight: "normal" }}>(Check to add to cart)</span></label>
@@ -1074,15 +1093,21 @@ function App() {
                     </h3>
                     <div style={{ display: "grid", gap: "10px" }}>
                       {courses.map(course => (
-                        <label key={course.id} style={{ display: "flex", alignItems: "flex-start", gap: "12px", color: "#fff", cursor: "pointer", fontSize: "14px", padding: "4px 0" }}>
-                          <input type="checkbox" checked={cart.includes(course.id)} onChange={() => toggleCartItem(course.id)} style={{ width: "18px", height: "18px", accentColor: "#6c4cff", cursor: "pointer", marginTop: "2px" }} />
-                          <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-                            <span>{course.name} <strong style={{ color: "#a5b4fc", marginLeft: "4px" }}>(₹{course.fee})</strong></span>
-                            <div>
-                              <span style={{ background: "rgba(34, 197, 94, 0.15)", color: "#22c55e", padding: "2px 6px", borderRadius: "4px", fontSize: "10px", fontWeight: "bold", border: "1px solid rgba(34, 197, 94, 0.3)", display: "inline-block" }}>
-                                ✓ Auto-Eligible ({course.eligibilityType})
-                              </span>
+                        <label key={course.id} style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", color: "#fff", cursor: "pointer", fontSize: "14px", padding: "4px 0" }}>
+                          <div style={{ display: "flex", alignItems: "flex-start", gap: "12px" }}>
+                            <input type="checkbox" checked={cart.includes(course.id)} onChange={() => toggleCartItem(course.id)} style={{ width: "18px", height: "18px", accentColor: "#6c4cff", cursor: "pointer", marginTop: "2px" }} />
+                            <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                              <span>{course.name}</span>
+                              <span style={{ color: "#a5b4fc", fontSize: "11px" }}>📝 Associated Exam: {course.exam}</span>
+                              <div>
+                                <span style={{ background: "rgba(34, 197, 94, 0.15)", color: "#22c55e", padding: "2px 6px", borderRadius: "4px", fontSize: "10px", fontWeight: "bold", border: "1px solid rgba(34, 197, 94, 0.3)", display: "inline-block" }}>
+                                  ✓ Eligible ({course.eligibilityType})
+                                </span>
+                              </div>
                             </div>
+                          </div>
+                          <div style={{ textAlign: "right" }}>
+                            <strong style={{ color: "#a5b4fc", display: "block" }}>₹{course.programFee.toLocaleString("en-IN")}</strong>
                           </div>
                         </label>
                       ))}
@@ -1097,45 +1122,52 @@ function App() {
               )}
             </div>
 
-            <div style={{ marginTop: "24px", paddingTop: "18px", borderTop: "1px solid #293c5c" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "12px" }}>
-                <span style={{ fontSize: "20px" }}>📍</span><div><h3 style={{ margin: 0, fontSize: "16px", color: "#fff" }}>Exam Slot Booking & Centers</h3><small style={{ color: "#8a9fc2", fontSize: "12px" }}>Select preferred dates for assigned exams and test center cities.</small></div>
-              </div>
-              <div style={{ background: "#0a1124", padding: "16px", borderRadius: "10px", border: "1px solid #3b486d" }}>
-                <div className="form-group" style={{ marginBottom: "20px" }}>
-                  <label style={{ fontSize: "12px", color: "#b99cff", fontWeight: 700 }}>REQUIRED EXAMS (SELECT PREFERRED SLOT)</label>
-                  {cart.length === 0 ? (
-                    <div style={{ color: "#7890b2", fontSize: "13px", marginTop: "8px", fontStyle: "italic" }}>Select academic programs above to view and book required entrance exams.</div>
-                  ) : (
-                    <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginTop: "8px" }}>
-                      {requiredExamsList.map(exam => (
-                        <div key={exam} style={{ background: "#130e2b", border: "1px solid #3b486d", padding: "12px 14px", borderRadius: "8px" }}>
-                          <div style={{ color: "#fff", fontSize: "14px", fontWeight: "bold", marginBottom: "8px" }}>📝 {exam}</div>
-                          <select value={selectedExamSlots[exam] || ""} onChange={(e) => setSelectedExamSlots({...selectedExamSlots, [exam]: e.target.value})} style={{ width: "100%", padding: "8px", borderRadius: "6px", background: "#081222", color: "#fff", border: "1px solid #3b486d", fontSize: "13px" }}>
-                            <option value="">Choose Preferred Date & Shift...</option>
-                            {EXAM_SCHEDULE_OPTIONS[exam]?.map(slot => <option key={slot} value={slot}>{slot}</option>)}
-                          </select>
-                        </div>
-                      ))}
-                      {requiredExamsList.length === 0 && (
-                        <div style={{ color: "#159957", fontSize: "13px", marginTop: "8px", fontWeight: "bold" }}>✓ Direct Merit Based Admission (No Entrance Exam Required)</div>
-                      )}
-                    </div>
-                  )}
+            {/* OPTIONAL EXAM OPT-IN SECTION */}
+            {allAssociatedExams.length > 0 && (
+              <div style={{ marginTop: "24px", paddingTop: "18px", borderTop: "1px solid #293c5c" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "12px" }}>
+                  <span style={{ fontSize: "20px" }}>📝</span><div><h3 style={{ margin: 0, fontSize: "16px", color: "#fff" }}>Optional Entrance Exam Opt-In</h3><small style={{ color: "#8a9fc2", fontSize: "12px" }}>Entrance exams are optional (Fee range: ₹1,000 - ₹2,000). Check below if you wish to take the exam.</small></div>
                 </div>
-
-                {showCenterPreferences && (
-                  <div>
-                    <label style={{ display: "block", fontSize: "12px", color: "#b99cff", fontWeight: 700, marginBottom: "8px" }}>TEST CITY PREFERENCES</label>
-                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))", gap: "12px" }}>
-                      <div className="form-group" style={{ margin: 0 }}><label style={{ fontSize: "11px", color: "#8a9fc2" }}>PREFERENCE 1</label><select value={cityPreferences.pref1} onChange={(e) => setCityPreferences({...cityPreferences, pref1: e.target.value})} style={{ width: "100%", padding: "8px 10px", borderRadius: "6px", background: "#081222", color: "#fff", border: "1px solid #3b486d", fontSize: "13px" }}><option value="">Choose City</option>{CITIES.map(c => <option key={c} value={c} disabled={c === cityPreferences.pref2 || c === cityPreferences.pref3}>{c}</option>)}</select></div>
-                      <div className="form-group" style={{ margin: 0 }}><label style={{ fontSize: "11px", color: "#8a9fc2" }}>PREFERENCE 2</label><select value={cityPreferences.pref2} onChange={(e) => setCityPreferences({...cityPreferences, pref2: e.target.value})} style={{ width: "100%", padding: "8px 10px", borderRadius: "6px", background: "#081222", color: "#fff", border: "1px solid #3b486d", fontSize: "13px" }}><option value="">Choose City</option>{CITIES.map(c => <option key={c} value={c} disabled={c === cityPreferences.pref1 || c === cityPreferences.pref3}>{c}</option>)}</select></div>
-                      <div className="form-group" style={{ margin: 0 }}><label style={{ fontSize: "11px", color: "#8a9fc2" }}>PREFERENCE 3</label><select value={cityPreferences.pref3} onChange={(e) => setCityPreferences({...cityPreferences, pref3: e.target.value})} style={{ width: "100%", padding: "8px 10px", borderRadius: "6px", background: "#081222", color: "#fff", border: "1px solid #3b486d", fontSize: "13px" }}><option value="">Choose City</option>{CITIES.map(c => <option key={c} value={c} disabled={c === cityPreferences.pref1 || c === cityPreferences.pref2}>{c}</option>)}</select></div>
-                    </div>
-                  </div>
-                )}
+                <div style={{ background: "#0a1124", padding: "16px", borderRadius: "10px", border: "1px solid #3b486d", display: "grid", gap: "12px" }}>
+                  {allAssociatedExams.map(examName => {
+                    const matchingProgKey = Object.keys(COURSE_CATALOG).find(k => COURSE_CATALOG[k].exam === examName);
+                    const examFee = matchingProgKey ? COURSE_CATALOG[matchingProgKey].examFee : 1500;
+                    const isOptedIn = selectedExamsCart.includes(examName);
+                    return (
+                      <div key={examName} style={{ background: "#130e2b", border: "1px solid #3b486d", padding: "12px 14px", borderRadius: "8px" }}>
+                        <label style={{ display: "flex", alignItems: "center", justifyContent: "space-between", color: "#fff", cursor: "pointer", fontSize: "14px", marginBottom: "8px" }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                            <input type="checkbox" checked={isOptedIn} onChange={() => toggleExamSelection(examName)} style={{ width: "16px", height: "16px", accentColor: "#6c4cff", cursor: "pointer" }} />
+                            <span>Opt-in for <strong>{examName}</strong></span>
+                          </div>
+                          <strong style={{ color: "#a5b4fc" }}>₹{examFee.toLocaleString("en-IN")} Exam Fee</strong>
+                        </label>
+                        {isOptedIn && (
+                          <div style={{ marginTop: "8px", paddingTop: "8px", borderTop: "1px dashed #3b486d" }}>
+                            <select value={selectedExamSlots[examName] || ""} onChange={(e) => setSelectedExamSlots({...selectedExamSlots, [examName]: e.target.value})} style={{ width: "100%", padding: "8px", borderRadius: "6px", background: "#081222", color: "#fff", border: "1px solid #3b486d", fontSize: "13px" }}>
+                              <option value="">Choose Preferred Date & Shift...</option>
+                              {EXAM_SCHEDULE_OPTIONS[examName]?.map(slot => <option key={slot} value={slot}>{slot}</option>)}
+                            </select>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
+            )}
+
+            {/* TEST CENTER PREFERENCES IF EXAMS OPTED IN */}
+            {showCenterPreferences && (
+              <div style={{ marginTop: "20px" }}>
+                <label style={{ display: "block", fontSize: "12px", color: "#b99cff", fontWeight: 700, marginBottom: "8px" }}>TEST CITY PREFERENCES</label>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))", gap: "12px" }}>
+                  <div className="form-group" style={{ margin: 0 }}><label style={{ fontSize: "11px", color: "#8a9fc2" }}>PREFERENCE 1</label><select value={cityPreferences.pref1} onChange={(e) => setCityPreferences({...cityPreferences, pref1: e.target.value})} style={{ width: "100%", padding: "8px 10px", borderRadius: "6px", background: "#081222", color: "#fff", border: "1px solid #3b486d", fontSize: "13px" }}><option value="">Choose City</option>{CITIES.map(c => <option key={c} value={c} disabled={c === cityPreferences.pref2 || c === cityPreferences.pref3}>{c}</option>)}</select></div>
+                  <div className="form-group" style={{ margin: 0 }}><label style={{ fontSize: "11px", color: "#8a9fc2" }}>PREFERENCE 2</label><select value={cityPreferences.pref2} onChange={(e) => setCityPreferences({...cityPreferences, pref2: e.target.value})} style={{ width: "100%", padding: "8px 10px", borderRadius: "6px", background: "#081222", color: "#fff", border: "1px solid #3b486d", fontSize: "13px" }}><option value="">Choose City</option>{CITIES.map(c => <option key={c} value={c} disabled={c === cityPreferences.pref1 || c === cityPreferences.pref3}>{c}</option>)}</select></div>
+                  <div className="form-group" style={{ margin: 0 }}><label style={{ fontSize: "11px", color: "#8a9fc2" }}>PREFERENCE 3</label><select value={cityPreferences.pref3} onChange={(e) => setCityPreferences({...cityPreferences, pref3: e.target.value})} style={{ width: "100%", padding: "8px 10px", borderRadius: "6px", background: "#081222", color: "#fff", border: "1px solid #3b486d", fontSize: "13px" }}><option value="">Choose City</option>{CITIES.map(c => <option key={c} value={c} disabled={c === cityPreferences.pref1 || c === cityPreferences.pref2}>{c}</option>)}</select></div>
+                </div>
+              </div>
+            )}
             
             {(() => {
               const currentFlowSteps = activeFlow && activeFlow.length > 0 ? activeFlow : PRESET_FLOWS[selectedPreset].steps;
@@ -1161,7 +1193,7 @@ function App() {
         <div className="review-page">
           <div className="step-label">STEP / REVIEW</div>
           <h1>Review your application.</h1>
-          <p className="description">Everything looks ready. Check your verified credentials and booked exam slots before proceeding to payment.</p>
+          <p className="description">Verify your selected programs, opted exams, and itemized fee breakdown before payment.</p>
           <div className="review-grid">
             <div className="review-card">
               <div className="review-card-title"><span className="review-icon">✓</span><div><h2>Verified Information</h2><span>Retrieved Securely</span></div></div>
@@ -1173,17 +1205,24 @@ function App() {
             </div>
 
             <div className="review-card">
-              <div className="review-card-title"><span className="review-icon purple">📍</span><div><h2>Exam Booking</h2><span>Assigned Exams & Slots</span></div></div>
+              <div className="review-card-title"><span className="review-icon purple">📍</span><div><h2>Exam Booking</h2><span>Opted Exams &amp; Slots</span></div></div>
               <div style={{ marginBottom: "12px" }}>
-                {requiredExamsList.length === 0 ? (
-                  <div style={{ color: "#159957", fontSize: "13px", fontWeight: "bold" }}>Merit Based Admission (No Exam)</div>
+                {selectedExamsCart.length === 0 ? (
+                  <div style={{ color: "#7890b2", fontSize: "13px", fontStyle: "italic" }}>No entrance exams opted in.</div>
                 ) : (
-                  requiredExamsList.map(e => (
-                    <div key={e} style={{ background: "#0a1124", padding: "8px 12px", borderRadius: "6px", marginBottom: "6px", border: "1px solid #3b486d" }}>
-                      <div style={{ color: "#fff", fontWeight: "bold", fontSize: "13px" }}>{e}</div>
-                      <div style={{ color: "#a5b4fc", fontSize: "11px", marginTop: "2px" }}>📅 {selectedExamSlots[e] || "Slot not selected"}</div>
-                    </div>
-                  ))
+                  selectedExamsCart.map(e => {
+                    const matchingProgKey = Object.keys(COURSE_CATALOG).find(k => COURSE_CATALOG[k].exam === e);
+                    const examFee = matchingProgKey ? COURSE_CATALOG[matchingProgKey].examFee : 1500;
+                    return (
+                      <div key={e} style={{ background: "#0a1124", padding: "8px 12px", borderRadius: "6px", marginBottom: "6px", border: "1px solid #3b486d" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                          <div style={{ color: "#fff", fontWeight: "bold", fontSize: "13px" }}>{e}</div>
+                          <strong style={{ color: "#a5b4fc", fontSize: "12px" }}>₹{examFee}</strong>
+                        </div>
+                        <div style={{ color: "#a5b4fc", fontSize: "11px", marginTop: "2px" }}>📅 {selectedExamSlots[e] || "Slot not selected"}</div>
+                      </div>
+                    );
+                  })
                 )}
               </div>
               {showCenterPreferences && (
@@ -1192,32 +1231,60 @@ function App() {
             </div>
 
             <div className="review-card" style={{ gridColumn: "1 / -1" }}>
-              <div className="review-card-title"><span className="review-icon purple">+</span><div><h2>Registration Details</h2><span>Information provided by applicant</span></div></div>
+              <div className="review-card-title">
+                <span className="review-icon purple">+</span>
+                <div>
+                  <h2>Cart Itemization &amp; Fee Breakdown</h2>
+                  <span>Program Fee &amp; Exam Fee</span>
+                </div>
+              </div>
               <div style={{ paddingTop: "5px" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
-                  <span style={{ fontSize: "12px", color: "#8a9fc2", fontWeight: 700 }}>COURSES SELECTED IN CART ({(Array.isArray(cart) ? cart : []).length})</span>
-                  <button type="button" onClick={goToPrevStep} style={{ background: "transparent", border: "1px solid #6c4cff", color: "#b99cff", padding: "4px 10px", borderRadius: "6px", fontSize: "11px", fontWeight: "bold", cursor: "pointer", display: "flex", alignItems: "center", gap: "4px" }}>✏️ Edit / Add Courses</button>
+                  <span style={{ fontSize: "12px", color: "#8a9fc2", fontWeight: 700 }}>PROGRAMS SELECTED ({(Array.isArray(cart) ? cart : []).length})</span>
+                  <button type="button" onClick={goToPrevStep} style={{ background: "transparent", border: "1px solid #6c4cff", color: "#b99cff", padding: "4px 10px", borderRadius: "6px", fontSize: "11px", fontWeight: "bold", cursor: "pointer", display: "flex", alignItems: "center", gap: "4px" }}>✏️ Edit Cart</button>
                 </div>
-                {(Array.isArray(cart) ? cart : []).map((item, idx) => (
-                  <div key={idx} style={{ marginTop: "10px", paddingBottom: "10px", borderBottom: idx !== cart.length - 1 ? "1px solid #3b486d" : "none" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                      <div style={{ color: "#fff", fontSize: "14px", fontWeight: "bold", flex: 1 }}>• {COURSE_CATALOG[item]?.name}</div>
-                      <div style={{ color: "#a5b4fc", fontSize: "14px", fontWeight: "bold", marginLeft: "15px" }}>₹{COURSE_CATALOG[item]?.fee?.toLocaleString("en-IN") || 500}</div>
+                {(Array.isArray(cart) ? cart : []).map((item, idx) => {
+                  const entry = COURSE_CATALOG[item] || {};
+                  return (
+                    <div key={idx} style={{ marginTop: "10px", paddingBottom: "10px", borderBottom: idx !== cart.length - 1 ? "1px solid #3b486d" : "none" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                        <div>
+                          <strong style={{ color: "#fff", fontSize: "14px" }}>• {entry.name}</strong>
+                          <span style={{ display: "block", color: "#22c55e", fontSize: "12px" }}>🎓 {entry.university}</span>
+                          <span style={{ display: "block", color: "#a5b4fc", fontSize: "11px" }}>Program Fee: ₹{entry.programFee.toLocaleString("en-IN")}</span>
+                        </div>
+                        <div style={{ color: "#22c55e", fontSize: "15px", fontWeight: "bold", marginLeft: "15px" }}>₹{entry.programFee.toLocaleString("en-IN")}</div>
+                      </div>
                     </div>
-                    <div style={{ color: "#22c55e", fontSize: "12px", paddingLeft: "12px", marginTop: "3px", fontWeight: 700 }}>🎓 {COURSE_CATALOG[item]?.university}</div>
-                  </div>
-                ))}
+                  );
+                })}
+
+                {selectedExamsCart.map((examName, idx) => {
+                  const matchingProgKey = Object.keys(COURSE_CATALOG).find(k => COURSE_CATALOG[k].exam === examName);
+                  const examFee = matchingProgKey ? COURSE_CATALOG[matchingProgKey].examFee : 1500;
+                  return (
+                    <div key={`ex-${idx}`} style={{ marginTop: "10px", paddingBottom: "10px", borderBottom: "1px solid #3b486d" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                        <div>
+                          <strong style={{ color: "#fff", fontSize: "14px" }}>• {examName} (Entrance Exam)</strong>
+                          <span style={{ display: "block", color: "#a5b4fc", fontSize: "11px" }}>Exam Fee</span>
+                        </div>
+                        <div style={{ color: "#22c55e", fontSize: "15px", fontWeight: "bold", marginLeft: "15px" }}>₹{examFee.toLocaleString("en-IN")}</div>
+                      </div>
+                    </div>
+                  );
+                })}
                 
                 {cart.length > 0 && (
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "12px", paddingTop: "12px", borderTop: "1px dashed #3b486d" }}>
-                    <span style={{ fontSize: "13px", color: "#8a9fc2", fontWeight: 700 }}>TOTAL REGISTRATION FEE</span>
-                    <strong style={{ color: "#22c55e", fontSize: "16px" }}>₹{currentTotalFee.toLocaleString("en-IN")}</strong>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "16px", paddingTop: "14px", borderTop: "2px dashed #3b486d" }}>
+                    <span style={{ fontSize: "14px", color: "#fff", fontWeight: 800 }}>CONSOLIDATED TOTAL PAYABLE FEE</span>
+                    <strong style={{ color: "#22c55e", fontSize: "18px" }}>₹{currentTotalFee.toLocaleString("en-IN")}</strong>
                   </div>
                 )}
               </div>
             </div>
           </div>
-          <div className="ready-banner"><div className="ready-icon">✓</div><div><strong>Ready for payment</strong><p>Your application is complete and ready to be submitted.</p></div></div>
+          <div className="ready-banner"><div className="ready-icon">✓</div><div><strong>Ready for payment</strong><p>Your itemized application cart is complete and ready for checkout.</p></div></div>
           <div className="review-actions">
             <button type="button" className="back-button" onClick={goToPrevStep}>← Edit Details</button>
             <button type="button" className="primary-button" onClick={goToNextStep}>Continue to Payment <span>→</span></button>
@@ -1236,29 +1303,45 @@ function App() {
         <div className="payment-page">
           <div className="step-label">STEP / PAYMENT</div>
           <h1>Complete your payment.</h1>
-          <p className="description">Manage your cart and complete the sandbox transaction.</p>
+          <p className="description">Review your cart itemization and complete the sandbox transaction.</p>
           <div className="payment-layout" style={{ display: "grid", gridTemplateColumns: "minmax(0, 1.5fr) minmax(280px, .7fr)", gap: "24px", alignItems: "start" }}>
             <div className="payment-card" style={{ padding: "28px" }}>
-              <div className="payment-card-top"><div><span>TOTAL CART FEE</span><h2>₹{currentTotalFee.toLocaleString("en-IN")}</h2></div><div className="sandbox-pill">SANDBOX</div></div>
+              <div className="payment-card-top"><div><span>CONSOLIDATED TOTAL FEE</span><h2>₹{currentTotalFee.toLocaleString("en-IN")}</h2></div><div className="sandbox-pill">SANDBOX</div></div>
               <div className="payment-divider" />
               <div className="payment-detail"><span>Applicant</span><strong>{verifiedProfile?.name || "Verified Applicant"}</strong></div>
               <div className="payment-detail"><span>Identity UID</span><strong className="green-text">✓ {currentUserUid || "Verified"}</strong></div>
 
               <div style={{ marginTop: "24px", marginBottom: "24px" }}>
-                <h3 style={{ marginBottom: "12px", fontSize: "14px", color: "#a5b4fc" }}>Manage Cart Items</h3>
+                <h3 style={{ marginBottom: "12px", fontSize: "14px", color: "#a5b4fc" }}>Cart Item Breakdown</h3>
                 <div style={{ display: "grid", gap: "10px" }}>
-                  {(Array.isArray(cart) ? cart : []).map((item, idx) => (
-                    <div key={idx} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px", background: "#0a1124", border: "1px solid #3b486d", borderRadius: "10px" }}>
-                      <div>
-                        <strong style={{ display: "block", color: "#fff", fontSize: "13px" }}>{COURSE_CATALOG[item]?.name}</strong>
-                        <span style={{ color: "#22c55e", fontSize: "11px", fontWeight: "bold", display: "block", marginTop: "4px" }}>🎓 {COURSE_CATALOG[item]?.university}</span>
-                        <span style={{ color: "#159957", fontSize: "12px", fontWeight: "bold", display: "block", marginTop: "4px" }}>₹{COURSE_CATALOG[item]?.fee || 500}</span>
+                  {(Array.isArray(cart) ? cart : []).map((item, idx) => {
+                    const entry = COURSE_CATALOG[item] || {};
+                    return (
+                      <div key={idx} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 14px", background: "#0a1124", border: "1px solid #3b486d", borderRadius: "10px" }}>
+                        <div>
+                          <strong style={{ display: "block", color: "#fff", fontSize: "13px" }}>{entry.name}</strong>
+                          <span style={{ color: "#22c55e", fontSize: "11px", display: "block" }}>🎓 {entry.university}</span>
+                          <span style={{ color: "#159957", fontSize: "12px", fontWeight: "bold" }}>₹{entry.programFee.toLocaleString("en-IN")} Program Fee</span>
+                        </div>
+                        <button type="button" onClick={() => toggleCartItem(item)} disabled={processingPayment} style={{ background: "rgba(255, 77, 79, 0.1)", color: "#ff4d4f", border: "1px solid rgba(255, 77, 79, 0.3)", padding: "4px 10px", borderRadius: "6px", cursor: "pointer", fontSize: "11px", fontWeight: "bold" }}>Remove</button>
                       </div>
-                      <button type="button" onClick={() => toggleCartItem(item)} disabled={processingPayment} style={{ background: "rgba(255, 77, 79, 0.1)", color: "#ff4d4f", border: "1px solid rgba(255, 77, 79, 0.3)", padding: "6px 12px", borderRadius: "6px", cursor: processingPayment ? "not-allowed" : "pointer", fontSize: "12px", fontWeight: "bold" }}>Remove</button>
-                    </div>
-                  ))}
+                    );
+                  })}
+                  {selectedExamsCart.map((examName, idx) => {
+                    const matchingProgKey = Object.keys(COURSE_CATALOG).find(k => COURSE_CATALOG[k].exam === examName);
+                    const examFee = matchingProgKey ? COURSE_CATALOG[matchingProgKey].examFee : 1500;
+                    return (
+                      <div key={`ex-${idx}`} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 14px", background: "#130e2b", border: "1px solid #3b486d", borderRadius: "10px" }}>
+                        <div>
+                          <strong style={{ display: "block", color: "#fff", fontSize: "13px" }}>📝 {examName} (Entrance Exam)</strong>
+                          <span style={{ color: "#a5b4fc", fontSize: "12px", fontWeight: "bold" }}>₹{examFee.toLocaleString("en-IN")} Exam Fee</span>
+                        </div>
+                        <button type="button" onClick={() => toggleExamSelection(examName)} disabled={processingPayment} style={{ background: "rgba(255, 77, 79, 0.1)", color: "#ff4d4f", border: "1px solid rgba(255, 77, 79, 0.3)", padding: "4px 10px", borderRadius: "6px", cursor: "pointer", fontSize: "11px", fontWeight: "bold" }}>Remove</button>
+                      </div>
+                    );
+                  })}
                   {(!cart || cart.length === 0) && (
-                    <div style={{ padding: "15px", background: "rgba(255, 77, 79, 0.1)", border: "1px solid rgba(255, 77, 79, 0.3)", borderRadius: "10px", color: "#ff4d4f", fontSize: "14px" }}>Your cart is currently empty. Please go back to add courses to your cart before proceeding.</div>
+                    <div style={{ padding: "15px", background: "rgba(255, 77, 79, 0.1)", border: "1px solid rgba(255, 77, 79, 0.3)", borderRadius: "10px", color: "#ff4d4f", fontSize: "14px" }}>Your cart is empty! Please go back and add programs before paying.</div>
                   )}
                 </div>
               </div>
@@ -1267,7 +1350,7 @@ function App() {
                 <h3 style={{ marginBottom: "12px" }}>Select payment method</h3>
                 <div style={{ display: "grid", gap: "10px" }}>
                   {[["upi", "UPI", "Google Pay / PhonePe / BHIM", "U"], ["card", "Card", "Credit / Debit Card", "💳"], ["netbanking", "Net Banking", "All major banks", "🏦"]].map(([id, title, subtitle, icon]) => (
-                    <button key={id} type="button" onClick={() => setPaymentMethod(id)} disabled={processingPayment || !cart || cart.length === 0} style={{ display: "grid", gridTemplateColumns: "42px 1fr auto", alignItems: "center", gap: "12px", width: "100%", padding: "14px", borderRadius: "12px", border: paymentMethod === id ? "1px solid #7556ff" : "1px solid #293c5c", background: paymentMethod === id ? "#151f3c" : "#101c30", color: "#fff", textAlign: "left", cursor: processingPayment || !cart || cart.length === 0 ? "not-allowed" : "pointer" }}>
+                    <button key={id} type="button" onClick={() => setPaymentMethod(id)} disabled={processingPayment || !cart || cart.length === 0} style={{ display: "grid", gridTemplateColumns: "42px 1fr auto", alignItems: "center", gap: "12px", width: "100%", padding: "14px", borderRadius: "12px", border: paymentMethod === id ? "1px solid #7556ff" : "1px solid #293c5c", background: paymentMethod === id ? "#151f3c" : "#101c30", color: "#fff", textAlign: "left", cursor: processingPayment ? "not-allowed" : "pointer" }}>
                       <span style={{ width: "42px", height: "42px", display: "flex", alignItems: "center", justifyContent: "center", borderRadius: "11px", background: "#211d49", color: "#b99cff", fontWeight: 800 }}>{icon}</span>
                       <span><strong style={{ display: "block" }}>{title}</strong><small style={{ color: "#7890b2" }}>{subtitle}</small></span>
                       <span style={{ color: "#a47bff", fontSize: "18px" }}>{paymentMethod === id ? "●" : "○"}</span>
@@ -1326,9 +1409,8 @@ function App() {
 
             <div className="payment-info">
               <div className="payment-info-icon">⚡</div><h3>Fast & simple</h3><p>Complete your registration payment in seconds.</p>
-              <div className="sandbox-warning"><strong>Items in Cart</strong><span>{(Array.isArray(cart) ? cart : []).length}</span></div>
-              <div className="sandbox-warning"><strong>Total Fee</strong><span>₹{currentTotalFee.toLocaleString("en-IN")}</span></div>
-              <div className="sandbox-warning"><strong>Identity</strong><span className="green-text">✓ Verified</span></div>
+              <div className="sandbox-warning"><strong>Programs in Cart</strong><span>{(Array.isArray(cart) ? cart : []).length}</span></div>
+              <div className="sandbox-warning"><strong>Consolidated Fee</strong><span>₹{currentTotalFee.toLocaleString("en-IN")}</span></div>
               <div className="sandbox-warning"><strong>Demo Environment</strong><span>No real money will be charged.</span></div>
             </div>
           </div>
@@ -1338,7 +1420,7 @@ function App() {
   }
 
   /* ============================================================
-     SUCCESS -> APPLICANT DASHBOARD (POLISHED FOR PRESENTATION)
+     SUCCESS -> APPLICANT DASHBOARD (ADMIT CARDS MAPPED TO EXAMS)
   ============================================================ */
   if (activeStepId === "success") {
     return (
@@ -1360,51 +1442,81 @@ function App() {
             <div>
               <div className="step-label" style={{ marginBottom: "8px", color: "#818cf8", fontWeight: "700", letterSpacing: "1px" }}>APPLICANT DASHBOARD</div>
               <h1 style={{ margin: 0, fontSize: "32px", fontWeight: "800", color: "#fff" }}>Welcome, {verifiedProfile?.name || "Applicant"}</h1>
-              <p style={{ margin: "6px 0 0 0", color: "#8a9fc2", fontSize: "14px" }}>UID: <span style={{ fontFamily: "monospace", color: "#818cf8" }}>{currentUserUid}</span> • Registration &amp; Examination Configured</p>
+              <p style={{ margin: "6px 0 0 0", color: "#8a9fc2", fontSize: "14px" }}>UID: <span style={{ fontFamily: "monospace", color: "#818cf8" }}>{currentUserUid}</span> • Programs &amp; Entrance Exams Configured</p>
             </div>
             <button 
               type="button" 
               onClick={downloadReceipt} 
               style={{ background: "#159957", color: "white", border: "none", padding: "12px 22px", borderRadius: "10px", fontWeight: "bold", cursor: "pointer", display: "flex", alignItems: "center", gap: "10px", boxShadow: "0 4px 15px rgba(21, 153, 87, 0.4)", transition: "transform 0.2s" }}
             >
-              <span>↓</span> Download Fee Receipt (PDF)
+              <span>↓</span> Download Consolidated Fee Receipt (PDF)
             </button>
           </div>
 
-          <h3 style={{ color: "#a5b4fc", fontSize: "14px", marginBottom: "18px", textTransform: "uppercase", letterSpacing: "1.2px", fontWeight: "700" }}>Active Program Applications</h3>
+          {/* SECTION 1: ADMIT CARDS GENERATED PER OPTED ENTRANCE EXAM */}
+          <h3 style={{ color: "#a5b4fc", fontSize: "14px", marginBottom: "18px", textTransform: "uppercase", letterSpacing: "1.2px", fontWeight: "700" }}>Entrance Exam Admit Cards (Opted Exams)</h3>
+          
+          {selectedExamsCart.length === 0 ? (
+            <div style={{ padding: "16px", background: "#0a1124", borderRadius: "12px", border: "1px solid #3b486d", color: "#7890b2", fontSize: "14px", marginBottom: "35px" }}>No entrance exams were opted in for this application.</div>
+          ) : (
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: "24px", marginBottom: "35px" }}>
+              {selectedExamsCart.map((examName, idx) => {
+                const matchingProgKey = Object.keys(COURSE_CATALOG).find(k => COURSE_CATALOG[k].exam === examName);
+                const examFee = matchingProgKey ? COURSE_CATALOG[matchingProgKey].examFee : 1500;
+                return (
+                  <div key={idx} style={{ background: "#0a1124", border: "1px solid #3b486d", borderRadius: "16px", padding: "24px", display: "flex", flexDirection: "column", justifyContent: "space-between", boxShadow: "0 10px 25px rgba(0,0,0,0.3)" }}>
+                    <div>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "14px", gap: "12px" }}>
+                        <h4 style={{ color: "#fff", margin: 0, fontSize: "16px", fontWeight: "700", lineHeight: "1.4" }}>{examName}</h4>
+                        <span style={{ background: "rgba(34, 197, 94, 0.15)", color: "#4ade80", padding: "4px 10px", borderRadius: "6px", fontSize: "11px", fontWeight: "bold", border: "1px solid rgba(34, 197, 94, 0.3)", whiteSpace: "nowrap" }}>✓ Hall Ticket Ready</span>
+                      </div>
+                      
+                      <div style={{ display: "grid", gap: "10px", borderTop: "1px solid #293c5c", paddingTop: "16px", fontSize: "13px" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}><span style={{ color: "#7890b2" }}>Exam Registration ID:</span><strong style={{ color: "#fff", fontFamily: "monospace" }}>{registrationId}-{idx + 1}</strong></div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}><span style={{ color: "#7890b2" }}>Exam Fee:</span><strong style={{ color: "#a5b4fc" }}>₹{examFee.toLocaleString("en-IN")} Paid</strong></div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}><span style={{ color: "#7890b2" }}>Test Slot:</span><strong style={{ color: "#a5b4fc", textAlign: "right", maxWidth: "180px" }}>{selectedExamSlots[examName] || "Slot Selected"}</strong></div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}><span style={{ color: "#7890b2" }}>Allocated Center:</span><strong style={{ color: "#fff" }}>{showCenterPreferences ? (cityPreferences?.pref1 || "Chennai") : "Online / Remote"}</strong></div>
+                      </div>
+                    </div>
+
+                    <button 
+                      type="button"
+                      onClick={() => downloadAdmitCard(examName)}
+                      style={{ width: "100%", marginTop: "24px", padding: "12px", background: "rgba(108, 76, 255, 0.15)", color: "#b99cff", border: "1px solid rgba(108, 76, 255, 0.4)", borderRadius: "8px", fontWeight: "bold", cursor: "pointer", transition: "all 0.2s", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}
+                    >
+                      <span>↓</span> Download Admit Card (PDF)
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {/* SECTION 2: ENROLLED ACADEMIC PROGRAMS */}
+          <h3 style={{ color: "#a5b4fc", fontSize: "14px", marginBottom: "18px", textTransform: "uppercase", letterSpacing: "1.2px", fontWeight: "700" }}>Enrolled Academic Programs</h3>
           
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: "24px" }}>
             {(Array.isArray(cart) ? cart : []).map((item, idx) => {
               const catalogEntry = COURSE_CATALOG[item] || {};
               return (
-              <div key={idx} style={{ background: "#0a1124", border: "1px solid #3b486d", borderRadius: "16px", padding: "24px", display: "flex", flexDirection: "column", justifyContent: "space-between", boxShadow: "0 10px 25px rgba(0,0,0,0.3)" }}>
-                <div>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "14px", gap: "12px" }}>
-                    <h4 style={{ color: "#fff", margin: 0, fontSize: "16px", fontWeight: "700", lineHeight: "1.4" }}>{catalogEntry.name}</h4>
-                    <span style={{ background: "rgba(34, 197, 94, 0.15)", color: "#4ade80", padding: "4px 10px", borderRadius: "6px", fontSize: "11px", fontWeight: "bold", border: "1px solid rgba(34, 197, 94, 0.3)", whiteSpace: "nowrap" }}>✓ Confirmed</span>
-                  </div>
-                  <div style={{ color: "#a5b4fc", fontSize: "13px", marginBottom: "22px", fontWeight: "500" }}>🎓 {catalogEntry.university}</div>
-                  
-                  <div style={{ display: "grid", gap: "10px", borderTop: "1px solid #293c5c", paddingTop: "16px", fontSize: "13px" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between" }}><span style={{ color: "#7890b2" }}>Application ID:</span><strong style={{ color: "#fff", fontFamily: "monospace" }}>{registrationId}-{idx + 1}</strong></div>
-                    <div style={{ display: "flex", justifyContent: "space-between" }}><span style={{ color: "#7890b2" }}>Assigned Exam:</span><strong style={{ color: "#fff", textAlign: "right" }}>{catalogEntry.exam || "Merit Based"}</strong></div>
-                    <div style={{ display: "flex", justifyContent: "space-between" }}><span style={{ color: "#7890b2" }}>Test Slot:</span><strong style={{ color: "#a5b4fc", textAlign: "right", maxWidth: "180px" }}>{selectedExamSlots[catalogEntry.exam] || "Direct Counseling"}</strong></div>
-                    {catalogEntry.exam !== "Merit Based Admission" && (
-                      <div style={{ display: "flex", justifyContent: "space-between" }}><span style={{ color: "#7890b2" }}>Allocated Center:</span><strong style={{ color: "#fff" }}>{showCenterPreferences ? (cityPreferences?.pref1 || "Chennai") : "Online Verification"}</strong></div>
-                    )}
+                <div key={idx} style={{ background: "#0a1124", border: "1px solid #3b486d", borderRadius: "16px", padding: "20px", display: "flex", flexDirection: "column", justifyContent: "space-between", boxShadow: "0 10px 25px rgba(0,0,0,0.3)" }}>
+                  <div>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "10px", gap: "12px" }}>
+                      <h4 style={{ color: "#fff", margin: 0, fontSize: "15px", fontWeight: "700", lineHeight: "1.4" }}>{catalogEntry.name}</h4>
+                      <span style={{ background: "rgba(34, 197, 94, 0.15)", color: "#4ade80", padding: "4px 10px", borderRadius: "6px", fontSize: "11px", fontWeight: "bold", border: "1px solid rgba(34, 197, 94, 0.3)", whiteSpace: "nowrap" }}>✓ Confirmed</span>
+                    </div>
+                    <div style={{ color: "#a5b4fc", fontSize: "13px", marginBottom: "15px", fontWeight: "500" }}>🎓 {catalogEntry.university}</div>
+                    
+                    <div style={{ display: "grid", gap: "8px", borderTop: "1px solid #293c5c", paddingTop: "12px", fontSize: "13px" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between" }}><span style={{ color: "#7890b2" }}>Application ID:</span><strong style={{ color: "#fff", fontFamily: "monospace" }}>{registrationId}-{idx + 1}</strong></div>
+                      <div style={{ display: "flex", justifyContent: "space-between" }}><span style={{ color: "#7890b2" }}>Program Fee:</span><strong style={{ color: "#a5b4fc" }}>₹{catalogEntry.programFee.toLocaleString("en-IN")} Paid</strong></div>
+                    </div>
                   </div>
                 </div>
-
-                <button 
-                  type="button"
-                  onClick={() => downloadAdmitCard(item, catalogEntry)}
-                  style={{ width: "100%", marginTop: "24px", padding: "12px", background: "rgba(108, 76, 255, 0.15)", color: "#b99cff", border: "1px solid rgba(108, 76, 255, 0.4)", borderRadius: "8px", fontWeight: "bold", cursor: "pointer", transition: "all 0.2s", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}
-                >
-                  <span>↓</span> Download Admit Card (PDF)
-                </button>
-              </div>
-            )})}
+              );
+            })}
           </div>
+
         </div>
       </Page>
     );
