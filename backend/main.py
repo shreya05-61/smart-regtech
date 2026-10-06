@@ -93,6 +93,123 @@ class RegistrationRequest(BaseModel):
     program: str
 
 
+class CopilotQuery(BaseModel):
+    question: str
+
+
+# ============================================================
+# COPILOT WEBSITE KNOWLEDGE BASE & SYSTEM LOGIC
+# ============================================================
+
+WEBSITE_KNOWLEDGE = """
+YOU ARE SMARTREGTECH COPILOT, AN AI ASSISTANT FOR THE SMARTREGTECH ADMISSIONS PORTAL.
+
+YOUR KNOWLEDGE BASE (WEBSITE CONTENT):
+1. AVAILABLE PROGRAMS & UNIVERSITIES:
+   - B.Tech (Computer Science & Engineering) - Symbiosis International University (Pune) | Fee: ₹4500 | Exam: SITEEE 2026
+   - BBA (Honours) - Symbiosis International University (Pune) | Fee: ₹3800 | Exam: SET 2026
+   - B.A. LL.B (Honours) - Symbiosis International University (Pune) | Fee: ₹4200 | Exam: SLAT 2026
+   - B.Tech (Computer Science) - Vellore Institute of Technology (VIT) | Fee: ₹5000 | Exam: VITEEE 2026
+   - B.Tech (Electronics & Communication) - Vellore Institute of Technology (VIT) | Fee: ₹4800 | Exam: VITEEE 2026
+   - BCA (Data Analytics) - Vellore Institute of Technology (VIT) | Fee: ₹3500 | Exam: Merit Based
+   - B.E. (Computer Science) - BITS Pilani | Fee: ₹6000 | Exam: BITSAT 2026
+   - B.E. (Mechanical Engineering) - BITS Pilani | Fee: ₹5500 | Exam: BITSAT 2026
+   - B.Pharm (Honours) - BITS Pilani | Fee: ₹4500 | Exam: BITSAT 2026
+   - B.Com (Honours) - Delhi University (DU) | Fee: ₹3000 | Exam: CUET UG 2026
+   - B.A. (Honours) Economics - Delhi University (DU) | Fee: ₹3200 | Exam: CUET UG 2026
+   - B.Sc. (Honours) Mathematics - Delhi University (DU) | Fee: ₹3400 | Exam: CUET UG 2026
+   - IPM Five Year Integrated Programme - IIM Rohtak | Fee: ₹7500 | Exam: IPMAT 2026
+   - B.Tech Computer Science / Electrical - IIT Bombay | Fee: ₹6500 / ₹6200 | Exam: JEE Advanced 2026
+   - B.Tech IT / B.E. Civil - Anna University | Fee: ₹3500 / ₹3200 | Exam: TNEA Counseling 2026
+   - B.Tech AI & ML / BBA FinTech - MAHE Manipal | Fee: ₹4600 / ₹3800 | Exam: MET 2026 / Merit
+   - B.Tech Cloud & IoT / B.Arch - SRM Institute | Fee: ₹4200 / ₹4900 | Exam: SRMJEE 2026 / NATA 2026
+
+2. REGISTRATION METHODS:
+   - Method 1: Identity Verification (Demo Identity Number & OTP)
+   - Method 2: Manual Registration (Email OTP Verification)
+   - Method 3: Google Single Sign-On (SSO) Verification
+
+3. EXAM DATES & SLOTS:
+   - SITEEE / SET / SLAT 2026: May 05, 2026
+   - VITEEE 2026: Apr 21 - Apr 23, 2026
+   - BITSAT 2026: May 20 - May 22, 2026
+   - CUET UG 2026: May 15 - May 17, 2026
+   - IPMAT 2026: May 18 - May 19, 2026
+   - JEE Advanced 2026: Jun 04, 2026
+
+4. PAYMENT & DASHBOARD FEATURES:
+   - Supports simulated Sandbox payments via UPI (e.g., demo@upi), Cards, and Netbanking.
+   - Applicants receive an Application ID (UID) and temporary password.
+   - Allows downloading Hall Tickets / Admit Cards and PDF Receipts.
+"""
+
+def generate_copilot_response(query: str) -> str:
+    q = query.lower()
+
+    if any(k in q for k in ["program", "course", "available", "offer", "what and all"]):
+        return (
+            "Here are the primary programs available on the SmartRegTech portal:\n\n"
+            "• Symbiosis International (Pune): B.Tech CSE (₹4500), BBA Hons (₹3800), B.A. LL.B Hons (₹4200)\n"
+            "• VIT: B.Tech CS (₹5000), B.Tech ECE (₹4800), BCA Data Analytics (₹3500)\n"
+            "• BITS Pilani: B.E. CS (₹6000), B.E. Mech (₹5500), B.Pharm Hons (₹4500)\n"
+            "• Delhi University: B.Com Hons (₹3000), B.A. Eco Hons (₹3200), B.Sc. Math (₹3400)\n"
+            "• IIM Rohtak: IPM 5-Year Integrated Programme (₹7500)\n"
+            "• IIT Bombay: B.Tech CS (₹6500), B.Tech Electrical (₹6200)\n"
+            "• Anna University: B.Tech IT (₹3500), B.E. Civil (₹3200)\n"
+            "• MAHE Manipal: B.Tech AI & ML (₹4600), BBA FinTech (₹3800)\n"
+            "• SRM Institute: B.Tech Cloud & IoT (₹4200), B.Arch (₹4900)"
+        )
+
+    if any(k in q for k in ["exam", "slot", "date", "schedule"]):
+        return (
+            "Here are the upcoming entrance exam schedules and slots:\n\n"
+            "• SITEEE / SET / SLAT 2026: May 05, 2026\n"
+            "• VITEEE 2026: Apr 21 – Apr 23, 2026\n"
+            "• BITSAT 2026: May 20 – May 22, 2026\n"
+            "• CUET UG 2026: May 15 – May 17, 2026\n"
+            "• IPMAT 2026: May 18 – May 19, 2026\n"
+            "• JEE Advanced 2026: Jun 04, 2026"
+        )
+
+    if any(k in q for k in ["verification", "identity", "method", "sso"]):
+        return (
+            "SmartRegTech provides 3 flexible registration modes:\n"
+            "1. Identity Verification (Demo ID & OTP Verification)\n"
+            "2. Manual Registration (Email OTP Verification)\n"
+            "3. Google SSO (Single Sign-On Verification)"
+        )
+
+    if any(k in q for k in ["login", "password", "uid", "resume"]):
+        return (
+            "Upon verifying your profile, an Application ID (UID) and temporary password "
+            "are created automatically. You can use these credentials anytime on the "
+            "'Login / Resume' page to continue your application."
+        )
+
+    if any(k in q for k in ["payment", "fee", "upi", "card", "pay"]):
+        return (
+            "We support simulated Sandbox payments via UPI (e.g. demo@upi), "
+            "Credit/Debit Cards, and Net Banking. All transactions are simulated for testing purposes."
+        )
+
+    if any(k in q for k in ["step", "process", "registration", "how to"]):
+        return (
+            "The registration workflow follows 6 simple steps:\n"
+            "1. Choose Registration Method & Verify Contact/Identity\n"
+            "2. Enter Basic Personal Details & Address\n"
+            "3. Upload Passport Photo & Documents\n"
+            "4. Select Academic Programs & Optional Entrance Exams\n"
+            "5. Review Consolidated Application\n"
+            "6. Complete Payment & Download Admit Card / Receipt"
+        )
+
+    return (
+        "I am SmartRegTech Copilot! I can help you with details about our available programs, "
+        "fee structures, exam dates, test center options, registration methods, or general academic guidance. "
+        "What would you like to know?"
+    )
+
+
 # ============================================================
 # HOME
 # ============================================================
@@ -105,6 +222,20 @@ def home():
         "status": "success",
         "database": "SQLite",
         "version": "2.0.0"
+    }
+
+
+# ============================================================
+# COPILOT AI ASSISTANT ENDPOINT
+# ============================================================
+
+@app.post("/api/copilot")
+def copilot_chat(data: CopilotQuery):
+    answer = generate_copilot_response(data.question)
+    return {
+        "success": True,
+        "question": data.question,
+        "answer": answer
     }
 
 

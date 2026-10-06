@@ -67,26 +67,36 @@ button:disabled {
 
 
 /* =========================================================
-   APP
+   APP (UPDATED BACKGROUND - RICH EVENING CAMPUS)
    ========================================================= */
 
 .app {
   min-height: 100vh;
+  position: relative;
+  background-color: #070b16;
 
-  background:
-    radial-gradient(
-      circle at 85% 0%,
-      rgba(111, 70, 210, 0.18),
-      transparent 32%
-    ),
-    radial-gradient(
-      circle at 10% 45%,
-      rgba(71, 60, 160, 0.08),
-      transparent 30%
-    ),
-    var(--bg);
+  /* Evening campus scene overlay with dark gradient tones */
+  background-image:
+    linear-gradient(180deg, rgba(7, 11, 22, 0.55) 0%, rgba(7, 11, 22, 0.88) 100%),
+    url("https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&q=80&w=1920");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
 
   color: var(--text);
+}
+
+/* Subtle Glowing Background Grid Lines & Light Arcs */
+.app::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
 }
 
 
@@ -159,7 +169,7 @@ button:disabled {
 .brand p {
   margin: 3px 0 0;
 
-  color: #74829d;
+  color: #a0aec0;
 
   font-size: 10px;
   letter-spacing: 0.3px;
@@ -183,7 +193,7 @@ button:disabled {
 
   background: rgba(17, 27, 45, 0.8);
 
-  color: #c7d0e2;
+  color: #d1d5db;
 
   font-size: 13px;
   font-weight: 700;
@@ -202,7 +212,7 @@ button:disabled {
 .nav-button.secondary {
   border-color: rgba(139, 92, 246, 0.35);
 
-  color: #b69aff;
+  color: #c4b5fd;
 }
 
 .secure-nav {
@@ -210,7 +220,7 @@ button:disabled {
   align-items: center;
   gap: 7px;
 
-  color: #70809e;
+  color: #9ca3af;
 
   font-size: 11px;
 
@@ -267,7 +277,7 @@ button:disabled {
 
   background: rgba(139, 92, 246, 0.08);
 
-  color: #b69aff;
+  color: #c4b5fd;
 
   font-size: 11px;
 
@@ -298,10 +308,11 @@ button:disabled {
   letter-spacing: -4px;
 
   font-weight: 850;
+  color: #ffffff;
 }
 
 .hero-content h1 span {
-  color: #9470ed;
+  color: #a78bfa;
 }
 
 .hero-description {
@@ -309,7 +320,7 @@ button:disabled {
 
   margin: 25px 0 0;
 
-  color: #8e9bb4;
+  color: #cbd5e1;
 
   font-size: 16px;
 
@@ -387,7 +398,7 @@ button:disabled {
 
   background: transparent;
 
-  color: #b7c1d5;
+  color: #e2e8f0;
 
   font-size: 13px;
 
@@ -414,7 +425,7 @@ button:disabled {
 
   margin-top: 27px;
 
-  color: #687895;
+  color: #94a3b8;
 
   font-size: 11px;
 }
@@ -479,7 +490,6 @@ button:disabled {
 
 /* =========================================================
    REGISTRATION PREVIEW
-   IMPORTANT: STRAIGHT CARD
    ========================================================= */
 
 .registration-preview {
@@ -508,15 +518,6 @@ button:disabled {
   position: relative;
 
   z-index: 1;
-
-  /*
-     IMPORTANT:
-     The old version had:
-     transform: rotate(1deg);
-
-     That caused the card to look slanted.
-     It is intentionally removed.
-  */
 
   transform: none;
 
@@ -652,7 +653,7 @@ button:disabled {
 
   margin-top: 4px;
 
-  color: #6f7f9c;
+  color: #a0aec0;
 
   font-size: 10px;
 }
@@ -675,11 +676,11 @@ button:disabled {
 }
 
 .preview-lines span {
-  color: #73819c;
+  color: #a0aec0;
 }
 
 .preview-lines strong {
-  color: #dbe2ef;
+  color: #e2e8f0;
 }
 
 .green-text {
@@ -697,13 +698,13 @@ button:disabled {
 
   margin-bottom: 9px;
 
-  color: #7888a4;
+  color: #a0aec0;
 
   font-size: 10px;
 }
 
 .preview-progress-label strong {
-  color: #aa8aff;
+  color: #c4b5fd;
 }
 
 .preview-track {
@@ -732,7 +733,7 @@ button:disabled {
 
 
 /* =========================================================
-   FEATURES
+   FEATURES (HIGH CONTRAST)
    ========================================================= */
 
 .feature-section {
@@ -740,7 +741,7 @@ button:disabled {
 }
 
 .section-heading > span {
-  color: #9772e9;
+  color: #a78bfa;
 
   font-size: 10px;
 
@@ -752,7 +753,7 @@ button:disabled {
 .section-heading h2 {
   margin: 10px 0 0;
 
-  color: white;
+  color: #ffffff !important;
 
   font-size: 30px;
 
@@ -777,16 +778,11 @@ button:disabled {
 
   padding: 23px;
 
-  border: 1px solid var(--border);
+  border: 1px solid rgba(65, 82, 116, 0.6);
 
   border-radius: 15px;
 
-  background:
-    linear-gradient(
-      145deg,
-      #111b2e,
-      #0c1425
-    );
+  background: rgba(12, 18, 32, 0.88);
 
   position: relative;
 
@@ -796,7 +792,7 @@ button:disabled {
 .feature-card:hover {
   transform: translateY(-4px);
 
-  border-color: #4a3b73;
+  border-color: #8b5cf6;
 }
 
 .feature-icon {
@@ -811,9 +807,9 @@ button:disabled {
   border-radius: 12px;
 
   background:
-    rgba(139, 92, 246, 0.12);
+    rgba(139, 92, 246, 0.18);
 
-  color: #a67cff;
+  color: #c4b5fd;
 
   font-size: 20px;
 }
@@ -821,15 +817,19 @@ button:disabled {
 .feature-card h3 {
   margin: 20px 0 0;
 
-  font-size: 15px;
+  font-size: 16px;
+
+  color: #ffffff !important;
+
+  font-weight: 800;
 }
 
 .feature-card p {
   margin: 9px 0 0;
 
-  color: #7786a3;
+  color: #cbd5e1 !important;
 
-  font-size: 12px;
+  font-size: 13px;
 
   line-height: 1.6;
 }
@@ -840,14 +840,14 @@ button:disabled {
   right: 22px;
   bottom: 20px;
 
-  color: #5c6a84;
+  color: #a78bfa;
 
   font-size: 17px;
 }
 
 
 /* =========================================================
-   WORKFLOW
+   WORKFLOW (HIGH CONTRAST FIX)
    ========================================================= */
 
 .how-section {
@@ -874,13 +874,17 @@ button:disabled {
 
   padding: 23px;
 
-  border-top: 1px solid #33415c;
+  border-top: 2px solid #8b5cf6;
+
+  background: rgba(12, 18, 32, 0.88);
+
+  border-radius: 0 0 12px 12px;
 }
 
 .workflow-number {
-  color: #8862e5;
+  color: #c4b5fd !important;
 
-  font-size: 11px;
+  font-size: 13px;
 
   font-weight: 800;
 
@@ -890,15 +894,19 @@ button:disabled {
 .workflow-step h3 {
   margin: 14px 0 0;
 
-  font-size: 16px;
+  font-size: 17px;
+
+  color: #ffffff !important;
+
+  font-weight: 800;
 }
 
 .workflow-step p {
   margin: 8px 0 0;
 
-  color: #7887a2;
+  color: #cbd5e1 !important;
 
-  font-size: 12px;
+  font-size: 13px;
 
   line-height: 1.6;
 }
@@ -922,14 +930,14 @@ button:disabled {
   border-top: 1px solid
     rgba(55, 71, 101, 0.35);
 
-  color: #5f6d87;
+  color: #94a3b8;
 
   font-size: 10px;
 }
 
 
 /* =========================================================
-   PROGRESS
+   PROGRESS TRACKING (STEP LABELS VISIBILITY FIX)
    ========================================================= */
 
 .progress-container {
@@ -960,9 +968,9 @@ button:disabled {
 
   top: 17px;
 
-  height: 1px;
+  height: 2px;
 
-  background: #293750;
+  background: #3b4d6c;
 
   z-index: 0;
 }
@@ -980,9 +988,9 @@ button:disabled {
 
   z-index: 1;
 
-  color: #61718f;
+  color: #cbd5e1 !important;
 
-  font-size: 10px;
+  font-size: 12px;
 
   font-weight: 700;
 }
@@ -996,39 +1004,43 @@ button:disabled {
   align-items: center;
   justify-content: center;
 
-  border: 1px solid #30405e;
+  border: 1px solid #475569;
 
   border-radius: 50%;
 
-  background: #0c1424;
+  background: #0f172a;
 
-  color: #687894;
+  color: #cbd5e1;
 
-  font-size: 11px;
+  font-size: 12px;
+
+  font-weight: 800;
 }
 
 .progress-step.active {
-  color: #b493ff;
+  color: #ffffff !important;
 }
 
 .progress-step.active .progress-circle {
   border-color: #8b5cf6;
 
-  background:
-    rgba(139, 92, 246, 0.18);
+  background: #7c3aed;
 
-  color: #b997ff;
+  color: #ffffff;
 
   box-shadow:
     0 0 0 5px
-    rgba(139, 92, 246, 0.06);
+    rgba(139, 92, 246, 0.25);
+}
+
+.progress-step.completed {
+  color: #ffffff !important;
 }
 
 .progress-step.completed .progress-circle {
   border-color: var(--green);
 
-  background:
-    rgba(49, 212, 123, 0.12);
+  background: rgba(49, 212, 123, 0.2);
 
   color: var(--green);
 }
@@ -1095,7 +1107,7 @@ button:disabled {
 }
 
 .step-label {
-  color: #a17bfa;
+  color: #c4b5fd;
 
   font-size: 10px;
 
@@ -1107,7 +1119,7 @@ button:disabled {
 .description {
   margin: 15px 0 0;
 
-  color: #8291ad;
+  color: #cbd5e1;
 
   font-size: 14px;
 
@@ -1153,7 +1165,7 @@ button:disabled {
   background:
     rgba(139, 92, 246, 0.13);
 
-  color: #aa84ff;
+  color: #c4b5fd;
 
   font-size: 19px;
 }
@@ -1167,7 +1179,7 @@ button:disabled {
 .panel-heading p {
   margin: 4px 0 0;
 
-  color: #687995;
+  color: #94a3b8;
 
   font-size: 11px;
 }
@@ -1181,9 +1193,9 @@ button:disabled {
 
   margin-bottom: 8px;
 
-  color: #8392ad;
+  color: #cbd5e1;
 
-  font-size: 10px;
+  font-size: 11px;
 
   font-weight: 800;
 
@@ -1198,7 +1210,7 @@ button:disabled {
 
   padding: 0 14px;
 
-  border: 1px solid #2b3a56;
+  border: 1px solid #33415c;
 
   border-radius: 9px;
 
@@ -1214,7 +1226,7 @@ button:disabled {
 }
 
 .form-group input::placeholder {
-  color: #566783;
+  color: #64748b;
 }
 
 .form-group input:focus,
@@ -1252,7 +1264,7 @@ button:disabled {
 
   gap: 10px;
 
-  color: #8290aa;
+  color: #cbd5e1;
 
   font-size: 12px;
 }
@@ -1331,7 +1343,7 @@ button:disabled {
 .warning p {
   margin: 4px 0 0;
 
-  color: #8f7b59;
+  color: #d1d5db;
 
   line-height: 1.5;
 }
@@ -1356,7 +1368,7 @@ button:disabled {
 
   border-radius: 9px;
 
-  color: #687995;
+  color: #94a3b8;
 
   font-size: 10px;
 }
@@ -1381,7 +1393,7 @@ button:disabled {
   background:
     rgba(139, 92, 246, 0.12);
 
-  color: #ad8bfa;
+  color: #c4b5fd;
 
   font-size: 9px;
 
@@ -1402,7 +1414,7 @@ button:disabled {
 
   background: transparent;
 
-  color: #6f7f9c;
+  color: #94a3b8;
 
   font-size: 12px;
 
@@ -1412,7 +1424,7 @@ button:disabled {
 }
 
 .back-button:hover {
-  color: #b9c4d8;
+  color: #ffffff;
 }
 
 
@@ -1535,7 +1547,7 @@ button:disabled {
 }
 
 .verified-card-header span:first-child {
-  color: #7586a2;
+  color: #94a3b8;
 
   font-size: 9px;
 
@@ -1589,7 +1601,7 @@ button:disabled {
 .verified-field span {
   display: block;
 
-  color: #70809c;
+  color: #94a3b8;
 
   font-size: 10px;
 }
@@ -1637,7 +1649,7 @@ button:disabled {
 }
 
 .info-box > span {
-  color: #a77cff;
+  color: #c4b5fd;
 
   font-size: 18px;
 }
@@ -1645,7 +1657,7 @@ button:disabled {
 .info-box strong {
   display: block;
 
-  color: #bfa9f7;
+  color: #c4b5fd;
 
   font-size: 12px;
 }
@@ -1653,7 +1665,7 @@ button:disabled {
 .info-box p {
   margin: 3px 0 0;
 
-  color: #6f7f9b;
+  color: #94a3b8;
 
   font-size: 10px;
 }
@@ -1701,7 +1713,7 @@ button:disabled {
 
   margin-top: 3px;
 
-  color: #64748e;
+  color: #94a3b8;
 
   font-size: 10px;
 }
@@ -1773,7 +1785,7 @@ button:disabled {
   background:
     rgba(139, 92, 246, 0.1);
 
-  color: #a77cff;
+  color: #c4b5fd;
 }
 
 .review-card-title h2 {
@@ -1783,7 +1795,7 @@ button:disabled {
 }
 
 .review-card-title span:not(.review-icon) {
-  color: #687996;
+  color: #94a3b8;
 
   font-size: 9px;
 }
@@ -1806,7 +1818,7 @@ button:disabled {
 }
 
 .review-row > span {
-  color: #73839e;
+  color: #94a3b8;
 
   font-size: 11px;
 }
@@ -1875,7 +1887,7 @@ button:disabled {
 .ready-banner p {
   margin: 3px 0 0;
 
-  color: #667791;
+  color: #94a3b8;
 
   font-size: 10px;
 }
@@ -1944,7 +1956,7 @@ button:disabled {
 }
 
 .payment-card-top span {
-  color: #7686a1;
+  color: #94a3b8;
 
   font-size: 9px;
 
@@ -2003,7 +2015,7 @@ button:disabled {
 }
 
 .payment-detail span {
-  color: #73839f;
+  color: #94a3b8;
 
   font-size: 11px;
 }
@@ -2071,7 +2083,7 @@ button:disabled {
   background:
     rgba(139, 92, 246, 0.12);
 
-  color: #aa80ff;
+  color: #c4b5fd;
 
   font-size: 20px;
 }
@@ -2085,7 +2097,7 @@ button:disabled {
 .payment-info > p {
   margin: 7px 0 0;
 
-  color: #71809d;
+  color: #94a3b8;
 
   font-size: 11px;
 
@@ -2116,7 +2128,7 @@ button:disabled {
 }
 
 .sandbox-warning span {
-  color: #766f5e;
+  color: #94a3b8;
 
   font-size: 9px;
 }
@@ -2162,7 +2174,7 @@ button:disabled {
 }
 
 .registration-id-card > span {
-  color: #7c8ca8;
+  color: #94a3b8;
 
   font-size: 9px;
 
@@ -2176,7 +2188,7 @@ button:disabled {
 
   margin: 9px 0;
 
-  color: #ad87ff;
+  color: #c4b5fd;
 
   font-size: 29px;
 
@@ -2184,7 +2196,7 @@ button:disabled {
 }
 
 .registration-id-card small {
-  color: #667692;
+  color: #94a3b8;
 
   font-size: 10px;
 }
@@ -2218,7 +2230,7 @@ button:disabled {
 .success-summary span {
   display: block;
 
-  color: #687894;
+  color: #94a3b8;
 
   font-size: 9px;
 }
@@ -2356,7 +2368,7 @@ button:disabled {
 .copilot-subtitle {
   margin-top: 3px;
 
-  color: #71809c;
+  color: #94a3b8;
 
   font-size: 9px;
 }
@@ -2371,7 +2383,7 @@ button:disabled {
 
   background: transparent;
 
-  color: #8090aa;
+  color: #94a3b8;
 
   font-size: 18px;
 }
@@ -2417,7 +2429,7 @@ button:disabled {
 
   background: #121d31;
 
-  color: #aeb9cc;
+  color: #cbd5e1;
 }
 
 .copilot-user {
@@ -2447,13 +2459,13 @@ button:disabled {
 
   background: #0d1627;
 
-  color: #8999b4;
+  color: #cbd5e1;
 
   font-size: 9px;
 }
 
 .copilot-suggestions button:hover {
-  color: #bba4f5;
+  color: #c4b5fd;
 
   border-color: #6145a9;
 }
@@ -2513,7 +2525,7 @@ button:disabled {
 .copilot-note {
   padding: 0 17px 14px;
 
-  color: #566680;
+  color: #94a3b8;
 
   font-size: 8px;
 
@@ -2528,7 +2540,7 @@ button:disabled {
 .app-footer {
   padding: 20px;
 
-  color: #566580;
+  color: #94a3b8;
 
   font-size: 9px;
 
@@ -2538,7 +2550,7 @@ button:disabled {
 .app-footer span {
   margin: 0 8px;
 
-  color: #34435e;
+  color: #475569;
 }
 
 
@@ -2674,7 +2686,6 @@ button:disabled {
     gap: 10px;
   }
 
-  /* Keep card straight on mobile too */
   .registration-preview {
     transform: none;
   }
@@ -2692,6 +2703,7 @@ button:disabled {
     overflow-x: auto;
 
     padding-left: 10px;
+
     padding-right: 10px;
   }
 
@@ -2800,7 +2812,7 @@ button:disabled {
 .dl-brand-row span:not(.sandbox-pill) {
   display: block;
   margin-top: 3px;
-  color: #71809d;
+  color: #94a3b8;
   font-size: 10px;
 }
 
@@ -2827,7 +2839,7 @@ button:disabled {
   padding: 7px 5px;
   border-radius: 7px;
   background: #0d1627;
-  color: #596a88;
+  color: #94a3b8;
   text-align: center;
   font-size: 8px;
   font-weight: 800;
@@ -2835,7 +2847,7 @@ button:disabled {
 
 .dl-flow-steps span.active {
   background: rgba(139, 92, 246, 0.14);
-  color: #b69aff;
+  color: #c4b5fd;
   box-shadow: inset 0 0 0 1px rgba(139, 92, 246, 0.25);
 }
 
@@ -2858,7 +2870,7 @@ button:disabled {
   justify-content: center;
   border-radius: 16px;
   background: rgba(139, 92, 246, 0.12);
-  color: #b394ff;
+  color: #c4b5fd;
   font-size: 24px;
 }
 
@@ -2871,7 +2883,7 @@ button:disabled {
 .dl-stage-card p {
   max-width: 440px;
   margin: 0 auto;
-  color: #7e8da8;
+  color: #cbd5e1;
   font-size: 12px;
   line-height: 1.65;
 }
@@ -2881,7 +2893,7 @@ button:disabled {
   margin: 20px auto 14px;
   padding: 12px;
   border: 1px solid #293953;
-  border-radius: 9px;
+  border-radius: 99px;
   background: #0b1322;
   color: #dbe3f1;
   font-size: 12px;
@@ -2891,7 +2903,7 @@ button:disabled {
 .otp-destination span {
   display: block;
   margin-top: 4px;
-  color: #657590;
+  color: #94a3b8;
   font-size: 9px;
   font-weight: 500;
 }
@@ -2922,12 +2934,12 @@ button:disabled {
 
 .demo-otp {
   margin: 12px 0 18px;
-  color: #73839f;
+  color: #94a3b8;
   font-size: 10px;
 }
 
 .demo-otp strong {
-  color: #b69aff;
+  color: #c4b5fd;
   letter-spacing: 2px;
 }
 
@@ -2975,7 +2987,7 @@ button:disabled {
 .consent-provider span:not(.secure-label) {
   display: block;
   margin-top: 3px;
-  color: #667793;
+  color: #94a3b8;
   font-size: 9px;
 }
 
@@ -2995,13 +3007,13 @@ button:disabled {
 
 .consent-data-list strong {
   grid-column: 1 / -1;
-  color: #a995d9;
+  color: #c4b5fd;
   font-size: 10px;
   letter-spacing: 0.5px;
 }
 
 .consent-data-list span {
-  color: #8b99b1;
+  color: #cbd5e1;
   font-size: 10px;
 }
 
@@ -3010,7 +3022,7 @@ button:disabled {
   align-items: flex-start;
   gap: 9px;
   margin: 16px 0;
-  color: #aeb9cd;
+  color: #cbd5e1;
   font-size: 10px;
   line-height: 1.5;
 }
@@ -3054,7 +3066,7 @@ button:disabled {
   gap: 9px;
   padding: 8px 0;
   border-bottom: 1px solid rgba(55, 71, 101, 0.3);
-  color: #8190aa;
+  color: #94a3b8;
   font-size: 10px;
 }
 
@@ -3102,7 +3114,7 @@ button:disabled {
 .verified-profile-top span,
 .verified-profile-top small {
   display: block;
-  color: #64738d;
+  color: #94a3b8;
   font-size: 8px;
 }
 
@@ -3114,7 +3126,7 @@ button:disabled {
 }
 
 .verified-profile-top small {
-  color: #7b8ba7;
+  color: #cbd5e1;
   font-size: 9px;
 }
 
@@ -3131,7 +3143,6 @@ button:disabled {
     grid-column: auto;
   }
 }
-
 
 .json-payload-preview {
   margin-bottom: 18px;
@@ -3150,7 +3161,7 @@ button:disabled {
 }
 
 .json-payload-preview span {
-  color: #8f73df;
+  color: #c4b5fd;
   font-size: 8px;
   font-weight: 900;
   letter-spacing: 1px;
@@ -3166,9 +3177,64 @@ button:disabled {
   max-height: 150px;
   overflow: auto;
   padding: 12px;
-  color: #8291ac;
+  color: #cbd5e1;
   font-family: Consolas, Monaco, monospace;
   font-size: 8px;
   line-height: 1.6;
   white-space: pre-wrap;
+}
+
+/* =========================================================
+   LIVE PHOTO CAPTURE COMPONENT
+   ========================================================= */
+
+.photo-capture-card {
+  margin-top: 20px;
+  padding: 20px;
+  border: 1px solid #2b3b57;
+  border-radius: 16px;
+  background: rgba(12, 18, 32, 0.88);
+  text-align: center;
+}
+
+.camera-preview-container {
+  position: relative;
+  width: 240px;
+  height: 240px;
+  margin: 16px auto;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid #8b5cf6;
+  box-shadow: 0 0 25px rgba(139, 92, 246, 0.35);
+  background: #080f1b;
+}
+
+/* Face Alignment Ring Overlay */
+.camera-preview-container::after {
+  content: "";
+  position: absolute;
+  inset: 10px;
+  border: 2px dashed rgba(196, 181, 253, 0.6);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: pulse-ring 2s infinite ease-in-out;
+}
+
+@keyframes pulse-ring {
+  0%, 100% { transform: scale(1); opacity: 0.6; }
+  50% { transform: scale(1.03); opacity: 1; }
+}
+
+.match-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  background: rgba(49, 212, 123, 0.12);
+  border: 1px solid rgba(49, 212, 123, 0.3);
+  color: #31d47b;
+  font-size: 11px;
+  font-weight: 800;
 }
