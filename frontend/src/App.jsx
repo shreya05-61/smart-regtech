@@ -1,3 +1,7 @@
+
+
+
+
 import { useEffect, useRef, useState, useCallback } from "react";
 import "./App.css";
 import AdminAnalytics from "./AdminAnalytics";
@@ -399,42 +403,191 @@ const AadhaarPhotoCapture = ({ onCaptureSuccess, onRetake }) => {
 };
 
 // ============================================================
-// ENHANCED DYNAMIC COPILOT KNOWLEDGE FALLBACK
+// SMARTREG AI - WEBSITE-AWARE KNOWLEDGE FALLBACK
 // ============================================================
 function getCopilotAnswer(question) {
-  const q = question.toLowerCase();
+  const q = String(question || "").toLowerCase().replace(/\s+/g, " ").trim();
 
-  if (q.includes("program") || q.includes("course") || q.includes("available") || q.includes("offer") || q.includes("what and all")) {
-    const courses = Object.values(COURSE_CATALOG).map(c => `• ${c.name} (${c.university}) — Program Fee: ₹${c.programFee} | Exam: ${c.exam}`).join("\n");
-    return `Here are all the academic programs currently available on the SmartRegTech platform:\n\n${courses}`;
+  // 1) Registration METHODS must be checked before generic registration keywords.
+  const asksRegistrationMethod =
+    /\b(method|methods|mode|modes|way|ways|option|options)\b/.test(q) &&
+    /\b(register|registration|signup|sign up|verification)\b/.test(q);
+
+  if (asksRegistrationMethod || /registration methods|registering methods|ways to register/.test(q)) {
+    return "SmartRegTech currently provides 3 registration methods:\n\n1. Aadhaar Verification — verify your identity using the demo Aadhaar + OTP flow.\n2. Manual Registration — register using a verified email address and OTP.\n3. Google SSO Verification — use your Google account to verify your email securely.";
   }
 
-  if (q.includes("exam") || q.includes("slot") || q.includes("date") || q.includes("schedule")) {
-    const exams = Object.entries(EXAM_SCHEDULE_OPTIONS).map(([exam, slots]) => `• ${exam}: ${slots.join(", ")}`).join("\n");
-    return `Here are the entrance exam schedules and available slots:\n\n${exams}`;
+  // 2) Entrance EXAMS / TESTS are checked before the generic word "available".
+  const asksExam =
+    /\b(exam|exams|test|tests|entrance exam|entrance exams|entrance test|entrance tests|competitive exam|slot|slots|schedule|schedules|date|dates)\b/.test(q);
+
+  if (asksExam) {
+    const entries = Object.entries(EXAM_SCHEDULE_OPTIONS || {});
+    if (!entries.length) return "No entrance exam schedules are currently configured on the portal.";
+    const exams = entries.map(([exam, slots]) => `• ${exam} — ${slots.join(" | ")}`).join("\n");
+    return `Here are the entrance tests currently configured on the SmartRegTech website:\n\n${exams}`;
   }
 
-  if (q.includes("digilocker") || q.includes("aadhaar") || q.includes("verification") || q.includes("identity") || q.includes("method")) {
-    return "Our portal supports 3 registration modes:\n1. Aadhaar Verification (Demo Aadhaar ID & OTP 123456)\n2. Manual Registration (Email OTP 123456)\n3. Google SSO Verification";
+  // 3) Program / course discovery.
+  const asksProgram =
+    /\b(program|programs|course|courses|degree|degrees|college|colleges|university|universities)\b/.test(q) ||
+    /\bwhat (?:all|are) .*available\b/.test(q);
+
+  if (asksProgram) {
+    const entries = Object.values(COURSE_CATALOG || {});
+    if (!entries.length) return "No academic programs are currently configured on the portal.";
+
+    // If the user names a university/program, show only matching records when possible.
+    const matches = entries.filter((c) => {
+      const haystack = `${c.name || ""} ${c.university || ""}`.toLowerCase();
+      const words = q.split(/[^a-z0-9]+/).filter((w) => w.length >= 3);
+      return words.some((w) => haystack.includes(w));
+    });
+    const list = matches.length && matches.length < entries.length ? matches : entries;
+    const courses = list.map((c) => `• ${c.name} (${c.university}) — Program Fee: ₹${c.programFee} | Exam: ${c.exam}`).join("\n");
+    return `Here are the ${matches.length && matches.length < entries.length ? "matching" : "academic"} programs currently available on the SmartRegTech platform:\n\n${courses}`;
   }
 
-  if (q.includes("login") || q.includes("password") || q.includes("uid") || q.includes("resume")) {
-    return "Upon completing profile verification, an Application ID (UID) and temporary password are generated automatically. You can use them on the 'Login / Resume' page anytime to continue your application.";
+  // 4) Eligibility.
+  if (/\b(eligib|eligible|qualification|qualifications|cutoff|cut off|criteria)\b/.test(q)) {
+    const entries = Object.values(COURSE_CATALOG || {});
+    const matches = entries.filter((c) => `${c.name || ""} ${c.university || ""}`.toLowerCase().split(/[^a-z0-9]+/).some((w) => w.length >= 3 && q.includes(w)));
+    if (matches.length) {
+      return matches.map((c) => `• ${c.name} (${c.university})\n  Eligibility: ${c.eligibility || "Not specified in the portal."}`).join("\n\n");
+    }
+    return "Eligibility is listed for each program in the SmartRegTech program catalog. Tell me the university or program name and I can show the configured eligibility.";
   }
 
-  if (q.includes("payment") || q.includes("fee") || q.includes("upi") || q.includes("card") || q.includes("pay")) {
-    return "We support simulated Sandbox payments via UPI (e.g. demo@upi), Credit/Debit Cards, and Net Banking. No real money is charged during this prototype phase.";
+  // 5) Fees / payment. Program fee questions get catalog data first.
+  if (/\b(fee|fees|cost|price|tuition|how much|amount)\b/.test(q)) {
+    const entries = Object.values(COURSE_CATALOG || {});
+    const matches = entries.filter((c) => {
+      const haystack = `${c.name || ""} ${c.university || ""}`.toLowerCase();
+      return q.split(/[^a-z0-9]+/).some((w) => w.length >= 3 && haystack.includes(w));
+    });
+    if (matches.length) {
+      return matches.map((c) => `• ${c.name} (${c.university}) — Program Fee: ₹${c.programFee} | Exam Fee: ₹${c.examFee} | Exam: ${c.exam}`).join("\n");
+    }
+    if (/\b(payment|pay|upi|card|net banking|sandbox)\b/.test(q)) {
+      return "SmartRegTech supports simulated Sandbox payments via UPI, Credit/Debit Card, and Net Banking. No real money is charged during this prototype phase.";
+    }
+    return "I can check the configured program fee and exam fee. Tell me the university or program name.";
   }
 
-  if (q.includes("process") || q.includes("registration") || q.includes("step") || q.includes("how to") || q.includes("workflow")) {
-    return "The registration flow works as follows:\n1. Verify Contact / Aadhaar\n2. Fill Basic Details & Address\n3. Upload Photo & Documents\n4. Select Programs & Optional Entrance Exams\n5. Review Application\n6. Complete Payment & Download Admit Card / Receipt";
+  // 6) Test-centre / city information.
+  if (/\b(center|centre|test center|test centre|city|cities|location|locations|preference|preferences)\b/.test(q)) {
+    return `Available test-centre cities configured for the portal include: ${CITIES.join(", ")}. You can select 3 preferred cities during registration.`;
   }
 
-  if (q.includes("city") || q.includes("center") || q.includes("location") || q.includes("preference")) {
-    return `Available test center cities for offline entrance exams include: ${CITIES.join(", ")}. You can select 3 preferred cities during registration.`;
+  // 7) Login / resume / password.
+  if (/\b(login|log in|password|uid|application id|resume|forgot password)\b/.test(q)) {
+    return "After completing the required verification/profile steps, an Application ID (UID) and password are generated. Use the 'Login / Resume' option to continue an existing application. The portal also provides a Forgot Password flow.";
   }
 
-  return `I can assist with all questions regarding the SmartRegTech website—such as available programs, fee structures, exam schedules, registration methods, test centers, and login recovery—as well as general academic queries. What specific details would you like to know?`;
+  // 8) Registration PROCESS — kept after registration METHOD so "how many methods" never falls here.
+  if (/\b(process|steps|step|workflow|how to register|how do i register|registration process)\b/.test(q)) {
+    return "The SmartRegTech registration flow is:\n1. Choose a registration/verification method\n2. Complete identity/contact verification\n3. Fill basic details and address\n4. Upload photo and required documents\n5. Select programs and optional entrance exams\n6. Review the application\n7. Complete the sandbox payment\n8. Receive the registration ID/receipt.";
+  }
+
+  // 9) DigiLocker / Aadhaar-specific questions.
+  if (/\b(digilocker|aadhaar|aadhar|identity verification|otp)\b/.test(q)) {
+    return "The portal includes a demo Aadhaar verification flow and a DigiLocker/document-verification flow. The demo Aadhaar OTP used by the prototype is 123456.";
+  }
+
+  return null;
+}
+
+function FloatingSmartRegAI({ onOpen }) {
+  const [showGreeting, setShowGreeting] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setShowGreeting(false), 7000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <div style={{ position: "fixed", right: "24px", bottom: "24px", zIndex: 9998, fontFamily: "inherit" }}>
+      {showGreeting && (
+        <div
+          style={{
+            position: "absolute",
+            right: "0",
+            bottom: "76px",
+            width: "285px",
+            padding: "16px 18px",
+            borderRadius: "16px",
+            background: "linear-gradient(145deg, rgba(15,23,42,0.98), rgba(30,27,75,0.98))",
+            border: "1px solid rgba(129,140,248,0.45)",
+            boxShadow: "0 18px 50px rgba(0,0,0,0.45), 0 0 30px rgba(108,76,255,0.18)",
+            color: "#fff",
+            animation: "smartRegAIPop 0.45s ease-out"
+          }}
+        >
+          <button
+            type="button"
+            onClick={() => setShowGreeting(false)}
+            aria-label="Close AI greeting"
+            style={{ position: "absolute", top: "7px", right: "9px", border: "0", background: "transparent", color: "#94a3b8", cursor: "pointer", fontSize: "17px" }}
+          >×</button>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "8px" }}>
+            <div style={{ width: "34px", height: "34px", borderRadius: "11px", display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg,#7c3aed,#6366f1)", boxShadow: "0 0 18px rgba(124,58,237,0.45)", fontWeight: "800" }}>✦</div>
+            <div>
+              <div style={{ fontWeight: "800", fontSize: "14px" }}>SmartReg AI</div>
+              <div style={{ color: "#86efac", fontSize: "10px", fontWeight: "700", letterSpacing: "0.6px" }}>● WEBSITE KNOWLEDGE ACTIVE</div>
+            </div>
+          </div>
+          <div style={{ color: "#cbd5e1", fontSize: "13px", lineHeight: "1.5", marginBottom: "11px" }}>
+            Hi! 👋 Need help with programs, exams, fees or registration?
+          </div>
+          <button
+            type="button"
+            onClick={onOpen}
+            style={{ width: "100%", border: "1px solid rgba(129,140,248,0.5)", background: "rgba(99,102,241,0.18)", color: "#c7d2fe", borderRadius: "9px", padding: "9px 12px", fontWeight: "700", cursor: "pointer" }}
+          >
+            Ask SmartReg AI →
+          </button>
+        </div>
+      )}
+
+      <button
+        type="button"
+        onClick={() => { setShowGreeting(false); onOpen(); }}
+        aria-label="Open SmartReg AI"
+        title="Ask SmartReg AI"
+        style={{
+          width: "58px",
+          height: "58px",
+          borderRadius: "50%",
+          border: "1px solid rgba(167,139,250,0.75)",
+          background: "linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%)",
+          color: "#fff",
+          fontSize: "24px",
+          cursor: "pointer",
+          boxShadow: "0 10px 30px rgba(79,70,229,0.45), 0 0 0 6px rgba(99,102,241,0.08)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          animation: "smartRegAIPulse 2.2s infinite"
+        }}
+      >
+        ✦
+      </button>
+
+      <style>{`
+        @keyframes smartRegAIPulse {
+          0%, 100% { transform: translateY(0) scale(1); box-shadow: 0 10px 30px rgba(79,70,229,0.45), 0 0 0 6px rgba(99,102,241,0.08); }
+          50% { transform: translateY(-3px) scale(1.035); box-shadow: 0 14px 34px rgba(79,70,229,0.55), 0 0 0 10px rgba(99,102,241,0.04); }
+        }
+        @keyframes smartRegAIPop {
+          from { opacity: 0; transform: translateY(12px) scale(0.96); }
+          to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @media (max-width: 600px) {
+          .smart-reg-ai-greeting { width: 250px; }
+        }
+      `}</style>
+    </div>
+  );
 }
 
 function AICopilot({ onClose }) {
@@ -456,21 +609,38 @@ function AICopilot({ onClose }) {
     setLoading(true);
 
     try {
+      // Website-specific questions are answered from the portal data first.
+      // This prevents the backend AI from replacing a precise website answer with an irrelevant one.
+      const websiteAnswer = getCopilotAnswer(trimmed);
+      if (websiteAnswer) {
+        await new Promise((resolve) => setTimeout(resolve, 350));
+        setMessages((prev) => [...prev, { role: "assistant", text: websiteAnswer }]);
+        return;
+      }
+
+      // Only general/unsupported questions are sent to the backend AI.
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 4000); 
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
       const response = await fetch(`${API_BASE}/api/copilot`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question: trimmed }),
+        body: JSON.stringify({
+          question: trimmed,
+          websiteContext: {
+            programs: Object.values(COURSE_CATALOG || {}),
+            exams: EXAM_SCHEDULE_OPTIONS || {},
+            cities: CITIES || []
+          }
+        }),
         signal: controller.signal
       });
       clearTimeout(timeoutId);
       if (!response.ok) throw new Error("Backend AI not connected yet");
       const data = await response.json();
-      setMessages((prev) => [...prev, { role: "assistant", text: data.answer || data.reply }]);
+      setMessages((prev) => [...prev, { role: "assistant", text: data.answer || data.reply || "I couldn't find an answer for that." }]);
     } catch (error) {
-      await new Promise((resolve) => setTimeout(resolve, 600)); 
-      const fallbackAnswer = getCopilotAnswer(trimmed);
+      const fallbackAnswer = getCopilotAnswer(trimmed) || "I can help with SmartRegTech programs, entrance exams, fees, eligibility, registration methods, registration steps, test centres, login/resume, payments, and document verification. Try asking one of those.";
+      await new Promise((resolve) => setTimeout(resolve, 450));
       setMessages((prev) => [...prev, { role: "assistant", text: fallbackAnswer }]);
     } finally {
       setLoading(false);
@@ -1315,7 +1485,7 @@ function App() {
   if (currentView === "login") {
     return (
       <div className="app">
-        <header className="navbar"><div className="brand" onClick={goHome}><div className="brand-mark">SR</div><div><h2>SmartRegTech</h2><p>Digital Registration & Compliance</p></div></div><div className="nav-buttons"><button type="button" className="nav-button secondary" onClick={() => setShowCopilot(true)}><span>✦</span> AI Copilot</button></div></header>
+        <header className="navbar"><div className="brand" onClick={goHome}><div className="brand-mark">SR</div><div><h2>SmartRegTech</h2><p>Digital Registration & Compliance</p></div></div><div className="nav-buttons"></div></header>
         <main className="page-container" style={{ maxWidth: "500px", margin: "50px auto" }}>
           <section className="content-card form-panel">
             <h2>Login to Resume Registration</h2>
@@ -1363,7 +1533,7 @@ function App() {
   if (currentView === "forgotPwd") {
     return (
       <div className="app">
-        <header className="navbar"><div className="brand" onClick={goHome}><div className="brand-mark">SR</div><div><h2>SmartRegTech</h2><p>Digital Registration & Compliance</p></div></div><div className="nav-buttons"><button type="button" className="nav-button secondary" onClick={() => setShowCopilot(true)}><span>✦</span> AI Copilot</button></div></header>
+        <header className="navbar"><div className="brand" onClick={goHome}><div className="brand-mark">SR</div><div><h2>SmartRegTech</h2><p>Digital Registration & Compliance</p></div></div><div className="nav-buttons"></div></header>
         <main className="page-container" style={{ maxWidth: "500px", margin: "50px auto" }}>
           <section className="content-card form-panel">
             <h2>Forgot Password</h2>
@@ -1396,7 +1566,7 @@ function App() {
   if (currentView === "changePwd") {
     return (
       <div className="app">
-        <header className="navbar"><div className="brand" onClick={goHome}><div className="brand-mark">SR</div><div><h2>SmartRegTech</h2><p>Digital Registration & Compliance</p></div></div><div className="nav-buttons"><button type="button" className="nav-button secondary" onClick={() => setShowCopilot(true)}><span>✦</span> AI Copilot</button></div></header>
+        <header className="navbar"><div className="brand" onClick={goHome}><div className="brand-mark">SR</div><div><h2>SmartRegTech</h2><p>Digital Registration & Compliance</p></div></div><div className="nav-buttons"></div></header>
         <main className="page-container" style={{ maxWidth: "500px", margin: "50px auto" }}>
           <section className="content-card form-panel">
             <h2>Change Password</h2>
@@ -1428,7 +1598,7 @@ function App() {
   if (activeStepId === "admin") {
     return (
       <div style={{ position: "relative" }}>
-        <div style={{ position: "absolute", top: "15px", right: "20px", zIndex: 100 }}><button type="button" className="nav-button secondary" onClick={() => setShowCopilot(true)}><span>✦</span> AI Copilot</button></div>
+        <div style={{ position: "absolute", top: "15px", right: "20px", zIndex: 100 }}></div>
         <AdminAnalytics />
         <div className="admin-return"><button type="button" className="back-button" onClick={goHome}>← Return to Registration Portal</button></div>
         {showCopilot && <AICopilot onClose={() => setShowCopilot(false)} />}
@@ -2191,7 +2361,6 @@ function App() {
         <header className="navbar">
           <div className="brand" onClick={goHome}><div className="brand-mark">SR</div><div><h2>SmartRegTech</h2><p>Digital Registration & Compliance</p></div></div>
           <div className="nav-buttons">
-            <button type="button" className="nav-button secondary" onClick={() => setShowCopilot(true)}><span>✦</span> AI Copilot</button>
           </div>
         </header>
 
@@ -2247,7 +2416,6 @@ function App() {
             </div>
           </div>
           <div className="nav-buttons">
-            <button type="button" className="nav-button secondary" onClick={() => setShowCopilot(true)}><span>✦</span> AI Copilot</button>
             <button type="button" className="nav-button" onClick={openAdmin}><span>▦</span> Admin Analytics</button>
             {currentUserUid ? (
               <><button type="button" className="nav-button" onClick={() => setCurrentView("changePwd")}>Change Password</button><button type="button" className="nav-button secondary" onClick={handleLogout}>Logout ({currentUserUid})</button></>
@@ -2310,6 +2478,7 @@ function App() {
           </section>
         </main>
         <footer className="home-footer"><div>© 2026 SmartRegTech Prototype</div><div>Digital Registration • Compliance • Analytics</div></footer>
+        <FloatingSmartRegAI onOpen={() => setShowCopilot(true)} />
         {showCopilot && <AICopilot onClose={() => setShowCopilot(false)} />}
       </div>
     );
@@ -3219,7 +3388,6 @@ function Page({ children, currentStep, completionPercentage, onHome, flowConfig,
       <header className="navbar">
         <div className="brand" onClick={onHome}><div className="brand-mark">SR</div><div><h2>SmartRegTech</h2><p>Digital Registration & Compliance</p></div></div>
         <div className="nav-buttons">
-          <button type="button" className="nav-button secondary" onClick={() => setShowCopilot(true)}><span>✦</span> AI Copilot</button>
           {openAdmin && (<button type="button" className="nav-button" onClick={openAdmin}><span>▦</span> Admin Analytics</button>)}
           {currentUserUid ? (<button type="button" className="nav-button secondary" onClick={handleLogout}>Logout ({currentUserUid})</button>) : (<div className="secure-nav"><span>●</span> Secure Session</div>)}
         </div>
